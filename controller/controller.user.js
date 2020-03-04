@@ -8,6 +8,13 @@ const getAdmin = (req, res) => {
     }).catch(err => res.json(response({ success: false, message: err })));
 }
 
+const addUser = (req, res) => {
+    var name = req.body.name;
+    userService.addUser(name).then(data => {
+        res.json(response({ success: true, payload: data }))
+    }).catch(err => res.json(response({ success: false, message: err })));
+}
+
 // const addAdmin = (req, res) => {
 //     const username = req.body.username;
 //     const password = req.body.password;
@@ -52,5 +59,5 @@ const getAdmin = (req, res) => {
 //     }).catch(err => response({ success: false, err: err }))
 // }
 
-module.exports = {getAdmin}
+module.exports = {getAdmin,addUser}
 // ,addAdmin,updateAdmin,getAdminById

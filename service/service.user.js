@@ -4,6 +4,10 @@ const getAdmin = () =>{
     return surveydb.getAdmin();
 }
 
+const addUser = (name) =>{
+    return surveydb.addUser(name);
+}
+
 // const addAdmin = (username, password, active, employeeId) => {
 //     return surveydb.addUser(username,password,active,employeeId)
 // }
@@ -16,5 +20,5 @@ const getAdmin = () =>{
 //     return surveydb.updateAdmin(userId,username, password, active, employeeId);
 // }
 
-module.exports = {getAdmin}
+module.exports = {getAdmin,addUser}
 // ,addAdmin,updateAdmin,getAdminById
