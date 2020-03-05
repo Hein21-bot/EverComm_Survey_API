@@ -1,0 +1,123 @@
+  PID TTY          TIME CMD
+    1 ?        00:05:18 systemd
+    2 ?        00:00:00 kthreadd
+    3 ?        00:00:00 rcu_gp
+    4 ?        00:00:00 rcu_par_gp
+    6 ?        00:00:00 kworker/0:0H-kblockd
+    9 ?        00:00:00 mm_percpu_wq
+   10 ?        00:02:48 ksoftirqd/0
+   11 ?        00:07:36 rcu_sched
+   12 ?        00:00:50 migration/0
+   13 ?        00:00:00 idle_inject/0
+   14 ?        00:00:00 cpuhp/0
+   15 ?        00:00:00 kdevtmpfs
+   16 ?        00:00:00 netns
+   17 ?        00:00:00 rcu_tasks_kthre
+   18 ?        00:00:00 kauditd
+   19 ?        00:00:04 khungtaskd
+   20 ?        00:00:00 oom_reaper
+   21 ?        00:00:00 writeback
+   22 ?        00:00:00 kcompactd0
+   23 ?        00:00:00 ksmd
+   24 ?        00:00:00 khugepaged
+  116 ?        00:00:00 kintegrityd
+  117 ?        00:00:00 kblockd
+  118 ?        00:00:00 blkcg_punt_bio
+  119 ?        00:00:00 tpm_dev_wq
+  120 ?        00:00:00 ata_sff
+  121 ?        00:00:00 md
+  122 ?        00:00:00 edac-poller
+  123 ?        00:00:00 devfreq_wq
+  124 ?        00:00:00 watchdogd
+  127 ?        00:00:42 kswapd0
+  128 ?        00:00:00 kworker/u3:0
+  129 ?        00:00:00 ecryptfs-kthrea
+  132 ?        00:00:00 kthrotld
+  133 ?        00:00:00 acpi_thermal_pm
+  134 ?        00:00:00 ipv6_addrconf
+  145 ?        00:00:00 kstrp
+  164 ?        00:00:00 charger_manager
+  198 ?        00:00:00 scsi_eh_0
+  199 ?        00:00:00 scsi_tmf_0
+  200 ?        00:00:00 scsi_eh_1
+  201 ?        00:00:00 scsi_tmf_1
+  205 ?        00:00:00 cryptd
+  207 ?        00:03:50 kworker/0:1H-kblockd
+  211 ?        00:00:00 scsi_eh_2
+  213 ?        00:00:00 scsi_tmf_2
+  214 ?        00:00:00 scsi_eh_3
+  216 ?        00:00:00 scsi_tmf_3
+  218 ?        00:00:00 scsi_eh_4
+  220 ?        00:00:00 scsi_tmf_4
+  221 ?        00:00:00 scsi_eh_5
+  222 ?        00:00:00 scsi_tmf_5
+  224 ?        00:00:00 scsi_eh_6
+  225 ?        00:00:00 scsi_tmf_6
+  226 ?        00:00:00 scsi_eh_7
+  227 ?        00:00:00 scsi_tmf_7
+  252 ?        00:00:00 ttm_swap
+  292 ?        00:00:00 raid5wq
+  334 ?        00:02:06 jbd2/sda-8
+  335 ?        00:00:00 ext4-rsv-conver
+  502 ?        00:00:00 kaluad
+  503 ?        00:00:00 kmpath_rdacd
+  504 ?        00:00:00 kmpathd
+  505 ?        00:00:00 kmpath_handlerd
+  506 ?        00:11:29 multipathd
+  539 ?        00:03:45 haveged
+  543 ?        00:00:20 cron
+  545 ?        00:00:00 networkd-dispat
+  551 ?        00:05:20 rsyslogd
+  557 ?        00:09:39 accounts-daemon
+  561 ?        00:09:51 dbus-daemon
+  562 ?        00:00:12 systemd-logind
+  567 ?        00:00:00 atd
+  596 ?        00:05:02 polkitd
+  625 ttyS0    00:00:00 agetty
+  635 tty1     00:00:00 agetty
+  660 ?        00:00:00 unattended-upgr
+  943 ?        00:08:05 sshd
+ 4936 ?        03:19:26 PM2 v4.2.0: God
+ 6360 ?        00:00:01 npm
+ 6371 ?        00:00:00 sh
+ 6372 ?        00:00:00 node
+ 6379 ?        00:00:17 node
+ 6696 ?        00:03:09 node /root/burg
+ 6703 ?        00:03:15 node /root/burg
+ 6709 ?        00:03:07 node /root/impe
+ 6722 ?        00:03:03 node /root/top-
+ 6723 ?        00:03:03 node /root/hote
+ 6729 ?        00:03:01 node /root/ques
+ 7773 ?        00:00:32 kworker/0:2-events
+14931 ?        00:16:54 systemd-network
+14947 ?        00:06:28 systemd-resolve
+14952 ?        00:00:11 systemd-timesyn
+14956 ?        00:22:41 systemd-journal
+15355 ?        00:00:14 systemd-udevd
+16298 ?        00:00:00 xfsalloc
+16299 ?        00:00:00 xfs_mru_cache
+16302 ?        00:00:00 jfsIO
+16303 ?        00:00:00 jfsCommit
+16304 ?        00:00:00 jfsSync
+18983 ?        00:03:33 apache2
+20692 ?        00:00:00 apache2
+20693 ?        00:00:00 apache2
+22447 ?        00:00:00 systemd
+22449 ?        00:00:00 (sd-pam)
+24561 ?        00:00:29 node /root/impe
+27962 ?        00:00:00 kworker/u2:0-events_power_efficient
+28254 ?        00:00:00 sshd
+28330 pts/0    00:00:00 bash
+28362 pts/0    00:00:00 node
+28408 ?        00:00:00 sshd
+28487 pts/1    00:00:00 bash
+28609 ?        00:00:00 kworker/u2:1-events_power_efficient
+28670 ?        00:00:00 kworker/0:0
+28740 ?        11:19:35 mysqld
+28857 ?        00:00:00 kworker/u2:2-events_unbound
+28866 ?        00:00:00 sshd
+28896 ?        00:00:00 sshd
+28897 pts/1    00:00:00 ps
+28898 pts/1    00:00:00 less
+30602 ?        00:47:12 mongod
+32181 ?        00:00:00 dbus-daemon
