@@ -32,13 +32,24 @@ const getQuestion = (req,res) =>{
 }
 
 const addAnswer = (req,res) =>{
-    let other = req.body.other
-    let optionChoiceId = req.body.optionChoiceId;
-    let userId = req.body.userId;
-    let questionId = req.body.questionId;
+    let targetCount = req.body.data.length;
+    let count = 0;
+    let queryLoop = new Promise((resolve, reject) => {
+    req.body.data.map(data=>{
+        let other = data.other;
+        let optionChoiceId = data.optionChoiceId;
+        let userId = data.userId;
+        let questionId = data.questionId;
+        surveyService.addAnswer(other, optionChoiceId, userId, questionId).then(data => {
+            count++;
+            if(count == targetCount) resolve({"answeredCount": count});
+        }).catch(err => reject(err));
+    })
+});
 
-    surveyService.addAnswer(other, optionChoiceId, userId, questionId).then(data => {
-        res.json(response({ success: true, payload: data }))
-    }).catch(err => res.json(response({ success: false, message: err })));
+queryLoop.then(data => {
+    res.json(response({ success: true, payload: data }))
+}).catch(err => res.json(response({ success: false, message: err })));
 }
+
 module.exports = {getQuestion,addAnswer};

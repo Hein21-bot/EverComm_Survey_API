@@ -36,7 +36,7 @@ const addUser = (userName) => {
 
 const getQuestion = (admin_id, survey_header_id) => {
     query = util.promisify(mypool.query).bind(mypool)
-    return query(`select * from tbl_questions as q inner join tbl_option_choices as o  on q.question_id = o.questions_id
+    return query(`select * from tbl_questions as q left join tbl_option_choices as o  on q.question_id = o.questions_id
     left join tbl_survey_sections as s on s.survey_section_id = q.survey_sections_id left join tbl_survey_headers as h on h.survey_header_id = s.survey_headers_id
     left join tbl_admins as a on a.admin_id = h.admin_id where a.admin_id = ${admin_id} and h.survey_header_id = ${survey_header_id}
     and a.active = true and h.active = true;`)
