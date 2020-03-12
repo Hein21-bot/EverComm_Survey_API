@@ -9,11 +9,46 @@ const getAdmin = (req, res) => {
 }
 
 const addUser = (req, res) => {
-    var name = req.body.name;
-    userService.addUser(name).then(data => {
-        res.json(response({ success: true, payload: data }))
-    }).catch(err => res.json(response({ success: false, message: err })));
-}
+    const userName = req.body.userName
+    const password = req.body.password
+    const email = req.body.email
+
+    console.log(userName, password, email)
+
+    userService.checkDuplicateEmail(email)
+        .then(data => {
+            const DuplicateRows = data[0].DE;
+            if (DuplicateRows > 0) {
+                res.json(
+                    response({
+                        success: false,
+                        payload: null,
+                        message: "Email Already Exist"
+                    })
+                );
+            } else {
+                userService.addUser(userName, password, email)
+                    .then(data => {
+                        console.log("Insert ==>", data)
+                        res.json(
+                            response({
+                                success: true,
+                                message: "Inserted!",
+                                payload: data
+                            })
+                        );
+                    }).catch(err => {
+                        console.log("Insert", err)
+                        res.json(response({ success: false, message: err }));
+                        console.log("insert user error")
+                    });
+            }
+        })
+        .catch(err => {
+            res.json(response({ success: false, message: err }));
+            console.log("insert user error")
+        });
+};
 
 // const addAdmin = (req, res) => {
 //     const username = req.body.username;
@@ -59,5 +94,5 @@ const addUser = (req, res) => {
 //     }).catch(err => response({ success: false, err: err }))
 // }
 
-module.exports = {getAdmin,addUser}
+module.exports = { getAdmin, addUser }
 // ,addAdmin,updateAdmin,getAdminById

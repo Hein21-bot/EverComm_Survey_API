@@ -1,12 +1,17 @@
-const {surveydb} = require('../db')
+const { surveydb } = require('../db')
 
-const getAdmin = () =>{
+const getAdmin = () => {
     return surveydb.getAdmin();
 }
 
-const addUser = (name) =>{
-    return surveydb.addUser(name);
+const addUser = (userName, password, email) => {
+    return surveydb.addUser(userName, password, email)
 }
+
+const checkDuplicateEmail = (email, user_id) => {
+    return surveydb.checkDuplicateEmail(email, user_id);
+}
+
 
 // const addAdmin = (username, password, active, employeeId) => {
 //     return surveydb.addUser(username,password,active,employeeId)
@@ -20,5 +25,5 @@ const addUser = (name) =>{
 //     return surveydb.updateAdmin(userId,username, password, active, employeeId);
 // }
 
-module.exports = {getAdmin,addUser}
+module.exports = { getAdmin, addUser, checkDuplicateEmail }
 // ,addAdmin,updateAdmin,getAdminById

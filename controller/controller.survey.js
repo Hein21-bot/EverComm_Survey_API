@@ -36,6 +36,7 @@ const addAnswer = (req,res) =>{
     let count = 0;
     let queryLoop = new Promise((resolve, reject) => {
     req.body.data.map(data=>{
+        console.log("Answer ==>" , data)
         let other = data.other;
         let optionChoiceId = data.optionChoiceId;
         let userId = data.userId;

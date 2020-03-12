@@ -15,4 +15,4 @@ const verifyToken = (token, callback) => {
     })
 }
 module.exports.produceToken = produceToken;
-module.exports.verifyToken = verifyToken;                                  
+module.exports.verifyToken = verifyToken; 
