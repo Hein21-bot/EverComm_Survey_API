@@ -46,8 +46,10 @@ const getQuestion = (admin_id, survey_header_id) => {
   return query(`select * from tbl_questions as q left join tbl_option_choices as o  on q.question_id = o.questions_id
     left join tbl_survey_sections as s on s.survey_section_id = q.survey_sections_id left join tbl_survey_headers as h on h.survey_header_id = s.survey_headers_id
     left join tbl_login_users as a on a.login_user_id = h.login_users_id where a.login_user_id = ${ admin_id} and h.survey_header_id = ${survey_header_id}
-    and a.active = true and h.active = true; `)
+  
+    `)
 }
+  // and a.active = true and h.active = true; 
 
 const isExistAdmin = (username, userId) => {
   query = util.promisify(mypool.query).bind(mypool)
