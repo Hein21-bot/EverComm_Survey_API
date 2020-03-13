@@ -15,8 +15,6 @@ const mypool = mysql.createConnection({
 // login
 
 const login = (email, password) => {
-  console.log("Hello ===>", email, password)
-
   query = util.promisify(mypool.query).bind(mypool)
   return query(`SELECT * FROM tbl_login_users WHERE active = 1 AND email = '${email}' AND password = trim("${password}")`)
 }

@@ -13,8 +13,6 @@ const addUser = (req, res) => {
     const password = req.body.password
     const email = req.body.email
 
-    console.log(userName, password, email)
-
     userService.checkDuplicateEmail(email)
         .then(data => {
             const DuplicateRows = data[0].DE;
@@ -29,7 +27,6 @@ const addUser = (req, res) => {
             } else {
                 userService.addUser(userName, password, email)
                     .then(data => {
-                        console.log("Insert ==>", data)
                         res.json(
                             response({
                                 success: true,
@@ -38,15 +35,12 @@ const addUser = (req, res) => {
                             })
                         );
                     }).catch(err => {
-                        console.log("Insert", err)
                         res.json(response({ success: false, message: err }));
-                        console.log("insert user error")
                     });
             }
         })
         .catch(err => {
             res.json(response({ success: false, message: err }));
-            console.log("insert user error")
         });
 };
 
