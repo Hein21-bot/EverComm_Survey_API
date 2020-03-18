@@ -178,10 +178,10 @@ const updateOptionGroup = (option_group_id, optionGroupName) => {
 
 // answers
 
-const addAnswer = (other, optionChoiceId, userId, questionId) => {
+const addAnswer = (other, optionChoiceId, userId, questionId,survey_headers_id) => {
   query = util.promisify(mypool.query).bind(mypool)
-  return query(`INSERT INTO tbl_answers(other, option_choices_id, users_id, questions_id) VALUES(?,?,?,?)`,
-    [other, optionChoiceId, userId, questionId])
+  return query(`INSERT INTO tbl_answers(other, option_choices_id, users_id, questions_id,survey_headers_id) VALUES(?,?,?,?,?)`,
+    [other, optionChoiceId, userId, questionId,survey_headers_id])
 }
 
 const deleteAnswer = (userId) => {

@@ -10,7 +10,6 @@ const logIn = (req, res) => {
         let tmpArr = [];
         let data1 = groupArray(data[1],'survey_headers_id');
         let data2 = groupArray(data[2],'survey_headers_id');
-
         Object.keys(data1).map((v,k)=>{
             return {"surveyId": data1[v][1].survey_header_id, "quetionLength": data1[v].length
         , "surveyName": data1[v][1].survey_name };

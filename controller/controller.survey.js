@@ -41,7 +41,8 @@ const addAnswer = (req,res) =>{
         let optionChoiceId = data.optionChoiceId;
         let userId = data.userId;
         let questionId = data.questionId;
-        surveyService.addAnswer(other, optionChoiceId, userId, questionId).then(data => {
+        let survey_headers_id = data.survey_headers_id;
+        surveyService.addAnswer(other, optionChoiceId, userId, questionId,survey_headers_id).then(data => {
             count++;
             if(count == targetCount) resolve({"answeredCount": count});
         }).catch(err => reject(err));
