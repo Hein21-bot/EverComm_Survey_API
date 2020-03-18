@@ -8,9 +8,8 @@ const getQuestion = (req,res) =>{
     const survey_header_id = req.params.survey_header_id;
     let count = 0;
     surveyService.getQuestion(admin_id,survey_header_id).then(data => {
-    
-         let surveySections = Object.keys(groupArray(data,'survey_section_id')).map((v,k)=>{
-            return groupArray(data,'survey_section_id')[v];
+         let surveySections = Object.keys(groupArray(data[0],'survey_section_id')).map((v,k)=>{
+            return groupArray(data[0],'survey_section_id')[v];
          });
 
         let ans = [{"survey_header_id": surveySections[0][0].survey_header_id,"survey_name": surveySections[0][0].survey_name, survey_sections: 
@@ -25,7 +24,8 @@ const getQuestion = (req,res) =>{
                  })}
              })
            };
-        }),"question_count": count
+        }),"question_count": count,
+        "answers": data[1]
     }];
         res.json(response({ success: true, payload: ans }))
     }).catch(err => res.json(response({ success: false, message: err })));
