@@ -8,4 +8,8 @@ const addAnswer = (other, optionChoiceId, userId, questionId) =>{
     return surveydb.addAnswer(other, optionChoiceId, userId, questionId);
 }
 
-module.exports = {getQuestion, addAnswer};
+const deleteAnswer = (userId) => {
+    return surveydb.deleteAnswer(userId);
+}
+
+module.exports = {getQuestion, addAnswer, deleteAnswer};

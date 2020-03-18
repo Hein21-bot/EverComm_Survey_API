@@ -35,6 +35,7 @@ const addAnswer = (req,res) =>{
     let targetCount = req.body.data.length;
     let count = 0;
     let queryLoop = new Promise((resolve, reject) => {
+    surveyService.deleteAnswer(req.body.data[0].userId);
     req.body.data.map(data=>{
         let other = data.other;
         let optionChoiceId = data.optionChoiceId;
