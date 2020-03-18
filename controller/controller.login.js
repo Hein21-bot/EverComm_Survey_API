@@ -10,9 +10,10 @@ const logIn = (req, res) => {
         let tmpArr = [];
         let data1 = groupArray(data[1],'survey_headers_id');
         let data2 = groupArray(data[2],'survey_headers_id');
+
         Object.keys(data1).map((v,k)=>{
-            return {"surveyId": data1[v][1].survey_header_id, "quetionLength": data1[v].length
-        , "surveyName": data1[v][1].survey_name };
+            return {"surveyId": data1[v][0].survey_header_id, "quetionLength": data1[v].length
+        , "surveyName": data1[v][0].survey_name };
          }).map(v=>{
             let obj = {"survey_header_id": null,"survey_header_name": null,"questions": 0,"answers": 0};
             obj.survey_header_id = v.surveyId;
@@ -22,7 +23,7 @@ const logIn = (req, res) => {
          })
 
          Object.keys(data2).map((v,k)=>{
-            return {"answerLength": data2[v].length,"surveyId": data2[v][1].survey_headers_id};
+            return {"answerLength": data2[v].length,"surveyId": data2[v][0].survey_headers_id};
          }).map(v=>{
              let ind = tmpArr.findIndex(d=>  d.survey_header_id == v.surveyId);
              if(ind >= 0) tmpArr[ind].answers = v.answerLength;
