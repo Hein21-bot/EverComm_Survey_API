@@ -52,7 +52,7 @@ const getQuestion = (user_id, survey_header_id) => {
   return query(`select * from tbl_questions as q left join tbl_option_choices as o  on q.question_id = o.questions_id
   left join tbl_survey_sections as s on s.survey_section_id = q.survey_sections_id left join tbl_survey_headers as h
    on h.survey_header_id = s.survey_headers_id where h.survey_header_id = ${survey_header_id} and h.active = true;
-   select other,option_choices_id,users_id,questions_id from tbl_answers where users_id = ${user_id} and survey_header_id = ${survey_header_id};`)
+   select other,option_choices_id as optionChoiceId,users_id as userId,questions_id as questionId from tbl_answers where users_id = ${user_id} and survey_header_id = ${survey_header_id};`)
 }
 
 const isExistAdmin = (username, userId) => {
