@@ -12,4 +12,8 @@ const deleteAnswer = (userId) => {
     return surveydb.deleteAnswer(userId);
 }
 
-module.exports = {getQuestion, addAnswer, deleteAnswer};
+const getMenu = (userId) => {
+    return surveydb.getMenu(userId);
+}
+
+module.exports = {getQuestion, addAnswer, deleteAnswer,getMenu};

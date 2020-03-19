@@ -31,6 +31,13 @@ const getQuestion = (req,res) =>{
     }).catch(err => res.json(response({ success: false, message: err })));
 }
 
+const getMenu = (req,res) => {
+    let userId = req.params.user_id;
+    surveyService.getMenu(userId).then(data => {
+        res.json(response({ success: true, payload: data }))
+    }).catch(err => res.json(response({ success: false, message: err })));
+}
+
 const addAnswer = (req,res) =>{
     let targetCount = req.body.data.length;
     let count = 0;
@@ -54,4 +61,4 @@ queryLoop.then(data => {
 }).catch(err => res.json(response({ success: false, message: err })));
 }
 
-module.exports = {getQuestion,addAnswer};
+module.exports = {getQuestion,addAnswer, getMenu};

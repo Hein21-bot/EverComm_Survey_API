@@ -24,6 +24,23 @@ const login = (email, password) => {
   a.survey_headers_id;`)
 }
 
+//menu 
+
+const getMenu = (userId) => {
+  query = util.promisify(mypool.query).bind(mypool)
+  return query(`select survey_header_id, survey_header_name, count(qcount) as questions, count(acount) as answers
+  from (
+    SELECT 
+      distinct q.question_id as qcount, a.questions_id as acount, q.survey_headers_id as survey_header_id,h.survey_name as survey_header_name
+    FROM
+      tbl_questions as q
+    left join tbl_answers a on q.survey_headers_id=a.survey_headers_id and q.question_id=a.questions_id and a.users_id = ${userId} 
+      left join tbl_survey_headers h on h.survey_header_id = q.survey_headers_id
+    group by q.question_id
+  ) as t1
+  group by survey_header_id;`);
+}
+
 // email
 
 const checkDuplicateEmail = (email, user_id) => {
@@ -248,7 +265,8 @@ module.exports = {
   addOptionGroup, deleteOptionGroup, updateOptionGroup, getOptionGroup,
   addAnswer, deleteAnswer, updateAnswer,
   addInputType, deleteInputType, updateInputType,
-  addQuestion, deleteQuestion, updateQuestion, AnswerCount
+  addQuestion, deleteQuestion, updateQuestion, AnswerCount,
+  getMenu
 }
 
 
