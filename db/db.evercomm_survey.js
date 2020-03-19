@@ -18,10 +18,7 @@ const mypool = mysql.createConnection({
 
 const login = (email, password) => {
   query = util.promisify(mypool.query).bind(mypool)
-  return query(`SELECT * FROM tbl_login_users WHERE active = 1 AND email = '${email}' AND password = trim('${password}');
-  select * from tbl_questions as q left join tbl_survey_headers as h on q.survey_headers_id = h.survey_header_id order by q.survey_headers_id;
-  select * from tbl_answers as a where users_id = (select l.login_user_id from tbl_login_users as l where l.email = '${email}') order by 
-  a.survey_headers_id;`)
+  return query(`SELECT * FROM tbl_login_users WHERE active = 1 AND email = '${email}' AND password = trim('${password}');`)
 }
 
 //menu 
