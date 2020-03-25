@@ -8,10 +8,19 @@ const addUser = (userName, password, email) => {
     return surveydb.addUser(userName, password, email)
 }
 
-const checkDuplicateEmail = (email, user_id) => {
-    return surveydb.checkDuplicateEmail(email, user_id);
+// @HMH
+
+const updateUser = (userId, userName, password, email) => {
+    return surveydb.updateUser(userId, userName, password, email)
 }
 
+const checkDuplicateEmailInsert = (email) => {
+    return surveydb.checkDuplicateEmailInsert(email);
+}
+
+const checkDuplicateEmailUpdate = (email, user_id) => {
+    return surveydb.checkDuplicateEmailUpdate(email, user_id);
+}
 
 // const addAdmin = (username, password, active, employeeId) => {
 //     return surveydb.addUser(username,password,active,employeeId)
@@ -25,5 +34,5 @@ const checkDuplicateEmail = (email, user_id) => {
 //     return surveydb.updateAdmin(userId,username, password, active, employeeId);
 // }
 
-module.exports = { getAdmin, addUser, checkDuplicateEmail }
+module.exports = { getAdmin, addUser, checkDuplicateEmailInsert,checkDuplicateEmailUpdate, updateUser }
 // ,addAdmin,updateAdmin,getAdminById

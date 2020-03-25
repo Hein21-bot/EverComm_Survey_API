@@ -13,7 +13,7 @@ const addUser = (req, res) => {
     const password = req.body.password
     const email = req.body.email
 
-    userService.checkDuplicateEmail(email)
+    userService.checkDuplicateEmailInsert(email)
         .then(data => {
             const DuplicateRows = data[0].DE;
             if (DuplicateRows > 0) {
@@ -43,6 +43,47 @@ const addUser = (req, res) => {
             res.json(response({ success: false, message: err }));
         });
 };
+
+// @HMH
+
+const updateUser = (req, res) => {
+    const userId = req.params.user_id
+    const userName = req.body.userName
+    const password = req.body.password
+    const email = req.body.email
+
+    userService.checkDuplicateEmailUpdate(email,userId)
+        .then(data => {
+            const DuplicateRows = data[0].DE;
+            if (DuplicateRows > 0) {
+                res.json(
+                    response({
+                        success: false,
+                        payload: null,
+                        message: "Email Already Exist"
+                    })
+                );
+            } else {
+                userService.updateUser(userId, userName, password, email)
+                    .then(data => {
+                        res.json(
+                            response({
+                                success: true,
+                                message: "Inserted!",
+                                payload: data
+                            })
+                        );
+                    }).catch(err => {
+                        res.json(response({ success: false, message: err }));
+                    });
+            }
+        })
+        .catch(err => {
+            res.json(response({ success: false, message: err }));
+        });
+};
+
+
 
 // const addAdmin = (req, res) => {
 //     const username = req.body.username;
@@ -88,5 +129,5 @@ const addUser = (req, res) => {
 //     }).catch(err => response({ success: false, err: err }))
 // }
 
-module.exports = { getAdmin, addUser }
+module.exports = { getAdmin, addUser, updateUser }
 // ,addAdmin,updateAdmin,getAdminById

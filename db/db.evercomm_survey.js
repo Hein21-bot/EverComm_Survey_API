@@ -27,7 +27,7 @@ const getMenu = (userId) => {
   query = util.promisify(mypool.query).bind(mypool)
   return query(`select survey_header_id, survey_header_name, count(qcount) as questions, count(acount) as answers
   from (
-    SELECT 
+    SELECT
       distinct q.question_id as qcount, a.questions_id as acount, q.survey_headers_id as survey_header_id,h.survey_name as survey_header_name
     FROM
       tbl_questions as q
@@ -40,9 +40,14 @@ const getMenu = (userId) => {
 
 // email
 
-const checkDuplicateEmail = (email, user_id) => {
+const checkDuplicateEmailInsert = (email) => {
   query = util.promisify(mypool.query).bind(mypool)
-  return query('Select Count(*) as DE from tbl_login_users where email = "' + email + '" and login_user_id != "' + user_id + '"')
+  return query(`Select Count(*) as DE from tbl_login_users where email = '${email}'`)
+}
+
+const checkDuplicateEmailUpdate = (email, user_id) => {
+  query = util.promisify(mypool.query).bind(mypool)
+  return query(`Select Count(*) as DE from tbl_login_users where email = '${email}' and login_user_id != ${user_id}`)
 }
 
 //user
@@ -59,6 +64,13 @@ const addUser = (userName, password, email) => {
   )
 }
 
+// @HMH
+
+const updateUser = (userId, userName, password, email) => {
+  query = util.promisify(mypool.query).bind(mypool)
+  return query(`UPDATE tbl_login_users SET user_name = '${userName}', password = '${password}', email = '${email}' WHERE login_user_id = ${userId} `)
+}
+
 //Question 
 
 const getQuestion = (user_id, survey_header_id) => {
@@ -66,7 +78,7 @@ const getQuestion = (user_id, survey_header_id) => {
   return query(`select * from tbl_questions as q left join tbl_option_choices as o  on q.question_id = o.questions_id
   left join tbl_survey_sections as s on s.survey_section_id = q.survey_sections_id left join tbl_survey_headers as h
    on h.survey_header_id = s.survey_headers_id where h.survey_header_id = ${survey_header_id} and h.active = true;
-   select other,option_choices_id as optionChoiceId,users_id as userId,questions_id as questionId from tbl_answers where users_id = ${user_id} and survey_headers_id = ${survey_header_id};`)
+   select other,option_choices_id as optionChoiceId,users_id as userId,questions_id as questionId, survey_headers_id from tbl_answers where users_id = ${user_id} and survey_headers_id = ${survey_header_id};`)
 }
 
 const isExistAdmin = (username, userId) => {
@@ -192,16 +204,18 @@ const updateOptionGroup = (option_group_id, optionGroupName) => {
 
 // answers
 
-const addAnswer = (other, optionChoiceId, userId, questionId,survey_headers_id) => {
+const addAnswer = (other, optionChoiceId, userId, questionId, survey_headers_id) => {
+  // console.log("User Id is ==>",userId,"Other is==>", other)
   query = util.promisify(mypool.query).bind(mypool)
   return query(`INSERT INTO tbl_answers(other, option_choices_id, users_id, questions_id,survey_headers_id) VALUES(?,?,?,?,?)`,
-    [other, optionChoiceId, userId, questionId,survey_headers_id])
+    [other, optionChoiceId, userId, questionId, survey_headers_id])
 }
 
-const deleteAnswer = (userId) => {
+const deleteAnswer = (userId, survey_headers_id) => {
   query = util.promisify(mypool.query).bind(mypool)
-  return query(`DELETE FROM tbl_answers WHERE answer_id = '${userId}'`)
+  return query('DELETE FROM tbl_answers WHERE users_id = "' + userId + '"  AND survey_headers_id= "' + survey_headers_id + '"')
 }
+
 
 const updateAnswer = (answer_id, other, optionChoiceId, userId, questionId) => {
   query = util.promisify(mypool.query).bind(mypool)
@@ -234,6 +248,7 @@ const addQuestion = (questionName, required, isOther, optionGroupId, untiId, sur
     [questionName, required, isOther, optionGroupId, untiId, surveySectionId, inputTypeId])
 }
 
+
 const deleteQuestion = (question_id) => {
   query = util.promisify(mypool.query).bind(mypool)
   return query('DELETE FROM tbl_questions WHERE question_id = "' + question_id + '"')
@@ -254,7 +269,7 @@ const AnswerCount = (email) => {
 
 
 module.exports = {
-  getQuestion, login, isExistAdmin, addAdmin, updateAdmin, getAdmin, getAdminById, addUser, checkDuplicateEmail,
+  getQuestion, login, isExistAdmin, addAdmin, updateAdmin, getAdmin, getAdminById, addUser, checkDuplicateEmailInsert,checkDuplicateEmailUpdate,
   addUnit, deleteUnit, updateUnit, getUnit,
   addHeader, deleteHeader, updateHeader,
   addSection, deleteSection, updateSection,
@@ -263,7 +278,7 @@ module.exports = {
   addAnswer, deleteAnswer, updateAnswer,
   addInputType, deleteInputType, updateInputType,
   addQuestion, deleteQuestion, updateQuestion, AnswerCount,
-  getMenu
+  getMenu,updateUser
 }
 
 
