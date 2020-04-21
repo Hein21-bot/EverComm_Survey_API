@@ -6,8 +6,9 @@ var groupArray = require('group-array');
 const getQuestion = (req, res) => {
     const admin_id = req.params.admin_id;
     const survey_header_id = req.params.survey_header_id;
+    const buildingId = req.params.buildingId;
     let count = 0;
-    surveyService.getQuestion(admin_id, survey_header_id).then(data => {
+    surveyService.getQuestion(admin_id, survey_header_id, buildingId).then(data => {
         let surveySections = Object.keys(groupArray(data[0], 'survey_section_id')).map((v, k) => {
             return groupArray(data[0], 'survey_section_id')[v];
         });
@@ -44,18 +45,37 @@ const getMenu = (req, res) => {
     }).catch(err => res.json(response({ success: false, message: err })));
 }
 
+const surveyMenuApi = (req, res) => {
+    let userId = req.params.user_id;
+    surveyService.surveyMenuApi(userId).then(data => {
+        res.json(response({ success: true, payload: data }))
+
+    }).catch(err => res.json(response({ success: false, message: err })));
+}
+
+
+const surveyList = (req, res) => {
+    let userId = req.params.user_id;
+    let survey_header_id = req.params.survey_header_id
+    surveyService.surveyList(userId, survey_header_id).then(data => {
+        res.json(response({ success: true, payload: data }))
+
+    }).catch(err => res.json(response({ success: false, message: err })));
+}
+
 const addAnswer = (req, res) => {
     let targetCount = req.body.data.length;
     let count = 0;
     let queryLoop = new Promise((resolve, reject) => {
-        surveyService.deleteAnswer(req.body.data[0].userId, req.body.data[0].survey_headers_id)
+        surveyService.deleteAnswer(req.body.data[0].userId, req.body.data[0].survey_headers_id, req.body.data[0].building_id)
         req.body.data.map(data => {
             let other = data.other;
             let optionChoiceId = data.optionChoiceId;
             let userId = data.userId;
             let questionId = data.questionId;
             let survey_headers_id = data.survey_headers_id;
-            surveyService.addAnswer(other, optionChoiceId, userId, questionId, survey_headers_id).then(data => {
+            let building_id = data.building_id
+            surveyService.addAnswer(other, optionChoiceId, userId, questionId, survey_headers_id, building_id).then(data => {
 
                 count++;
                 if (count == targetCount) resolve({ "answeredCount": count });
@@ -72,8 +92,9 @@ const addAnswer = (req, res) => {
 const deleteAnswer = (req, res) => {
     const userId = req.params.user_id
     const survey_header_id = req.params.survey_header_id
-    surveyService.deleteAnswer(userId, survey_header_id).then(data => {
-        
+    const building_id = req.params.building_id
+    surveyService.deleteAnswer(userId, survey_header_id, building_id).then(data => {
+
         if (data.length === 0) {
             res.json(
                 response({
@@ -91,4 +112,4 @@ const deleteAnswer = (req, res) => {
         });
 }
 
-module.exports = { getQuestion, addAnswer, getMenu, deleteAnswer };
+module.exports = { getQuestion, addAnswer, getMenu, deleteAnswer, surveyList, surveyMenuApi };

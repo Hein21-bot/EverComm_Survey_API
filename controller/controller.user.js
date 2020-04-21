@@ -8,10 +8,17 @@ const getAdmin = (req, res) => {
     }).catch(err => res.json(response({ success: false, message: err })));
 }
 
+const getCompany = (req, res) => {
+    userService.getCompany().then(data => {
+        res.json(response({ success: true, payload: data }))
+    }).catch(err => res.json(response({ success: false, message: err })));
+}
+
 const addUser = (req, res) => {
     const userName = req.body.userName
     const password = req.body.password
     const email = req.body.email
+    const companyName = req.body.companyName
 
     userService.checkDuplicateEmailInsert(email)
         .then(data => {
@@ -25,8 +32,9 @@ const addUser = (req, res) => {
                     })
                 );
             } else {
-                userService.addUser(userName, password, email)
+                userService.addUser(userName, password, email, companyName)                
                     .then(data => {
+                        console.log("data is ==>",data)
                         res.json(
                             response({
                                 success: true,
@@ -51,8 +59,9 @@ const updateUser = (req, res) => {
     const userName = req.body.userName
     const password = req.body.password
     const email = req.body.email
+    const companyName = req.body.companyName
 
-    userService.checkDuplicateEmailUpdate(email,userId)
+    userService.checkDuplicateEmailUpdate(email, userId)
         .then(data => {
             const DuplicateRows = data[0].DE;
             if (DuplicateRows > 0) {
@@ -64,7 +73,7 @@ const updateUser = (req, res) => {
                     })
                 );
             } else {
-                userService.updateUser(userId, userName, password, email)
+                userService.updateUser(userId, userName, password, email, companyName)
                     .then(data => {
                         res.json(
                             response({
@@ -129,5 +138,5 @@ const updateUser = (req, res) => {
 //     }).catch(err => response({ success: false, err: err }))
 // }
 
-module.exports = { getAdmin, addUser, updateUser }
+module.exports = { getAdmin, addUser, updateUser, getCompany }
 // ,addAdmin,updateAdmin,getAdminById

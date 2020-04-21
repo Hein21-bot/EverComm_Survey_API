@@ -5,4 +5,9 @@ const surveyService = require('./service.survey')
 const loginService = require('./service.login')
 const answerCountService = require('./service.answerCount')
 
-module.exports = { authService, userService, reportService, surveyService, loginService, answerCountService }
+const formService = require('./service.form')
+const companyService = require('./service.company')
+const buildingService = require('./service.building')
+
+module.exports = { authService, userService, reportService, surveyService,
+     loginService, answerCountService, formService, companyService, buildingService }

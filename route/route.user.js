@@ -7,7 +7,8 @@ const { userController } = require('../controller')
 // router.put('/updateuser/:id', userController.updateUser);
 
 router.get('/admins', userController.getAdmin);
-router.post('/', userController.addUser);
+router.post('/register', userController.addUser);
 router.put('/:user_id', userController.updateUser);
+router.get('/companies', userController.getCompany)
 
 module.exports = router
