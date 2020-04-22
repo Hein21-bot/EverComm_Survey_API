@@ -3,16 +3,6 @@ const util = require("util")
 const bcrypt = require("bcrypt")
 const saltRounds = 10
 
-// function(email, password, callback) {
-//   this.find(email, function (user) {
-//     if (bcrypt.compareSync(email, user.password)) {
-//       callback(user)
-//       return
-//     }
-//     callback(null);
-//   })
-// }
-
 require('dotenv').config()
 
 const mypool = mysql.createConnection({
@@ -24,46 +14,6 @@ const mypool = mysql.createConnection({
 });
 
 // login
-
-const addUser = (userName, password, email, companyName) => {
-  console.log('company name is ===>', companyName);
-  bcrypt.hash(password, saltRounds, function (err, hash) {
-    query = util.promisify(mypool.query).bind(mypool)
-    return query(`INSERT INTO tbl_login_users(user_name,password,email,active,user_level_id,company_name) VALUES(?,?,?,?,?,?)`, [userName, hash, email, 1, 2, companyName])
-  })
-}
-
-// const login = (email, password, done) => {
-//   query = util.promisify(mypool.query).bind(mypool)
-//   return query(`select * from tbl_login_users where active =1 and email = ?`, [email], function (err, results, fields) {
-//     if (err) { document(err) }
-
-//     if (results.length === 0) {
-//       done(null, false)
-//     }
-//     // console.log(results[0].password.toString())
-//     const hash = results[0].password.toString()
-
-//     bcrypt.compare(password, hash, function (err, response) {
-//       if (response === true) {
-//         console.log(email)
-//         // console.log(results)
-//         query = util.promisify(mypool.query).bind(mypool)
-//         const db = query('Select * from tbl_login_users where email = "' + email + '"')
-//         console.log(db);
-        
-//         return db
-        
-//       } else {
-//         callback(null)
-
-//       }
-//     })
-//   })
-// }
-
-
-
 
 const login = (email, password) => {
   query = util.promisify(mypool.query).bind(mypool)
@@ -112,12 +62,13 @@ const getCompany = () => {
   return query('Select company_id,company_name from tbl_company')
 }
 
-// const addUser = (userName, password, email, companyId) => {
-//   query = util.promisify(mypool.query).bind(mypool)
-//   return query(`INSERT INTO tbl_login_users (user_name, password, email,active,user_level_id,company_id) VALUES (?,?,?,?,?,?)`,
-//     [userName, password, email, 1, 2, companyId]
-//   )
-// }
+const addUser = (userName, password, email, companyName) => {
+  console.log('company name is ===>', companyName);
+  bcrypt.hash(password, saltRounds, function (err, hash) {
+    query = util.promisify(mypool.query).bind(mypool)
+    return query(`INSERT INTO tbl_login_users(user_name,password,email,active,user_level_id,company_name) VALUES(?,?,?,?,?,?)`, [userName, hash, email, 1, 2, companyName])
+  })
+}
 
 const addCompany = (companyName) => {
   query = util.promisify(mypool.query).bind(mypool)
@@ -125,13 +76,6 @@ const addCompany = (companyName) => {
 
 }
 
-
-// const addUser = (userName, password, email, companyName) => {
-//   // console.log("companyName is ===>", companyName, userName, password)
-//   query = util.promisify(mypool.query).bind(mypool)
-//   return (`Insert into tbl_login_users (user_name,password,email,active,user_level_id,comopany_id) values (${userName},${email},${password},1,2,${companyName})`
-//   )
-// }
 
 // @HMH
 
@@ -366,6 +310,7 @@ const surveyList = (userId, survey_header_id) => {
     left join tbl_buildings b on b.building_id=t2.building_id`)
 }
 
+
 // @hmh
 // buildings
 
@@ -406,32 +351,6 @@ module.exports = {
   surveyMenuApi
 }
 
-// select count(a.building_id) from tbl_buildings b join tbl_answers a on 
-// a.building_id = b.building_id where users_id = 72 group by a.building_id
-
-// select survey_header_id,survey_header_name,bd.building_id as building_id, bd.building_name as building_name,  count(acount) as questions, count(acount) as answers
-//   from (
-//     SELECT
-//       distinct a.building_id as acount, b.building_id as bcount, a.survey_headers_id as survey_header_id,h.survey_name as survey_header_name, h.building_id as building_id
-//     FROM
-//       tbl_answers as a
-//     left join tbl_buildings b on b.building_id=a.building_id and a.users_id = 72
-//       left join tbl_survey_headers h on h.survey_header_id = a.survey_headers_id
-//     group by a.building_id
-//   ) as t1 
-//   left join tbl_buildings bd on bd.building_id=t1.building_id
-//   group by survey_header_id
-
-
-// select survey_header_id,survey_header_name, count(qcount) as questions, count(acount) as answers
-//   from (
-//     SELECT
-//       distinct q.question_id as qcount, a.questions_id as acount, q.survey_headers_id as survey_header_id,h.survey_name as survey_header_name,a.building_id as building_id
-//     FROM
-//       tbl_questions as q
-//     left join tbl_answers a on q.survey_headers_id=a.survey_headers_id and q.question_id=a.questions_id and a.users_id = 60 and a.building_id = 6
-//       left join tbl_survey_headers h on h.survey_header_id = q.survey_headers_id
-//     group by q.question_id
-//   ) as t1
-//   left join tbl_buildings bd on bd.building_id=t1.building_id
-//   group by survey_header_id
+// SELECT tbl_answers.users_id,tbl_answers.survey_headers_id,tbl_buildings.building_id FROM evercomm_survey.tbl_answers inner join 
+// evercomm_survey.tbl_buildings 
+// on tbl_answers.building_id=tbl_buildings.building_id and tbl_buildings.building_id = 47 and tbl_answers.users_id=5;

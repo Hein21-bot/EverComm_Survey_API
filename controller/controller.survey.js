@@ -63,8 +63,9 @@ const surveyList = (req, res) => {
     }).catch(err => res.json(response({ success: false, message: err })));
 }
 
-const addAnswer = (req, res) => {
+const addAnswer = (req, res) => {    
     let targetCount = req.body.data.length;
+    
     let count = 0;
     let queryLoop = new Promise((resolve, reject) => {
         surveyService.deleteAnswer(req.body.data[0].userId, req.body.data[0].survey_headers_id, req.body.data[0].building_id)
