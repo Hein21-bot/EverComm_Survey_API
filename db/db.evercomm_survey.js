@@ -314,12 +314,12 @@ const surveyList = (userId, survey_header_id) => {
 // @hmh
 // buildings
 
-const addBuilding = (buildingName, companyName, address, postalCode, country, comment) => {
+const addBuilding = (buildingName, companyName, address, postalCode, country, comment, user_id, survey_headers_id) => {
   console.log("building info is Zzzzz ==>", buildingName, companyName, address, postalCode, country, comment)
   const query = util.promisify(mypool.query).bind(mypool)
   console.log("pass")
-  return query(`INSERT INTO tbl_buildings(building_name, company_name, remark, active, created_by, address, postal_code,country,comment) VALUES(?,?,?,?,?,?,?,?,?)`,
-    [buildingName, companyName, 'ok', 1, 1, address, postalCode, country, comment])
+  return query(`INSERT INTO tbl_buildings(building_name, company_name, remark, active, created_by, address, postal_code,country,comment,user_id,survey_headers_id) VALUES(?,?,?,?,?,?,?,?,?,?,?)`,
+    [buildingName, companyName, 'ok', 1, 1, address, postalCode, country, comment, user_id, survey_headers_id])
 }
 
 // surveyMenuApi
