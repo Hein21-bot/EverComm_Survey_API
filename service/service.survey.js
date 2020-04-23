@@ -16,12 +16,16 @@ const getMenu = (userId) => {
     return surveydb.getMenu(userId);
 }
 
-const surveyList = (userId,survey_header_id) => {
-    return surveydb.surveyList(userId,survey_header_id);
+const surveyList = (userId, survey_header_id) => {
+    return surveydb.surveyList(userId, survey_header_id);
 }
 
 const surveyMenuApi = (userId) => {
     return surveydb.surveyMenuApi(userId)
 }
 
-module.exports = { getQuestion, addAnswer, deleteAnswer, getMenu, surveyList, surveyMenuApi };
+const newSurveyList = (userId, survey_header_id) => {
+    return surveydb.newSurveyList(userId, survey_header_id)
+}
+
+module.exports = { getQuestion, addAnswer, deleteAnswer, getMenu, surveyList, surveyMenuApi ,newSurveyList};

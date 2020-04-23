@@ -336,6 +336,14 @@ const surveyMenuApi = (userId) => {
    group by survey_header_id`)
 }
 
+
+const newSurveyList = (userId, survey_header_id) => {
+  query = util.promisify(mypool.query).bind(mypool)
+  return query(`SELECT distinct tbl_buildings.user_id,tbl_buildings.survey_headers_id,
+  tbl_buildings.building_id,tbl_buildings.building_name FROM
+  evercomm_survey.tbl_buildings inner join evercomm_survey.tbl_answers on
+  tbl_buildings.user_id = ${userId} and tbl_buildings.survey_headers_id=${survey_header_id}`)
+}
 module.exports = {
   getQuestion, login, isExistAdmin, addAdmin, updateAdmin, getAdmin, getAdminById, addUser, checkDuplicateEmailInsert, checkDuplicateEmailUpdate,
   addUnit, deleteUnit, updateUnit, getUnit,
@@ -348,7 +356,7 @@ module.exports = {
   addQuestion, deleteQuestion, updateQuestion, AnswerCount,
   getMenu, updateUser,
   getFormInfo, getCompany, addCompany, surveyList, addBuilding,
-  surveyMenuApi
+  surveyMenuApi, newSurveyList
 }
 
 // SELECT tbl_answers.users_id,tbl_answers.survey_headers_id,tbl_buildings.building_id FROM evercomm_survey.tbl_answers inner join 

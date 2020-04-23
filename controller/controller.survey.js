@@ -63,6 +63,15 @@ const surveyList = (req, res) => {
     }).catch(err => res.json(response({ success: false, message: err })));
 }
 
+const newSurveyList = (req, res) => {
+    let userId = req.params.user_id;
+    let survey_header_id = req.params.survey_header_id
+    surveyService.newSurveyList(userId, survey_header_id).then(data => {
+        res.json(response({ success: true, payload: data }))
+
+    }).catch(err => res.json(response({ success: false, message: err })));
+}
+
 const addAnswer = (req, res) => {    
     let targetCount = req.body.data.length;
     
@@ -113,4 +122,4 @@ const deleteAnswer = (req, res) => {
         });
 }
 
-module.exports = { getQuestion, addAnswer, getMenu, deleteAnswer, surveyList, surveyMenuApi };
+module.exports = { getQuestion, addAnswer, getMenu, deleteAnswer, surveyList, surveyMenuApi ,newSurveyList};

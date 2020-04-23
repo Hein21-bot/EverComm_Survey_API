@@ -6,6 +6,7 @@ router.get('/questions/:admin_id/:survey_header_id/:buildingId', surveyControlle
 router.post('/answers', surveyController.addAnswer);
 router.get('/menu/:user_id', surveyController.getMenu);
 router.get('/surveyList/:user_id/:survey_header_id', surveyController.surveyList);
+router.get('/newSurveyList/:user_id/:survey_header_id', surveyController.newSurveyList);
 router.get('/surveyMenu/:user_id', surveyController.surveyMenuApi);
 
 router.delete('/:user_id/:survey_header_id/:building_id', surveyController.deleteAnswer)
