@@ -10,7 +10,7 @@ const addBuilding = (req, res) => {
     const postalCode = req.body.postalCode
     const country = req.body.country
     const comment = req.body.comment
-    const userId = req.body.user_id
+    const userId = req.body.userId
     const surveyHeadersId = req.body.surveyHeaderId
 
     buildingService.addBuilding(buildingName, companyName, address, postalCode, country, comment, userId, surveyHeadersId)
