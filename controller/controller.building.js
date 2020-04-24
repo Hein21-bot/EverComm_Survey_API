@@ -10,10 +10,10 @@ const addBuilding = (req, res) => {
     const postalCode = req.body.postalCode
     const country = req.body.country
     const comment = req.body.comment
-    const user_id = req.body.user_id
-    const survey_headers_id = req.body.survey_headers_id
+    const userId = req.body.user_id
+    const surveyHeadersId = req.body.survey_headers_id
 
-    buildingService.addBuilding(buildingName, companyName, address, postalCode, country, comment, user_id, survey_headers_id)
+    buildingService.addBuilding(buildingName, companyName, address, postalCode, country, comment, userId, surveyHeadersId)
         .then(data => {
             console.log("data is ==>", data)
             return res.json(

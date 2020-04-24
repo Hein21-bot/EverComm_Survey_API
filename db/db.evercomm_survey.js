@@ -23,18 +23,18 @@ const login = (email, password) => {
 // addUser
 
 // const addUser = (userName, password, email, companyName) => {
-    
+
 //   bcrypt.hash(password, saltRounds, function (err, hash) {
 //     query = util.promisify(mypool.query).bind(mypool)
 //     return query(`INSERT INTO tbl_login_users(user_name,password,email,active,user_level_id,company_name) VALUES(?,?,?,?,?,?)`, [userName, hash, email, 1, 2, companyName])
 //   })
 // }
 
-const addUser = (userName, password, email, companyName) => {   
-  
-    query = util.promisify(mypool.query).bind(mypool)
-    return query(`INSERT INTO tbl_login_users(user_name,password,email,active,user_level_id,company_name) VALUES(?,?,?,?,?,?)`, [userName, password, email, 1, 2, companyName])
-  
+const addUser = (userName, password, email, companyName) => {
+
+  query = util.promisify(mypool.query).bind(mypool)
+  return query(`INSERT INTO tbl_login_users(user_name,password,email,active,user_level_id,company_name) VALUES(?,?,?,?,?,?)`, [userName, password, email, 1, 2, companyName])
+
 }
 
 
@@ -336,12 +336,12 @@ const newSurveyList = (userId, survey_header_id) => {
 // @hmh
 // buildings
 
-const addBuilding = (buildingName, companyName, address, postalCode, country, comment, user_id, survey_headers_id) => {
-  console.log("building info is Zzzzz ==>", buildingName, companyName, address, postalCode, country, comment)
+const addBuilding = (buildingName, companyName, address, postalCode, country, comment, userId, surveyHeadersId) => {
+  console.log("building info is Zzzzz ==>", userId, surveyHeadersId)
   const query = util.promisify(mypool.query).bind(mypool)
   console.log("pass")
   return query(`INSERT INTO tbl_buildings(building_name, company_name, remark, active, created_by, address, postal_code,country,comment,user_id,survey_headers_id) VALUES(?,?,?,?,?,?,?,?,?,?,?)`,
-    [buildingName, companyName, 'ok', 1, 1, address, postalCode, country, comment, user_id, survey_headers_id])
+    [buildingName, companyName, 'ok', 1, 1, address, postalCode, country, comment, userId, surveyHeadersId])
 }
 
 // surveyMenuApi
