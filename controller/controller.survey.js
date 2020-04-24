@@ -37,6 +37,20 @@ const getQuestion = (req, res) => {
     }).catch(err => res.json(response({ success: false, message: err })));
 }
 
+const surveyList = (req, res) => {
+    let userId = req.params.user_id;
+    let survey_header_id = req.params.survey_header_id
+    surveyService.surveyList(userId, survey_header_id).then(data => {
+        let surveyList = {
+            "List": data[0],
+            "newList": data[1]
+        }
+        res.json(response({ success: true, payload: surveyList }))
+
+    }).catch(err => res.json(response({ success: false, message: err })));
+}
+
+
 const getMenu = (req, res) => {
     let userId = req.params.user_id;
     surveyService.getMenu(userId).then(data => {
@@ -54,14 +68,14 @@ const surveyMenuApi = (req, res) => {
 }
 
 
-const surveyList = (req, res) => {
-    let userId = req.params.user_id;
-    let survey_header_id = req.params.survey_header_id
-    surveyService.surveyList(userId, survey_header_id).then(data => {
-        res.json(response({ success: true, payload: data }))
+// const surveyList = (req, res) => {
+//     let userId = req.params.user_id;
+//     let survey_header_id = req.params.survey_header_id
+//     surveyService.surveyList(userId, survey_header_id).then(data => {
+//         res.json(response({ success: true, payload: data }))
 
-    }).catch(err => res.json(response({ success: false, message: err })));
-}
+//     }).catch(err => res.json(response({ success: false, message: err })));
+// }
 
 const newSurveyList = (req, res) => {
     let userId = req.params.user_id;

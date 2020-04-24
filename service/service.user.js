@@ -9,8 +9,9 @@ const addCompany = (companyName) => {
 }
 
 const addUser = (userName, password, email, companyName) => {
-    console.log(userName)
-    return surveydb.addUser(userName, password, email, companyName)
+    console.log("service is ====>",userName, password, email, companyName);    
+    return surveydb.addUser(userName, password, email, companyName)  
+    
 }
 
 // @HMH

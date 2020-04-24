@@ -20,6 +20,23 @@ const login = (email, password) => {
   return query(`SELECT * FROM tbl_login_users WHERE active = 1 AND email = '${email}';`)
 }
 
+// addUser
+
+// const addUser = (userName, password, email, companyName) => {
+    
+//   bcrypt.hash(password, saltRounds, function (err, hash) {
+//     query = util.promisify(mypool.query).bind(mypool)
+//     return query(`INSERT INTO tbl_login_users(user_name,password,email,active,user_level_id,company_name) VALUES(?,?,?,?,?,?)`, [userName, hash, email, 1, 2, companyName])
+//   })
+// }
+
+const addUser = (userName, password, email, companyName) => {   
+  
+    query = util.promisify(mypool.query).bind(mypool)
+    return query(`INSERT INTO tbl_login_users(user_name,password,email,active,user_level_id,company_name) VALUES(?,?,?,?,?,?)`, [userName, password, email, 1, 2, companyName])
+  
+}
+
 
 //menu 
 
@@ -62,13 +79,6 @@ const getCompany = () => {
   return query('Select company_id,company_name from tbl_company')
 }
 
-const addUser = (userName, password, email, companyName) => {
-  console.log('company name is ===>', companyName);
-  bcrypt.hash(password, saltRounds, function (err, hash) {
-    query = util.promisify(mypool.query).bind(mypool)
-    return query(`INSERT INTO tbl_login_users(user_name,password,email,active,user_level_id,company_name) VALUES(?,?,?,?,?,?)`, [userName, hash, email, 1, 2, companyName])
-  })
-}
 
 const addCompany = (companyName) => {
   query = util.promisify(mypool.query).bind(mypool)
@@ -307,7 +317,19 @@ const surveyList = (userId, survey_header_id) => {
     ) as t1 
     group by survey_header_id, building_id
     ) as t2
-    left join tbl_buildings b on b.building_id=t2.building_id`)
+    left join tbl_buildings b on b.building_id=t2.building_id;
+    SELECT distinct tbl_buildings.user_id,tbl_buildings.survey_headers_id,
+      tbl_buildings.building_id,tbl_buildings.building_name FROM
+      evercomm_survey.tbl_buildings inner join evercomm_survey.tbl_answers on
+      tbl_buildings.user_id = ${userId} and tbl_buildings.survey_headers_id=${survey_header_id}`)
+}
+
+const newSurveyList = (userId, survey_header_id) => {
+  query = util.promisify(mypool.query).bind(mypool)
+  return query(`SELECT distinct tbl_buildings.user_id,tbl_buildings.survey_headers_id,
+  tbl_buildings.building_id,tbl_buildings.building_name FROM
+  evercomm_survey.tbl_buildings inner join evercomm_survey.tbl_answers on
+  tbl_buildings.user_id = ${userId} and tbl_buildings.survey_headers_id=${survey_header_id}`)
 }
 
 
@@ -337,13 +359,6 @@ const surveyMenuApi = (userId) => {
 }
 
 
-const newSurveyList = (userId, survey_header_id) => {
-  query = util.promisify(mypool.query).bind(mypool)
-  return query(`SELECT distinct tbl_buildings.user_id,tbl_buildings.survey_headers_id,
-  tbl_buildings.building_id,tbl_buildings.building_name FROM
-  evercomm_survey.tbl_buildings inner join evercomm_survey.tbl_answers on
-  tbl_buildings.user_id = ${userId} and tbl_buildings.survey_headers_id=${survey_header_id}`)
-}
 module.exports = {
   getQuestion, login, isExistAdmin, addAdmin, updateAdmin, getAdmin, getAdminById, addUser, checkDuplicateEmailInsert, checkDuplicateEmailUpdate,
   addUnit, deleteUnit, updateUnit, getUnit,

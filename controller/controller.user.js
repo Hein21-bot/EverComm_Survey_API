@@ -1,6 +1,9 @@
 const { userService } = require('../service')
 const response = require('../model/response')
 const { surveydb } = require('../db')
+const bcrypt = require("bcrypt")
+const saltRounds = 10
+
 
 const getAdmin = (req, res) => {
     userService.getAdmin().then(data => {
@@ -20,8 +23,11 @@ const addUser = (req, res) => {
     const email = req.body.email
     const companyName = req.body.companyName
 
+
     userService.checkDuplicateEmailInsert(email)
         .then(data => {
+            console.log("controller email is ===>", email);
+
             const DuplicateRows = data[0].DE;
             if (DuplicateRows > 0) {
                 res.json(
@@ -32,19 +38,23 @@ const addUser = (req, res) => {
                     })
                 );
             } else {
-                userService.addUser(userName, password, email, companyName)                
-                    .then(data => {
-                        console.log("data is ==>",data)
-                        res.json(
-                            response({
-                                success: true,
-                                message: "Inserted!",
-                                payload: data
-                            })
-                        );
-                    }).catch(err => {
-                        res.json(response({ success: false, message: err }));
-                    });
+                bcrypt.hash(password, saltRounds, function (err, hash) {
+
+                    userService.addUser(userName, hash, email, companyName)
+                        .then(data => {
+                            console.log("controller data is ===>", data);
+
+                            res.json(
+                                response({
+                                    success: true,
+                                    message: "Inserted!",
+                                    payload: data
+                                })
+                            );
+                        }).catch(err => {
+                            res.json(response({ success: false, message: err }));
+                        });
+                })
             }
         })
         .catch(err => {
