@@ -86,7 +86,6 @@ const addCompany = (companyName) => {
 
 }
 
-
 // @HMH
 
 const updateUser = (userId, userName, password, email, companyId) => {
@@ -285,9 +284,16 @@ const updateQuestion = (question_id, questionName, required, isOther, optionGrou
 // @HeinMinHtet
 // AnswerCount
 
-const AnswerCount = (email) => {
+const AnswerCount = (survey_header_id) => {
+  console.log("Answer count",survey_header_id)
   query = util.promisify(mypool.query).bind(mypool)
-  return query('SELECT COUNT(questions_id.*) FROM tbl_answers JOIN tbl_login_users tbl_login_users ON tbl_answers.users_id = tbl_login_users.login_user_id where email = "' + email + '" GROUP BY questions_id;')
+  return query(`select acount ,oc.option_choice_name, q.question_name,q.question_id,sh.survey_name,ss.section_name,sh.survey_header_id
+  from(SELECT count(option_choices_id)as acount,option_choices_id FROM evercomm_survey.tbl_answers where survey_headers_id = ${survey_header_id} and option_choices_id !=""
+   GROUP BY option_choices_id) as t1 right join 
+   evercomm_survey.tbl_option_choices oc on oc.option_choice_id = t1.option_choices_id
+   left join evercomm_survey.tbl_questions q on oc.questions_id = q.question_id 
+   left join evercomm_survey.tbl_survey_headers sh on sh.survey_header_id = q.survey_headers_id 
+   left join evercomm_survey.tbl_survey_sections ss on ss.survey_section_id = q.survey_sections_id`)
 }
 
 const getFormInfo = (companyId) => {
@@ -374,6 +380,9 @@ module.exports = {
   surveyMenuApi, newSurveyList
 }
 
-// SELECT tbl_answers.users_id,tbl_answers.survey_headers_id,tbl_buildings.building_id FROM evercomm_survey.tbl_answers inner join 
-// evercomm_survey.tbl_buildings 
-// on tbl_answers.building_id=tbl_buildings.building_id and tbl_buildings.building_id = 47 and tbl_answers.users_id=5;
+// SELECT count(option_choices_id),option_choices_id,questions_id FROM tbl_answers where survey_headers_id = 1 and option_choices_id !=""
+// GROUP BY questions_id,option_choices_id;
+// select count(distinct users_id) as gg from tbl_answers where survey_headers_id = 1
+
+
+

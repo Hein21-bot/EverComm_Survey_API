@@ -3,9 +3,9 @@ const response = require('../model/response')
 
 
 const answerCount = (req, res) => {
-    const email = req.body.email
+    const survey_header_id = req.params.surveyHeaderId
 
-    answerCountService.AnswerCount(email).then(data => {
+    answerCountService.AnswerCount(survey_header_id).then(data => {
         if (data.length === 0) {
             res.json(response({ success: false, message: "Error", payload: null }))
         }

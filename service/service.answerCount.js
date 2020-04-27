@@ -1,7 +1,7 @@
 const { surveydb } = require('../db')
 
-const AnswerCount = (email) => {
-    return surveydb.AnswerCount(email);
+const AnswerCount = (survey_header_id) => {
+    return surveydb.AnswerCount(survey_header_id);
 }
 
 
