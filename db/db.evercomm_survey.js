@@ -284,7 +284,7 @@ const updateQuestion = (question_id, questionName, required, isOther, optionGrou
 // @HeinMinHtet
 // AnswerCount
 
-const AnswerCount = (survey_header_id) => {
+const reportTotalAnswers = (survey_header_id) => {
   console.log("Answer count",survey_header_id)
   query = util.promisify(mypool.query).bind(mypool)
   return query(`select acount ,oc.option_choice_name, q.question_name,q.question_id,sh.survey_name,ss.section_name,sh.survey_header_id
@@ -374,7 +374,7 @@ module.exports = {
   addOptionGroup, deleteOptionGroup, updateOptionGroup, getOptionGroup,
   addAnswer, deleteAnswer, updateAnswer,
   addInputType, deleteInputType, updateInputType,
-  addQuestion, deleteQuestion, updateQuestion, AnswerCount,
+  addQuestion, deleteQuestion, updateQuestion, reportTotalAnswers,
   getMenu, updateUser,
   getFormInfo, getCompany, addCompany, surveyList, addBuilding,
   surveyMenuApi, newSurveyList
