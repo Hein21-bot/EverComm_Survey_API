@@ -284,16 +284,17 @@ const updateQuestion = (question_id, questionName, required, isOther, optionGrou
 // @HeinMinHtet
 // AnswerCount
 
-const reportTotalAnswers = (survey_header_id,survey_section_id) => {
+const reportTotalAnswers = (survey_header_id) => {
   console.log("Answer count",survey_header_id)
   query = util.promisify(mypool.query).bind(mypool)
   return query(`select acount ,oc.option_choice_name, q.question_name,q.question_id,sh.survey_name,ss.section_name,sh.survey_header_id,ss.survey_section_id
-  from(SELECT count(option_choices_id)as acount,option_choices_id FROM evercomm_survey.tbl_answers where  option_choices_id !=""
+  from(SELECT count(option_choices_id)as acount,option_choices_id FROM evercomm_survey.tbl_answers 
    GROUP BY option_choices_id) as t1 right join 
    evercomm_survey.tbl_option_choices oc on oc.option_choice_id = t1.option_choices_id
    left join evercomm_survey.tbl_questions q on oc.questions_id = q.question_id 
    left join evercomm_survey.tbl_survey_headers sh on sh.survey_header_id = q.survey_headers_id 
-   left join evercomm_survey.tbl_survey_sections ss on ss.survey_section_id = q.survey_sections_id where survey_header_id = ${survey_header_id} and survey_section_id = ${survey_section_id}`)
+   left join evercomm_survey.tbl_survey_sections ss on ss.survey_section_id = q.survey_sections_id where survey_header_id = 1 order by survey_section_id
+   `)
 }
 
 const getFormInfo = (companyId) => {

@@ -5,12 +5,11 @@ var groupArray = require('group-array');
 
 const reportTotalAnswers = (req, res) => {
     const survey_header_id = req.params.surveyHeaderId
-    const survey_section_id = req.params.surveySectionId
 
-    reportTotalAnswersService.reportTotalAnswers( survey_header_id, survey_section_id).then(data => {
+    reportTotalAnswersService.reportTotalAnswers( survey_header_id).then(data => {
         
-        let surveySections = Object.keys(groupArray(data, 'survey_header_id')).map((v, k) => {
-            return groupArray(data, 'survey_header_id')[v];
+        let surveySections = Object.keys(groupArray(data, 'survey_section_id')).map((v, k) => {
+            return groupArray(data, 'survey_section_id')[v];
         });
 
         let ans = [{
