@@ -293,7 +293,7 @@ const reportTotalAnswers = (survey_header_id) => {
    evercomm_survey.tbl_option_choices oc on oc.option_choice_id = t1.option_choices_id
    left join evercomm_survey.tbl_questions q on oc.questions_id = q.question_id 
    left join evercomm_survey.tbl_survey_headers sh on sh.survey_header_id = q.survey_headers_id 
-   left join evercomm_survey.tbl_survey_sections ss on ss.survey_section_id = q.survey_sections_id where survey_header_id = 1 order by survey_section_id
+   left join evercomm_survey.tbl_survey_sections ss on ss.survey_section_id = q.survey_sections_id where survey_header_id = ${survey_header_id} order by survey_section_id
    `)
 }
 
