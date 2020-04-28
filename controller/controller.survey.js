@@ -8,7 +8,10 @@ const getQuestion = (req, res) => {
     const survey_header_id = req.params.survey_header_id;
     const buildingId = req.params.buildingId;
     let count = 0;
+    
+    
     surveyService.getQuestion(admin_id, survey_header_id, buildingId).then(data => {
+        
         let surveySections = Object.keys(groupArray(data[0], 'survey_section_id')).map((v, k) => {
             return groupArray(data[0], 'survey_section_id')[v];
         });
