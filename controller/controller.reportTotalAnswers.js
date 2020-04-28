@@ -18,8 +18,10 @@ const reportTotalAnswers = (req, res) => {
                     return groupArray(surveySections[0], 'question_id')[v];
                 }).map((v1, k1) => {
                     return {
-                        "Question": v1[0].question_name, "input_type_id": v1[0].input_types_id, "Answers": v1.map(c => {
-                            return { "option_choice_id": c.option_choice_id, "option_choice_name": c.option_choice_name, "totalAns": c.acount }
+                        "Question": v1[0].question_name, "Answers": v1.map(c => {
+                            return {
+                                "option_choice_name": c.option_choice_name, "totalAns": c.acount
+                            }
                         })
                     }
                 })
