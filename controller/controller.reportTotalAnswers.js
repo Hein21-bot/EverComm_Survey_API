@@ -5,27 +5,30 @@ var groupArray = require('group-array');
 
 const reportTotalAnswers = (req, res) => {
     const survey_header_id = req.params.surveyHeaderId
+    const survey_section_id = req.params.surveySectionId
 
-    reportTotalAnswersService.reportTotalAnswers(survey_header_id).then(data => {
-        let surveySections = Object.keys(groupArray(data, 'survey_header_id'))
-            .map((v, k) => {
-                return groupArray(data, 'survey_header_id')[v];
-            });
+    reportTotalAnswersService.reportTotalAnswers( survey_header_id, survey_section_id).then(data => {
+        
+        let surveySections = Object.keys(groupArray(data, 'survey_header_id')).map((v, k) => {
+            return groupArray(data, 'survey_header_id')[v];
+        });
 
         let ans = [{
-            "surveyHeaderName: ": surveySections[0][0].survey_name, "section_name: ": surveySections[0][0].section_name, TotalReportData:
-                Object.keys(groupArray(surveySections[0], 'question_id')).map((v, k) => {
-                    return groupArray(surveySections[0], 'question_id')[v];
-                }).map((v1, k1) => {
+             "survey_name": surveySections[0][0].survey_name, survey_sections:
+                surveySections.map(section => {
                     return {
-                        "Question": v1[0].question_name, "Answers": v1.map(c => {
-                            return {
-                                "option_choice_name": c.option_choice_name, "totalAns": c.acount
-                            }
-                        })
-                    }
+                         "section_name": section[0].section_name, "Questions":
+                            Object.keys(groupArray(section, 'question_id')).map((v, k) => {
+                                return groupArray(section, 'question_id')[v];
+                            }).map((v1, k1) => {
+                                return {
+                                    "question_id": v1[0].question_id, "question_name": v1[0].question_name, "input_type_id": v1[0].input_types_id, "Answers": v1.map(c => {
+                                        return { "option_choice_id": c.option_choice_id, "option_choice_name": c.option_choice_name ,"totalAns": c.acount}
+                                    })
+                                }
+                            })
+                    };
                 })
-
         }];
         res.json(response({ success: true, payload: ans }))
 
