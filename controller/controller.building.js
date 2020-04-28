@@ -36,4 +36,6 @@ const getBuilding = (req, res) => {
     }).catch(err => res.json(response({ success: false, message: err })));
 }
 
+
+
 module.exports = { addBuilding, getBuilding }

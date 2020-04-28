@@ -285,7 +285,6 @@ const updateQuestion = (question_id, questionName, required, isOther, optionGrou
 // AnswerCount
 
 const reportTotalAnswers = (survey_header_id) => {
-  console.log("Answer count",survey_header_id)
   query = util.promisify(mypool.query).bind(mypool)
   return query(`select acount ,oc.option_choice_name, q.question_name,q.question_id,sh.survey_name,ss.section_name,sh.survey_header_id,ss.survey_section_id
   from(SELECT count(option_choices_id)as acount,option_choices_id FROM evercomm_survey.tbl_answers 
@@ -294,7 +293,7 @@ const reportTotalAnswers = (survey_header_id) => {
    left join evercomm_survey.tbl_questions q on oc.questions_id = q.question_id 
    left join evercomm_survey.tbl_survey_headers sh on sh.survey_header_id = q.survey_headers_id 
    left join evercomm_survey.tbl_survey_sections ss on ss.survey_section_id = q.survey_sections_id where survey_header_id = ${survey_header_id} order by survey_section_id
-   `)
+   ;select  survey_headers_id,count(distinct building_id) as Number_of_buildings from evercomm_survey.tbl_answers where survey_headers_id=${survey_header_id}`)
 }
 
 const getFormInfo = (companyId) => {
@@ -344,12 +343,12 @@ const newSurveyList = (userId, survey_header_id) => {
 // buildings
 
 const addBuilding = (buildingName, companyName, address, postalCode, country, comment, userId, surveyHeadersId) => {
-  console.log("building info is Zzzzz ==>", userId, surveyHeadersId)
   const query = util.promisify(mypool.query).bind(mypool)
   console.log("pass")
   return query(`INSERT INTO tbl_buildings(building_name, company_name, remark, active, created_by, address, postal_code,country,comment,user_id,survey_headers_id) VALUES(?,?,?,?,?,?,?,?,?,?,?)`,
     [buildingName, companyName, 'ok', 1, 1, address, postalCode, country, comment, userId, surveyHeadersId])
 }
+
 
 // surveyMenuApi
 
@@ -364,6 +363,7 @@ const surveyMenuApi = (userId) => {
   ) as t1
    group by survey_header_id`)
 }
+
 
 
 module.exports = {

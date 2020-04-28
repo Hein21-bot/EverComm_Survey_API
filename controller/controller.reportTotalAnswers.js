@@ -8,8 +8,8 @@ const reportTotalAnswers = (req, res) => {
 
     reportTotalAnswersService.reportTotalAnswers( survey_header_id).then(data => {
         
-        let surveySections = Object.keys(groupArray(data, 'survey_section_id')).map((v, k) => {
-            return groupArray(data, 'survey_section_id')[v];
+        let surveySections = Object.keys(groupArray(data[0], 'survey_section_id')).map((v, k) => {
+            return groupArray(data[0], 'survey_section_id')[v];
         });
 
         let ans = [{
@@ -27,7 +27,7 @@ const reportTotalAnswers = (req, res) => {
                                 }
                             })
                     };
-                })
+                }),"building_count": data[1]
         }];
         res.json(response({ success: true, payload: ans }))
 

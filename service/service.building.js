@@ -8,4 +8,5 @@ const addBuilding = (buildingName, companyName, address, postalCode, country, co
     return surveydb.addBuilding(buildingName, companyName, address, postalCode, country, comment, userId, surveyHeadersId);
 }
 
+
 module.exports = { getBuilding, addBuilding }
