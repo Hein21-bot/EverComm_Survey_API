@@ -5,7 +5,6 @@ const bcrypt = require("bcrypt")
 const login = (email, password, callbackWhenDone) => {
     return surveydb.login(email, password).then(res => {
         if (res.length) {
-            console.log("response is ==>", res.length)
             const hash = res[0].password.toString()
 
             return bcrypt.compare(password, hash, function (err, response) {

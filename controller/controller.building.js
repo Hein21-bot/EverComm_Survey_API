@@ -15,7 +15,6 @@ const addBuilding = (req, res) => {
 
     buildingService.addBuilding(buildingName, companyName, address, postalCode, country, comment, userId,surveyHeadersId)
         .then(data => {
-            console.log("data is ==>", data)
             return res.json(
                 response({
                     success: true,
