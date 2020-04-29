@@ -13,7 +13,7 @@ const reportTotalAnswers = (req, res) => {
         });
 
         let ans = [{
-            "survey_name": surveySections[0][0].survey_header_id, "survey_section_id": surveySections[0][0].survey_name, survey_sections:
+            "survey_header_id": surveySections[0][0].survey_header_id, "survey_name": surveySections[0][0].survey_name, survey_sections:
                 surveySections.map(section => {
                     return {
                         "survey_section_id": section[0].survey_section_id, "section_name": section[0].section_name, "questions":
