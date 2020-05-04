@@ -3,7 +3,7 @@ const util = require("util")
 
 require('dotenv').config()
 
-const mypool = mysql.createPool({
+const mypool = mysql.createConnection({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PASS,
@@ -284,12 +284,13 @@ const updateQuestion = (question_id, questionName, required, isOther, optionGrou
 
 const reportTotalAnswers = (survey_header_id) => {
   query = util.promisify(mypool.query).bind(mypool)
-  return query(`select acount ,oc.option_choice_name, q.question_name,q.question_id,sh.survey_name,ss.section_name,sh.survey_header_id,ss.survey_section_id,
+  return query(`select acount ,oc.option_choice_name, q.question_name,q.question_id,sh.survey_name,ss.section_name,sh.survey_header_id,ss.survey_section_id,i.input_type_id,
   (select count(option_choices_id) as atcount from tbl_answers as aa where survey_headers_id=${survey_header_id} and aa.questions_id=t1.questions_id group by questions_id order by atcount DESC)as atcount
     from(SELECT count(option_choices_id)as acount,option_choices_id,questions_id FROM evercomm_survey.tbl_answers 
      GROUP BY option_choices_id,questions_id) as t1 right join 
      evercomm_survey.tbl_option_choices oc on oc.option_choice_id = t1.option_choices_id
      left join evercomm_survey.tbl_questions q on oc.questions_id = q.question_id 
+     left join evercomm_survey.tbl_input_types i on q.input_types_id = input_type_id
      left join evercomm_survey.tbl_survey_headers sh on sh.survey_header_id = q.survey_headers_id 
      left join evercomm_survey.tbl_survey_sections ss on ss.survey_section_id = q.survey_sections_id where 
      survey_header_id = ${survey_header_id} and survey_header_id!="" order by acount DESC;
