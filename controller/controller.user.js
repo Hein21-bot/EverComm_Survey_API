@@ -26,7 +26,6 @@ const addUser = (req, res) => {
 
     userService.checkDuplicateEmailInsert(email)
         .then(data => {
-            console.log("controller email is ===>", email);
 
             const DuplicateRows = data[0].DE;
             if (DuplicateRows > 0) {
@@ -42,7 +41,6 @@ const addUser = (req, res) => {
 
                     userService.addUser(userName, hash, email, companyName)
                         .then(data => {
-                            console.log("controller data is ===>", data);
 
                             res.json(
                                 response({

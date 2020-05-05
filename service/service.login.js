@@ -4,6 +4,7 @@ const bcrypt = require("bcrypt")
 
 const login = (email, password, callbackWhenDone) => {
     return surveydb.login(email, password).then(res => {
+        
         if (res.length) {
             const hash = res[0].password.toString()
 
@@ -23,10 +24,11 @@ const login = (email, password, callbackWhenDone) => {
                 } else {
                     return callbackWhenDone(null, false)
                 }
-            })           
+            })
+
         }
         else {
-            return []
+            return callbackWhenDone(null,false)
         }
     }).catch(err => {
         console.log(err)
@@ -36,20 +38,4 @@ const login = (email, password, callbackWhenDone) => {
 
 module.exports = { login }
 
-        // const payload = {
-        //     email: res[0].email,
-        //     password: res[0].password
-        // }
-        //     const token = produceToken(payload)
-        //     const data = {
-        //         token: token,
-        //         login_user_id: res[0].login_user_id,
-        //         email: res[0].email,
-        //         password: res[0].password
-        //     }
-        //     return data
-        // } else {
-        //     return []
-        // }
-        // }).catch(err => {
-        //     console.log(err)
+ 

@@ -13,9 +13,10 @@ const mypool = mysql.createConnection({
 
 // login
 
-const login = (email, password) => {
+const login = (email) => {
+  
   query = util.promisify(mypool.query).bind(mypool)
-  return query(`SELECT * FROM tbl_login_users WHERE active = 1 AND email = '${email}';`)
+  return query(`SELECT * FROM tbl_login_users WHERE email = '${email}';`)
 }
 
 // addUser
@@ -225,7 +226,6 @@ const updateOptionGroup = (option_group_id, optionGroupName) => {
 // answers
 
 const addAnswer = (other, optionChoiceId, userId, questionId, survey_headers_id, building_id) => {
-  // console.log("User Id is ==>",userId,"Other is==>", other)
   query = util.promisify(mypool.query).bind(mypool)
   return query(`INSERT INTO tbl_answers(other, option_choices_id, users_id, questions_id,survey_headers_id,building_id) VALUES(?,?,?,?,?,?)`,
     [other, optionChoiceId, userId, questionId, survey_headers_id, building_id])
@@ -345,7 +345,6 @@ const newSurveyList = (userId, survey_header_id) => {
 
 const addBuilding = (buildingName, companyName, address, postalCode, country, comment, userId, surveyHeadersId) => {
   const query = util.promisify(mypool.query).bind(mypool)
-  console.log("pass")
   return query(`INSERT INTO tbl_buildings(building_name, company_name, remark, active, created_by, address, postal_code,country,comment,user_id,survey_headers_id) VALUES(?,?,?,?,?,?,?,?,?,?,?)`,
     [buildingName, companyName, 'ok', 1, 1, address, postalCode, country, comment, userId, surveyHeadersId])
 }

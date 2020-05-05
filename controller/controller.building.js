@@ -3,7 +3,6 @@ const response = require('../model/response')
 const { surveydb } = require('../db')
 
 const addBuilding = (req, res) => {
-    console.log("body: ", req.body)
     const buildingName = req.body.buildingName
     const companyName = req.body.companyName
     const address = req.body.address
@@ -24,7 +23,6 @@ const addBuilding = (req, res) => {
             );
 
         }).catch(err => {
-            console.log("error: ", err)
             res.json(response({ success: false, message: err }));
         });
 }
