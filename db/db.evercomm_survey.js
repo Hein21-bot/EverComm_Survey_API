@@ -36,6 +36,11 @@ const addUser = (userName, password, email, companyName) => {
 
 }
 
+const updateUser = (userId, userName, password, email) => {
+  query = util.promisify(mypool.query).bind(mypool)
+  return query(`UPDATE tbl_login_users SET user_name = '${userName}', password = '${password}', email = '${email}' WHERE login_user_id = ${userId} `)
+}
+
 
 //menu 
 
@@ -85,12 +90,7 @@ const addCompany = (companyName) => {
 
 }
 
-// @HMH
 
-const updateUser = (userId, userName, password, email, companyId) => {
-  query = util.promisify(mypool.query).bind(mypool)
-  return query(`UPDATE tbl_login_users SET user_name = '${userName}', password = '${password}', email = '${email}',company_id=${companyId} WHERE login_user_id = ${userId} `)
-}
 
 //Question 
 
@@ -399,9 +399,30 @@ module.exports = {
   surveyMenuApi, newSurveyList
 }
 
-// SELECT count(option_choices_id),option_choices_id,questions_id FROM tbl_answers where survey_headers_id = 1 and option_choices_id !=""
-// GROUP BY questions_id,option_choices_id;
-// select count(distinct users_id) as gg from tbl_answers where survey_headers_id = 1
+
+// select  distinct(acount),t4.other ,t4.option_choice_name, t4.question_name,t4.question_id,sh.survey_name,ss.section_name,
+// sh.survey_header_id,ss.survey_section_id,i.input_type_id,
+//   (select count(option_choices_id) as atcount from tbl_answers as aa where 
+//   date(answered_date)  >= '2020-5-3' and date(answered_date) <= '2020-5-7' and survey_headers_id=1 and 
+//   aa.questions_id=t4.question_id group by questions_id order by atcount DESC)as atcount
+//     from(select  acount ,option_choice_name, question_name,question_id,other,survey_sections_id,survey_headers_id,input_types_id from
+// ((select distinct(acount)as acount ,oc.option_choice_name, q.question_name,q.question_id,other,q.survey_sections_id,q.input_types_id,q.survey_headers_id from
+// (SELECT count(option_choices_id)as acount,option_choices_id,questions_id,other FROM evercomm_survey.tbl_answers WHERE 
+//     date(answered_date)  >= '2020-5-3' and date(answered_date) <= '2020-5-7' 
+//      GROUP BY option_choices_id,questions_id,other) as t1 
+//      right  join evercomm_survey.tbl_option_choices oc on oc.option_choice_id = t1.option_choices_id
+//      right join evercomm_survey.tbl_questions q on oc.questions_id = q.question_id where survey_headers_id=1) union
+//      (select distinct(acount)as acount ,oc.option_choice_name, q.question_name,q.question_id,other,q.survey_sections_id,q.input_types_id,q.survey_headers_id from
+// (SELECT count(option_choices_id)as acount,option_choices_id,questions_id,other FROM evercomm_survey.tbl_answers WHERE 
+//     date(answered_date)  >= '2020-5-3' and date(answered_date) <= '2020-5-7' and other like '{"YearOfManufacturing%' 
+//      GROUP BY option_choices_id,questions_id,other) as t2
+//      left join evercomm_survey.tbl_option_choices oc on oc.option_choice_id = t2.option_choices_id
+//      left join evercomm_survey.tbl_questions q on t2.questions_id = q.question_id where survey_headers_id=1) )as t3 order by question_id) as t4
+//      left join evercomm_survey.tbl_input_types i on t4.input_types_id = input_type_id
+//      left join evercomm_survey.tbl_survey_headers sh on sh.survey_header_id = t4.survey_headers_id 
+//      left join evercomm_survey.tbl_answers aaa on t4.question_id = aaa.questions_id 
+//      left join evercomm_survey.tbl_survey_sections ss on ss.survey_section_id = t4.survey_sections_id where 
+//      survey_header_id = 1 and survey_header_id!="" order by question_id;
 
 
 

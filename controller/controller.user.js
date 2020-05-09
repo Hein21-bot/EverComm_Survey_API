@@ -67,7 +67,6 @@ const updateUser = (req, res) => {
     const userName = req.body.userName
     const password = req.body.password
     const email = req.body.email
-    const companyName = req.body.companyName
 
     userService.checkDuplicateEmailUpdate(email, userId)
         .then(data => {
@@ -81,18 +80,21 @@ const updateUser = (req, res) => {
                     })
                 );
             } else {
-                userService.updateUser(userId, userName, password, email, companyName)
-                    .then(data => {
-                        res.json(
-                            response({
-                                success: true,
-                                message: "Inserted!",
-                                payload: data
-                            })
-                        );
-                    }).catch(err => {
-                        res.json(response({ success: false, message: err }));
-                    });
+                bcrypt.hash(password, saltRounds, function (err, hash) {
+
+                    userService.updateUser(userId, userName, hash, email)
+                        .then(data => {
+                            res.json(
+                                response({
+                                    success: true,
+                                    message: "Inserted!",
+                                    payload: data
+                                })
+                            );
+                        }).catch(err => {
+                            res.json(response({ success: false, message: err }));
+                        });
+                })
             }
         })
         .catch(err => {
