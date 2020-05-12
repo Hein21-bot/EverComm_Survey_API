@@ -298,6 +298,21 @@ const reportTotalAnswers = (survey_header_id,startDate,endDate) => {
    select  survey_headers_id,count(distinct building_id) as Number_of_buildings from evercomm_survey.tbl_answers where survey_headers_id=${survey_header_id};`)
 }
 
+const reportDateTimeAnswers = (survey_header_id,startDate,endDate) => {
+  query = util.promisify(mypool.query).bind(mypool)
+  return query(`select t1.other,q.question_name,q.question_id,sh.survey_name,ss.section_name,sh.survey_header_id,
+  ss.survey_section_id  
+      from(SELECT questions_id,other FROM evercomm_survey.tbl_answers WHERE 
+      date(answered_date)  >= '${startDate}' and date(answered_date) <= '${endDate}' and  other like '{"YearOfManufacturing%' 
+       ) as t1 
+       left join evercomm_survey.tbl_questions q on t1.questions_id = q.question_id      
+       left join evercomm_survey.tbl_survey_headers sh on sh.survey_header_id = q.survey_headers_id      
+       left join evercomm_survey.tbl_survey_sections ss on ss.survey_section_id = q.survey_sections_id where 
+       survey_header_id = ${survey_header_id} and survey_header_id!="" order by question_id ASC;`)
+}
+
+
+
 
 // const reportTotalAnswers = (survey_header_id) => {
 //   query = util.promisify(mypool.query).bind(mypool)
@@ -396,7 +411,7 @@ module.exports = {
   addQuestion, deleteQuestion, updateQuestion, reportTotalAnswers,
   getMenu, updateUser,
   getFormInfo, getCompany, addCompany, surveyList, addBuilding,
-  surveyMenuApi, newSurveyList
+  surveyMenuApi, newSurveyList,reportDateTimeAnswers
 }
 
 
