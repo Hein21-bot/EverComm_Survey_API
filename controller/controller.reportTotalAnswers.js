@@ -69,7 +69,7 @@ const reportDateTimeAnswers = (req, res) => {
                                 return {
                                     "question_id": v1[0].question_id, "question_name": v1[0].question_name, "totalAnsCount": v1[0].atcount, "input_type_id": v1[0].input_type_id, "other": v1.map(c => {
                                         return {
-                                            "DateTime":c.other
+                                            "DateTime":JSON.parse(c.other)
                                         }
                                     })
                                 }
