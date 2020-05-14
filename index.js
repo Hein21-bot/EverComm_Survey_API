@@ -1,12 +1,12 @@
 const express = require("express")
-const bodyParser= require("body-parser")
+const bodyParser = require("body-parser")
 const cors = require("cors")
 const path = require("path")
 const appRouter = require("./route")
 // const helmet = require('helmet')
 // const morgan = require('morgan')
-const app=express()
-const port = 7878; 
+const app = express()
+const port = 7878;
 
 app.use(express.static(path.join(__dirname, "public")));
 // app.use(helmet());
@@ -28,6 +28,6 @@ app.use((req, res, next) => {
 app.use("/api/v1", appRouter);
 
 
-app.listen(port,()=>{
-    console.log(`App is listening on port ${port}`)
+app.listen(port, () => {
+  console.log(`App is listening on port ${port}`)
 })

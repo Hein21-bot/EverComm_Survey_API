@@ -11,8 +11,6 @@ const reportTotalAnswers = (req, res) => {
 
     reportTotalAnswersService.reportTotalAnswers(survey_header_id, startDate, endDate).then(data => {
 
-        console.log('data is=>', data);
-
 
         let surveySections = Object.keys(groupArray(data[0], 'survey_section_id')).map((v, k) => {
             return groupArray(data[0], 'survey_section_id')[v];

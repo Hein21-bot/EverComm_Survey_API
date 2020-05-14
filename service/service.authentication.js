@@ -1,5 +1,5 @@
-const {surveydb} = require('../db')
-const {produceToken} = require('../security/token')
+const { surveydb } = require('../db')
+const { produceToken } = require('../security/token')
 
 const login = (username, password) => {
     return surveydb.login(username, password).then(res => {
@@ -22,10 +22,10 @@ const login = (username, password) => {
         else {
             return []
         }
-    }).catch(err =>{
+    }).catch(err => {
         console.log(err)
-    } )
+    })
 
 }
 
-module.exports = { login}
+module.exports = { login }

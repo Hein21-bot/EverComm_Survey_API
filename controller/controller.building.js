@@ -12,7 +12,7 @@ const addBuilding = (req, res) => {
     const userId = req.body.userId
     const surveyHeadersId = req.body.surveyHeaderId
 
-    buildingService.addBuilding(buildingName, companyName, address, postalCode, country, comment, userId,surveyHeadersId)
+    buildingService.addBuilding(buildingName, companyName, address, postalCode, country, comment, userId, surveyHeadersId)
         .then(data => {
             return res.json(
                 response({

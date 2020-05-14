@@ -9,5 +9,7 @@ const formService = require('./service.form')
 const companyService = require('./service.company')
 const buildingService = require('./service.building')
 
-module.exports = { authService, userService, reportService, surveyService,
-     loginService, reportTotalAnswersService, formService, companyService, buildingService }
+module.exports = {
+     authService, userService, reportService, surveyService,
+     loginService, reportTotalAnswersService, formService, companyService, buildingService
+}

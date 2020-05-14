@@ -18,8 +18,8 @@ const verifyToken = (req, res, next) => {
     next();
   } else {
     res.json(
-      response({ 
-        success: false, 
+      response({
+        success: false,
         message: "You are not allowed to access this url!"
       })
     )
@@ -29,8 +29,8 @@ const verifyToken = (req, res, next) => {
 const verifyTokenSync = reqHeader => {
   // if(reqHeader===undefined || reqHeader===null) return null;
   const authToken = reqHeader.split(" ")
-  if(authToken.length !== 2) return null;
-  if(authToken[1]===undefined || authToken[1]===null || authToken[1].length ===0) return null;
+  if (authToken.length !== 2) return null;
+  if (authToken[1] === undefined || authToken[1] === null || authToken[1].length === 0) return null;
   return authToken[1]
 };
 

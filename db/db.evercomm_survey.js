@@ -283,7 +283,7 @@ const updateQuestion = (question_id, questionName, required, isOther, optionGrou
 // AnswerCount
 
 const reportTotalAnswers = (survey_header_id, startDate, endDate) => {
-  
+
   query = util.promisify(mypool.query).bind(mypool)
   return query(`select  distinct(acount) as acount,t4.other ,t4.option_choice_name, t4.question_name,t4.question_id,sh.survey_name,ss.section_name,
   sh.survey_header_id,ss.survey_section_id,i.input_type_id,
@@ -456,7 +456,7 @@ module.exports = {
 //        order by question_id) as t4
 //        left join evercomm_survey.tbl_input_types i on t4.input_types_id = input_type_id
 //        left join evercomm_survey.tbl_survey_headers sh on sh.survey_header_id = t4.survey_headers_id 
-       
+
 //        left join evercomm_survey.tbl_survey_sections ss on ss.survey_section_id = t4.survey_sections_id where 
 //        survey_header_id = 1 and survey_header_id!="" order by question_id;
 

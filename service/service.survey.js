@@ -28,4 +28,4 @@ const newSurveyList = (userId, survey_header_id) => {
     return surveydb.newSurveyList(userId, survey_header_id)
 }
 
-module.exports = { getQuestion, addAnswer, deleteAnswer, getMenu, surveyList, surveyMenuApi ,newSurveyList};
+module.exports = { getQuestion, addAnswer, deleteAnswer, getMenu, surveyList, surveyMenuApi, newSurveyList };

@@ -10,6 +10,8 @@ const buildingController = require('./controller.building')
 const companyController = require('./controller.company')
 
 
-module.exports = { authController, userController, reportController, 
-    surveyController, loginController, reportTotalAnswersController,formController,
-    buildingController,companyController }
+module.exports = {
+    authController, userController, reportController,
+    surveyController, loginController, reportTotalAnswersController, formController,
+    buildingController, companyController
+}
