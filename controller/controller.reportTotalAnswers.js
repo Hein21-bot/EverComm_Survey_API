@@ -11,10 +11,13 @@ const reportTotalAnswers = (req, res) => {
 
     reportTotalAnswersService.reportTotalAnswers(survey_header_id, startDate, endDate).then(data => {
 
+        console.log('data is=>', data);
+
 
         let surveySections = Object.keys(groupArray(data[0], 'survey_section_id')).map((v, k) => {
             return groupArray(data[0], 'survey_section_id')[v];
         });
+
 
         let ans = [{
             "survey_header_id": surveySections[0][0].survey_header_id, "survey_name": surveySections[0][0].survey_name, "survey_sections":
@@ -27,18 +30,22 @@ const reportTotalAnswers = (req, res) => {
                                 return {
                                     "question_id": v1[0].question_id, "question_name": v1[0].question_name, "totalAnsCount": v1[0].atcount, "input_type_id": v1[0].input_type_id, "option_choices": v1.map(c => {
                                         return {
-                                            "option_choice_name": c.option_choice_name, "totalAns": c.acount
+                                            "option_choice_name": c.option_choice_name, "totalAns": c.acount,
+                                            "other": c.other != null && c.other.includes('{') ?
+                                                JSON.parse(c.other) : c.other
                                         }
                                     })
+
                                 }
                             })
                     };
                 }), "building_count": data[1]
         }];
+
         res.json(response({ success: true, payload: ans }))
 
 
-    }).catch(err => res.json(response({ success: false, message: err })));
+    }).catch(err => res.json(response({ success: false, message: err.toString() })));
 
 
 
@@ -68,8 +75,10 @@ const reportDateTimeAnswers = (req, res) => {
                             }).map((v1, k1) => {
                                 return {
                                     "question_id": v1[0].question_id, "question_name": v1[0].question_name, "totalAnsCount": v1[0].atcount, "input_type_id": v1[0].input_type_id, "other": v1.map(c => {
+                                        console.log(JSON.parse(c.other));
+
                                         return {
-                                            "DateTime":JSON.parse(c.other)
+                                            "DateTime": JSON.parse(c.other)
                                         }
                                     })
                                 }
@@ -80,7 +89,7 @@ const reportDateTimeAnswers = (req, res) => {
         res.json(response({ success: true, payload: ans }))
 
 
-    }).catch(err => res.json(response({ success: false, message: err })));
+    }).catch(err => res.json(response({ success: false, message: err.toString() })));
 
 
 
