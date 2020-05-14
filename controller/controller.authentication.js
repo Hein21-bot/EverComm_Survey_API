@@ -7,6 +7,8 @@ const logIn = (req, res) => {
     const password = req.body.password;
 
     authService.login(username, password).then(data => {
+
+        
         if (data.length == 0) {
             res.json(response({ success: false, message: "user name and password does not match" }));
         }
