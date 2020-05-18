@@ -3,6 +3,7 @@ const util = require("util")
 
 require('dotenv').config()
 
+
 const mypool = mysql.createConnection({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
@@ -21,16 +22,8 @@ const login = (email) => {
 
 // addUser
 
-// const addUser = (userName, password, email, companyName) => {
-
-//   bcrypt.hash(password, saltRounds, function (err, hash) {
-//     query = util.promisify(mypool.query).bind(mypool)
-//     return query(`INSERT INTO tbl_login_users(user_name,password,email,active,user_level_id,company_name) VALUES(?,?,?,?,?,?)`, [userName, hash, email, 1, 2, companyName])
-//   })
-// }
 
 const addUser = (userName, password, email, companyName) => {
-
   query = util.promisify(mypool.query).bind(mypool)
   return query(`INSERT INTO tbl_login_users(user_name,password,email,active,user_level_id,company_name) VALUES(?,?,?,?,?,?)`, [userName, password, email, 1, 2, companyName])
 
@@ -39,6 +32,7 @@ const addUser = (userName, password, email, companyName) => {
 const updateUser = (userId, userName, password, email) => {
   query = util.promisify(mypool.query).bind(mypool)
   return query(`UPDATE tbl_login_users SET user_name = '${userName}', password = '${password}', email = '${email}' WHERE login_user_id = ${userId} `)
+
 }
 
 
@@ -283,7 +277,6 @@ const updateQuestion = (question_id, questionName, required, isOther, optionGrou
 // AnswerCount
 
 const reportTotalAnswers = (survey_header_id, startDate, endDate) => {
-
   query = util.promisify(mypool.query).bind(mypool)
   return query(`select  distinct(acount) as acount,t4.other ,t4.option_choice_name, t4.question_name,t4.question_id,sh.survey_name,ss.section_name,
   sh.survey_header_id,ss.survey_section_id,i.input_type_id,
@@ -357,7 +350,6 @@ const getFormInfo = (companyId) => {
     : query(`select b.building_id,b.building_name,b.address,c.company_id,c.company_name from tbl_buildings as b left join tbl_company as c on b.company_id = c.company_id where b.active = true`)
 }
 
-// select survey_header_id,bd.building_id as building_id, bd.building_name as building_name,  count(qcount) as questions, count(acount) as answers
 
 const surveyList = (userId, survey_header_id) => {
   query = util.promisify(mypool.query).bind(mypool)
@@ -387,10 +379,10 @@ const surveyList = (userId, survey_header_id) => {
 
 const newSurveyList = (userId, survey_header_id) => {
   query = util.promisify(mypool.query).bind(mypool)
-  return query(`SELECT distinct tbl_buildings.user_id,tbl_buildings.survey_headers_id,
-  tbl_buildings.building_id,tbl_buildings.building_name FROM
-  evercomm_survey.tbl_buildings inner join evercomm_survey.tbl_answers on
-  tbl_buildings.user_id = ${userId} and tbl_buildings.survey_headers_id=${survey_header_id}`)
+  return query(`SELECT distinct b.user_id,b.survey_headers_id,
+  b.building_id,b.building_name FROM
+  evercomm_survey.tbl_buildings as b inner join evercomm_survey.tbl_answers a on
+  b.user_id = ${userId} and b.survey_headers_id= ${survey_header_id} and b.active= 1`)
 }
 
 
@@ -401,6 +393,11 @@ const addBuilding = (buildingName, companyName, address, postalCode, country, co
   const query = util.promisify(mypool.query).bind(mypool)
   return query(`INSERT INTO tbl_buildings(building_name, company_name, remark, active, created_by, address, postal_code,country,comment,user_id,survey_headers_id) VALUES(?,?,?,?,?,?,?,?,?,?,?)`,
     [buildingName, companyName, 'ok', 1, 1, address, postalCode, country, comment, userId, surveyHeadersId])
+}
+
+const updateBuilding = (buildingId, active) => {
+  const query = util.promisify(mypool.query).bind(mypool)
+  return query(`UPDATE tbl_buildings SET active = ${active} WHERE building_id = ${buildingId}`)
 }
 
 
@@ -431,7 +428,7 @@ module.exports = {
   addInputType, deleteInputType, updateInputType,
   addQuestion, deleteQuestion, updateQuestion, reportTotalAnswers,
   getMenu, updateUser,
-  getFormInfo, getCompany, addCompany, surveyList, addBuilding,
+  getFormInfo, getCompany, addCompany, surveyList, addBuilding, updateBuilding,
   surveyMenuApi, newSurveyList, reportDateTimeAnswers
 }
 

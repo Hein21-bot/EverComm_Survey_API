@@ -73,8 +73,6 @@ const reportDateTimeAnswers = (req, res) => {
                             }).map((v1, k1) => {
                                 return {
                                     "question_id": v1[0].question_id, "question_name": v1[0].question_name, "totalAnsCount": v1[0].atcount, "input_type_id": v1[0].input_type_id, "other": v1.map(c => {
-                                        console.log(JSON.parse(c.other));
-
                                         return {
                                             "DateTime": JSON.parse(c.other)
                                         }

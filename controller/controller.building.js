@@ -10,6 +10,7 @@ const addBuilding = (req, res) => {
     const country = req.body.country
     const comment = req.body.comment
     const userId = req.body.userId
+
     const surveyHeadersId = req.body.surveyHeaderId
 
     buildingService.addBuilding(buildingName, companyName, address, postalCode, country, comment, userId, surveyHeadersId)
@@ -33,6 +34,27 @@ const getBuilding = (req, res) => {
     }).catch(err => res.json(response({ success: false, message: err })));
 }
 
+const updateBuilding = (req, res) => {
+    const buildingId = req.body.buildingId
+    const active = req.body.active
 
 
-module.exports = { addBuilding, getBuilding }
+    buildingService.updateBuilding(buildingId, active)
+        .then(data => {
+            return res.json(
+                response({
+                    success: true,
+                    message: "Updated!",
+                    payload: data
+                })
+            );
+
+        }).catch(err => {
+            res.json(response({ success: false, message: err }));
+        });
+}
+
+
+
+module.exports = { addBuilding, getBuilding, updateBuilding }
+
