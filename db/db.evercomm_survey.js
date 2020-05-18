@@ -302,9 +302,7 @@ const reportTotalAnswers = (survey_header_id, startDate, endDate) => {
        
        left join evercomm_survey.tbl_survey_sections ss on ss.survey_section_id = t4.survey_sections_id where 
        survey_header_id = ${survey_header_id} and survey_header_id!="" order by question_id;
-       select  survey_headers_id,count(distinct building_id) as Number_of_buildings from evercomm_survey.tbl_answers where survey_headers_id=${survey_header_id};
-       
-   `)
+       select  survey_headers_id,count(distinct building_id) as Number_of_buildings from evercomm_survey.tbl_answers where survey_headers_id=${survey_header_id};`)
 }
 
 
@@ -353,24 +351,24 @@ const getFormInfo = (companyId) => {
 
 const surveyList = (userId, survey_header_id) => {
   query = util.promisify(mypool.query).bind(mypool)
-  return query(`
-  select survey_header_id, t2.building_id as building_id, b.building_name as building_name, answers, (select count(*) from tbl_questions qq 
-    where qq.survey_headers_id=t2.survey_header_id
-  ) as questions
+  return query(`  select survey_header_id, t2.building_id as building_id, b.building_name as building_name, answers, (select count(*) from tbl_questions qq 
+  where qq.survey_headers_id=t2.survey_header_id
+) as questions
+from (
+select survey_header_id, building_id, count(qcount) as questions, count(acount) as answers
   from (
-  select survey_header_id, building_id, count(qcount) as questions, count(acount) as answers
-    from (
-      SELECT
-        distinct  q.question_id as qcount, a.questions_id as acount, q.survey_headers_id as survey_header_id,h.survey_name as survey_header_name,a.building_id as building_id
-      FROM
-        tbl_questions as q
-      left join tbl_answers a on q.survey_headers_id=a.survey_headers_id and q.question_id=a.questions_id and a.users_id = ${userId}
-      left join tbl_survey_headers h on h.survey_header_id = q.survey_headers_id   
-     where q.survey_headers_id=${survey_header_id} and a.building_id!=""
-    ) as t1 
-    group by survey_header_id, building_id
-    ) as t2
-    left join tbl_buildings b on b.building_id=t2.building_id;
+    SELECT
+      distinct  q.question_id as qcount, a.questions_id as acount, q.survey_headers_id as survey_header_id,h.survey_name as survey_header_name,a.building_id as building_id
+    FROM
+      tbl_questions as q
+    left join tbl_answers a on q.survey_headers_id=a.survey_headers_id and q.question_id=a.questions_id and a.users_id = ${userId}
+    left join tbl_survey_headers h on h.survey_header_id = q.survey_headers_id   
+    left join tbl_buildings b on a.building_id = b.building_id
+   where q.survey_headers_id= ${survey_header_id} and a.building_id!=""  and b.active = 1
+  ) as t1 
+  group by survey_header_id, building_id
+  ) as t2
+  left join tbl_buildings b on b.building_id=t2.building_id;
     SELECT distinct tbl_buildings.user_id,tbl_buildings.survey_headers_id,
       tbl_buildings.building_id,tbl_buildings.building_name FROM
       evercomm_survey.tbl_buildings inner join evercomm_survey.tbl_answers on

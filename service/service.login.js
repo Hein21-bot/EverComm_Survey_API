@@ -30,9 +30,7 @@ const login = (email, password, callbackWhenDone) => {
         else {
             return callbackWhenDone(null, false)
         }
-    }).catch(err => {
-        console.log(err)
-    })
+    }).catch(err => res.json(response({ success: false, message: err })));
 }
 
 
