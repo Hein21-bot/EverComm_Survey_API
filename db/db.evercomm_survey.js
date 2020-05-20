@@ -306,7 +306,7 @@ const reportTotalAnswers = (survey_header_id, startDate, endDate) => {
           aa.questions_id=t4.question_id group by questions_id order by atcount DESC)as atcount
             from(select  acount ,option_choice_name, question_name,question_id,other,survey_sections_id,survey_headers_id,input_types_id from
       (
-          (select distinct(acount)as acount ,oc.option_choice_name, q.question_name,q.question_id,other,q.survey_sections_id,q.input_types_id,q.survey_headers_id from
+          (select distinct(acount)as acount ,oc.option_choice_name, q.question_yname,q.question_id,other,q.survey_sections_id,q.input_types_id,q.survey_headers_id from
             (SELECT count(option_choices_id)as acount,option_choices_id,questions_id,other FROM evercomm_survey.tbl_answers 
                 GROUP BY option_choices_id,questions_id,other) as t1 
                   right join evercomm_survey.tbl_option_choices oc on oc.option_choice_id = t1.option_choices_id
