@@ -1,6 +1,7 @@
 const { surveydb } = require('../db')
 const { produceToken } = require('../security/token')
 const bcrypt = require("bcrypt")
+const response = require('../model/response')
 
 const login = (email, password, callbackWhenDone) => {
     return surveydb.login(email, password).then(res => {
@@ -30,7 +31,7 @@ const login = (email, password, callbackWhenDone) => {
         else {
             return callbackWhenDone(null, false)
         }
-    }).catch(err => res.json(response({ success: false, message: err })));
+    }).catch(err => (response({ error: err,success: false, message: dotCatchError })))
 }
 
 

@@ -36,7 +36,7 @@ const getBuilding = (req, res) => {
 
 const updateBuilding = (req, res) => {
     const buildingId = req.body.buildingId
-    const active = req.body.active
+    const active = req.body.active 
 
 
     buildingService.updateBuilding(buildingId, active)
