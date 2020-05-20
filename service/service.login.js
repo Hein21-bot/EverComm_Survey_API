@@ -19,7 +19,9 @@ const login = (email, password, callbackWhenDone) => {
                     const data = {
                         token: token,
                         login_user_id: res[0].login_user_id,
-                        email: res[0].email
+                        email: res[0].email,
+                        user_level_id: res[0].user_level_id
+
                     }
                     return callbackWhenDone(null, data)
                 } else {
