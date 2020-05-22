@@ -33,7 +33,7 @@ const login = (email, password, callbackWhenDone) => {
         else {
             return callbackWhenDone(null, false)
         }
-    }).catch(err => (response({ error: err,success: false, message: dotCatchError })))
+    }).catch(err => (response({ error: err, success: false, message: err })))
 }
 
 

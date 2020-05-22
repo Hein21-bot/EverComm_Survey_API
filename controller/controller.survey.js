@@ -65,9 +65,28 @@ const getMenu = (req, res) => {
 const surveyMenuApi = (req, res) => {
     let userId = req.params.user_id;
     surveyService.surveyMenuApi(userId).then(data => {
-        res.json(response({ success: true, payload: data }))
 
-    }).catch(err => res.json(response({ success: false, message: err })));
+        let surveySections = Object.keys(groupArray(data, 'survey_header_id')).map((v, k) => {
+            return groupArray(data, 'survey_header_id')[v];
+        }).map((v1, k1) => {
+            return {
+                "survey_name": v1[0].survey_header_id, "survey_header_id": v1[0].survey_name, "amount_of_survey": v1[0].amount_of_survey, "created_date": v1[0].created_date.toString(), "survey_section":
+                    Object.keys(groupArray(v1, 'survey_section_id')).map((v2, k2) => {
+                        return groupArray(v1, 'survey_section_id')[v2];
+                    }).map((v3, k3) => {
+                        return {
+                            "survey_section_id": v3[0].survey_section_id, "survey_section_name": v3[0].section_name
+                        }
+                    })
+            }
+        })
+
+
+
+
+        res.json(response({ success: true, payload: surveySections }))
+
+    }).catch(err => res.json(response({ success: false, message: err.toString() })));
 }
 
 
