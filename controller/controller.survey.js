@@ -80,10 +80,6 @@ const surveyMenuApi = (req, res) => {
                     })
             }
         })
-
-
-
-
         res.json(response({ success: true, payload: surveySections }))
 
     }).catch(err => res.json(response({ success: false, message: err.toString() })));
@@ -158,4 +154,38 @@ const deleteAnswer = (req, res) => {
         });
 }
 
-module.exports = { getQuestion, addAnswer, getMenu, deleteAnswer, surveyList, surveyMenuApi, newSurveyList };
+const dateTimeMenuApi = (req, res) => {
+    const userId = req.params.user_id
+    const startDate = req.body.startDate
+    const endDate = req.body.endDate
+    surveyService.dateTimeMenuApi(userId, startDate, endDate).then(data => {
+
+        let surveySections = Object.keys(groupArray(data, 'survey_header_id')).map((v, k) => {
+            return groupArray(data, 'survey_header_id')[v];
+        }).map((v1, k1) => {
+            return {
+                "survey_header_id": v1[0].survey_header_id, "survey_name": v1[0].survey_name, "survey_created_date": v1[0].created_date, "amount_of_survey":
+                    Object.keys(groupArray(v1, 'buildings_id')).map((v2, k2) => {
+                        return groupArray(v1, 'buildings_id')[v2];
+                    }).map((v3, k3) => {
+                        return {
+                            "building_id": v3[0].buildings_id, "building_name": v3[0].building_name
+                        }
+                    }),
+                "survey_section": Object.keys(groupArray(v1, 'survey_section_id')).map((v4, k4) => {
+                    return groupArray(v1, 'survey_section_id')[v4];
+                }).map((v5, k5) => {
+                    return {
+                        "survey_section_id": v5[0].survey_section_id, "survey_section_name": v5[0].section_name
+                    }
+                })
+            }
+        })
+        res.json(response({ success: true, payload: surveySections }))
+
+    }).catch(err => res.json(response({ success: false, message: err.toString() })));
+}
+
+
+
+module.exports = { getQuestion, addAnswer, getMenu, deleteAnswer, surveyList, surveyMenuApi, newSurveyList, dateTimeMenuApi };

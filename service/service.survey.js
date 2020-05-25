@@ -28,4 +28,8 @@ const newSurveyList = (userId, survey_header_id) => {
     return surveydb.newSurveyList(userId, survey_header_id)
 }
 
-module.exports = { getQuestion, addAnswer, deleteAnswer, getMenu, surveyList, surveyMenuApi, newSurveyList };
+const dateTimeMenuApi = (userId, startDate, endDate) => {
+    return surveydb.dateTimeMenuApi(userId, startDate, endDate)
+}
+
+module.exports = { getQuestion, addAnswer, deleteAnswer, getMenu, surveyList, surveyMenuApi, newSurveyList, dateTimeMenuApi };

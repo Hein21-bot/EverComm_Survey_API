@@ -278,7 +278,7 @@ const updateQuestion = (question_id, questionName, required, isOther, optionGrou
 
 const reportTotalAnswers = (userId, survey_header_id, startDate, endDate) => {
   query = util.promisify(mypool.query).bind(mypool)
-  return (startDate != null ) ? query(`select  distinct(acount) as acount,t4.other ,t4.option_choice_name, t4.question_name,t4.question_id,sh.survey_name,ss.section_name,sh.survey_header_id,ss.survey_section_id,i.input_type_id,(select count(option_choices_id) as atcount from tbl_answers as aa where date(answered_date)  >= '${startDate}' and date(answered_date) <= '${endDate}' and survey_headers_id=${survey_header_id} and 
+  return (startDate != null) ? query(`select  distinct(acount) as acount,t4.other ,t4.option_choice_name, t4.question_name,t4.question_id,sh.survey_name,ss.section_name,sh.survey_header_id,ss.survey_section_id,i.input_type_id,(select count(option_choices_id) as atcount from tbl_answers as aa where date(answered_date)  >= '${startDate}' and date(answered_date) <= '${endDate}' and survey_headers_id=${survey_header_id} and 
       aa.questions_id=t4.question_id group by questions_id order by atcount DESC)as atcount
         from(select  acount ,option_choice_name, question_name,question_id,other,survey_sections_id,survey_headers_id,input_types_id from
   (
@@ -342,7 +342,7 @@ const reportTotalAnswers = (userId, survey_header_id, startDate, endDate) => {
 
 const reportUserAnswer = (userId, surveyHeaderId, startDate, endDate) => {
   query = util.promisify(mypool.query).bind(mypool)
-  return (startDate != null ) ? query(`select  distinct(acount) as acount,t4.other ,t4.option_choice_name, t4.question_name,t4.question_id,sh.survey_name,ss.section_name,
+  return (startDate != null) ? query(`select  distinct(acount) as acount,t4.other ,t4.option_choice_name, t4.question_name,t4.question_id,sh.survey_name,ss.section_name,
   sh.survey_header_id,ss.survey_section_id,i.input_type_id,
   (select count(option_choices_id) as atcount from tbl_answers as aa where date(answered_date)  >= '${startDate}' and date(answered_date) <= '${endDate}' 
   and survey_headers_id=${surveyHeaderId} and users_id = ${userId} and
@@ -469,6 +469,35 @@ const surveyMenuApi = (userId) => {
             ) as t1 group by survey_header_id,section_name,survey_section_id;`)
 }
 
+const dateTimeMenuApi = (userId, startDate, endDate) => {
+  query = util.promisify(mypool.query).bind(mypool)
+  // console.log("startDate is ==>", startDate)
+  return (startDate != undefined) ? query(`SELECT survey_header_id,survey_name,count(building_id) as amount_of_survey,section_name,
+    survey_section_id, building_name,buildings_id,created_date 
+       FROM (
+        select 
+          distinct a.building_id as building_id,sh.survey_header_id as survey_header_id, sh.survey_name as survey_name ,b.building_name,
+            b.building_id as buildings_id,ss.section_name as section_name,ss.survey_section_id as survey_section_id,
+            sh.created_date as created_date from tbl_survey_headers as sh 
+              left join tbl_answers a on sh.survey_header_id=a.survey_headers_id and a.users_id = ${userId} and 
+                  date(a.answered_date) >= '${startDate}' and date(a.answered_date) <= '${endDate}'
+              left join tbl_survey_sections ss on sh.survey_header_id = ss.survey_headers_id
+              left join tbl_buildings b on b.building_id = a.building_id) as t1 
+                  group by survey_header_id,section_name,survey_section_id,building_name,buildings_id,created_date
+                    order by  survey_section_id`) : 
+  query(`SELECT survey_header_id,survey_name,count(building_id) as amount_of_survey,section_name,survey_section_id,
+      building_name,buildings_id,created_date
+       FROM (    
+         select distinct a.building_id as building_id,sh.survey_header_id as survey_header_id, sh.survey_name as survey_name ,b.building_name,
+             b.building_id as buildings_id,ss.section_name as section_name,ss.survey_section_id as survey_section_id,
+             sh.created_date as created_date from tbl_survey_headers as sh 
+                left join tbl_answers a on sh.survey_header_id=a.survey_headers_id and a.users_id = ${userId}
+                left join tbl_survey_sections ss on sh.survey_header_id = ss.survey_headers_id
+                left join tbl_buildings b on b.building_id = a.building_id) as t1 
+                    group by survey_header_id,section_name,survey_section_id,building_name,buildings_id,created_date
+                      order by  survey_section_id`)
+}
+
 
 
 module.exports = {
@@ -483,6 +512,6 @@ module.exports = {
   addQuestion, deleteQuestion, updateQuestion, reportTotalAnswers,
   getMenu, updateUser,
   getFormInfo, getCompany, addCompany, surveyList, addBuilding, updateBuilding,
-  surveyMenuApi, newSurveyList, userLevelAnswer, reportUserAnswer
+  surveyMenuApi, newSurveyList, userLevelAnswer, reportUserAnswer, dateTimeMenuApi
 }
 
