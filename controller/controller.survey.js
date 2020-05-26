@@ -70,7 +70,7 @@ const surveyMenuApi = (req, res) => {
             return groupArray(data, 'survey_header_id')[v];
         }).map((v1, k1) => {
             return {
-                "survey_name": v1[0].survey_header_id, "survey_header_id": v1[0].survey_name, "amount_of_survey": v1[0].amount_of_survey, "created_date": v1[0].created_date.toString(), "survey_section":
+                "survey_header_id": v1[0].survey_header_id, "survey_name": v1[0].survey_name, "amount_of_survey": v1[0].amount_of_survey, "created_date": v1[0].created_date.toString(), "survey_section":
                     Object.keys(groupArray(v1, 'survey_section_id')).map((v2, k2) => {
                         return groupArray(v1, 'survey_section_id')[v2];
                     }).map((v3, k3) => {
