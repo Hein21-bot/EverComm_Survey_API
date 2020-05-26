@@ -472,19 +472,20 @@ const surveyMenuApi = (userId) => {
 const dateTimeMenuApi = (userId, startDate, endDate) => {
   query = util.promisify(mypool.query).bind(mypool)
   // console.log("startDate is ==>", startDate)
-  return (startDate != undefined) ? query(`SELECT survey_header_id,survey_name,count(building_id) as amount_of_survey,section_name,
-    survey_section_id, building_name,buildings_id,created_date 
-       FROM (
-        select 
-          distinct a.building_id as building_id,sh.survey_header_id as survey_header_id, sh.survey_name as survey_name ,b.building_name,
-            b.building_id as buildings_id,ss.section_name as section_name,ss.survey_section_id as survey_section_id,
-            sh.created_date as created_date from tbl_survey_headers as sh 
-              left join tbl_answers a on sh.survey_header_id=a.survey_headers_id and a.users_id = ${userId} and 
-                  date(a.answered_date) >= '${startDate}' and date(a.answered_date) <= '${endDate}'
-              left join tbl_survey_sections ss on sh.survey_header_id = ss.survey_headers_id
-              left join tbl_buildings b on b.building_id = a.building_id) as t1 
-                  group by survey_header_id,section_name,survey_section_id,building_name,buildings_id,created_date
-                    order by  survey_section_id`) : 
+  const overAllQuery=`SELECT survey_header_id,survey_name,count(building_id) as amount_of_survey,section_name,
+  survey_section_id, building_name,buildings_id,created_date 
+     FROM (
+      select 
+        distinct a.building_id as building_id,sh.survey_header_id as survey_header_id, sh.survey_name as survey_name ,b.building_name,
+          b.building_id as buildings_id,ss.section_name as section_name,ss.survey_section_id as survey_section_id,
+          sh.created_date as created_date from tbl_survey_headers as sh 
+            left join tbl_answers a on sh.survey_header_id=a.survey_headers_id and a.users_id = ${userId} and 
+                date(a.answered_date) >= '${startDate}' and date(a.answered_date) <= '${endDate}'
+            left join tbl_survey_sections ss on sh.survey_header_id = ss.survey_headers_id
+            left join tbl_buildings b on b.building_id = a.building_id) as t1 
+                group by survey_header_id,section_name,survey_section_id,building_name,buildings_id,created_date
+                  order by  survey_section_id`
+  return (startDate!=null) ? query(overAllQuery):(endDate!=null)?query(overAllQuery) :
   query(`SELECT survey_header_id,survey_name,count(building_id) as amount_of_survey,section_name,survey_section_id,
       building_name,buildings_id,created_date
        FROM (    
