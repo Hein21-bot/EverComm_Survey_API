@@ -1,4 +1,5 @@
 const { surveydb } = require('../db')
+const response = require('../model/response')
 
 const getQuestion = (admin_id, surey_header_id, buildingId) => {
     return surveydb.getQuestion(admin_id, surey_header_id, buildingId);
@@ -32,4 +33,27 @@ const dateTimeMenuApi = (userId, startDate, endDate) => {
     return surveydb.dateTimeMenuApi(userId, startDate, endDate)
 }
 
-module.exports = { getQuestion, addAnswer, deleteAnswer, getMenu, surveyList, surveyMenuApi, newSurveyList, dateTimeMenuApi };
+const userLevelAnswer = (userId, surveyHeaderId, startDate, endDate) => {
+    return surveydb.userLevelAnswer(userId, surveyHeaderId).then(res => {
+        if (res[0].user_level_id == 1) {
+            console.log(res[0].user_level_id )
+            
+            const dateTimeMenuAdminApi = (userId, startDate, endDate) => {
+                return surveydb.dateTimeMenuAdminApi(userId, startDate, endDate);
+            }
+            console.log(res[0].user_level_id )
+            return dateTimeMenuAdminApi
+
+        } else {
+            console.log(res[0].user_level_id);
+            
+            const dateTimeMenuApi = (userId, startDate, endDate) => {
+                return surveydb.dateTimeMenuApi(userId, startDate, endDate);
+            }
+            return dateTimeMenuApi
+
+        }
+    }).catch(err => (response({ success: false, message: err.toString() })));
+}
+
+module.exports = { getQuestion, addAnswer, deleteAnswer, getMenu, surveyList, surveyMenuApi, newSurveyList, dateTimeMenuApi ,userLevelAnswer};

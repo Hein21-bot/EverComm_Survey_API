@@ -17,10 +17,12 @@ const userLevelAnswer = (userId, surveyHeaderId, startDate, endDate) => {
     return surveydb.userLevelAnswer(userId, surveyHeaderId).then(res => {
         if (res[0].user_level_id == 1) {
             // console.log(res[0].user_level_id);
+            console.log(res[0].user_level_id )
             
             const reportTotalAnswers = (userId, survey_header_id, startDate, endDate) => {
                 return surveydb.reportTotalAnswers(userId, survey_header_id, startDate, endDate);
             }
+            console.log(res[0].user_level_id )
             return reportTotalAnswers
 
         } else {
