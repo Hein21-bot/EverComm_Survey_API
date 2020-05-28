@@ -54,34 +54,30 @@ const surveyList = (req, res) => {
 }
 
 
-const getMenu = (req, res) => {
-    let userId = req.params.user_id;
-    surveyService.getMenu(userId).then(data => {
-        res.json(response({ success: true, payload: data }))
-
-    }).catch(err => res.json(response({ success: false, message: err })));
-}
-
 const surveyMenuApi = (req, res) => {
     let userId = req.params.user_id;
     surveyService.surveyMenuApi(userId).then(data => {
 
-        let surveySections = Object.keys(groupArray(data, 'survey_header_id')).map((v, k) => {
-            return groupArray(data, 'survey_header_id')[v];
-        }).map((v1, k1) => {
-            return {
-                "survey_header_id": v1[0].survey_header_id, "survey_name": v1[0].survey_name, "amount_of_survey": v1[0].amount_of_survey, "created_date": v1[0].created_date.toString(), "survey_section":
-                    Object.keys(groupArray(v1, 'survey_section_id')).map((v2, k2) => {
-                        return groupArray(v1, 'survey_section_id')[v2];
-                    }).map((v3, k3) => {
-                        return {
-                            "survey_section_id": v3[0].survey_section_id, "survey_section_name": v3[0].section_name
-                        }
-                    })
-            }
-        })
-        res.json(response({ success: true, payload: surveySections }))
+        data(userId).then(data => {
 
+
+            let surveySections = Object.keys(groupArray(data, 'survey_header_id')).map((v, k) => {
+                return groupArray(data, 'survey_header_id')[v];
+            }).map((v1, k1) => {
+                return {
+                    "survey_header_id": v1[0].survey_header_id, "survey_name": v1[0].survey_name, "amount_of_survey": v1[0].amount_of_survey, "created_date": v1[0].created_date.toString(), "survey_section":
+                        Object.keys(groupArray(v1, 'survey_section_id')).map((v2, k2) => {
+                            return groupArray(v1, 'survey_section_id')[v2];
+                        }).map((v3, k3) => {
+                            return {
+                                "survey_section_id": v3[0].survey_section_id, "survey_section_name": v3[0].section_name
+                            }
+                        })
+                }
+            })
+
+            res.json(response({ success: true, payload: surveySections }))
+        })
     }).catch(err => res.json(response({ success: false, message: err.toString() })));
 }
 
@@ -177,6 +173,17 @@ const dateTimeMenuApi = (req, res) => {
     }).catch(err => res.json(response({ success: false, message: err.toString() })));
 }
 
+const getMenu = (req, res) => {
+    let userId = req.params.user_id;
+    surveyService.getMenu(userId).then(data => {
+
+        data(userId).then(data => {
+            res.json(response({ success: true, payload: data }))
+        })
+
+    }).catch(err => res.json(response({ success: false, message: err })));
+}
+
 const userLevelMenuAnswer = (req, res) => {
     let surveyHeaderId = req.params.surveyHeaderId
     const userId = req.params.userId
@@ -184,8 +191,8 @@ const userLevelMenuAnswer = (req, res) => {
     const endDate = req.body.endDate
     const viewType = req.body.viewType
 
-    surveyService.userLevelAnswer(userId, surveyHeaderId, startDate, endDate,viewType).then(data => {
-        console.log("ViewType is ==>",viewType)
+    surveyService.userLevelAnswer(userId, surveyHeaderId, startDate, endDate, viewType).then(data => {
+        console.log("ViewType is ==>", viewType)
         data(userId, startDate, endDate).then(data => {
 
             let surveySections = Object.keys(groupArray(data, 'survey_header_id')).map((v, k) => {

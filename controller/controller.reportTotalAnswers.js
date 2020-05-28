@@ -8,8 +8,9 @@ const userLevelAnswer = (req, res) => {
     const userId = req.body.userId
     const startDate = req.body.startDate
     const endDate = req.body.endDate
+    const viewType = req.body.viewType
 
-    reportTotalAnswersService.userLevelAnswer(userId, surveyHeaderId, startDate, endDate).then(data => {
+    reportTotalAnswersService.userLevelAnswer(userId, surveyHeaderId, startDate, endDate,viewType).then(data => {
 
         data(userId, surveyHeaderId, startDate, endDate).then(data => {
 
