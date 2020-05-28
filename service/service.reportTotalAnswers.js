@@ -7,17 +7,19 @@ const userLevelAnswer = (userId, surveyHeaderId, startDate, endDate, viewType) =
         if (res[0].user_level_id == 1) {
 
             if (viewType == "all") {
-                const reportTotalAnswers = (userId, survey_header_id, startDate, endDate) => {
-                    return surveydb.reportTotalAnswers(userId, survey_header_id, startDate, endDate);
+
+                const reportTotalAnswers = (userId, surveyHeaderId, startDate, endDate) => {
+                    return surveydb.reportTotalAnswers(userId, surveyHeaderId, startDate, endDate);
                 }
                 return reportTotalAnswers
             } else {
 
-                const reportUserAnswer = (userId, survey_header_id, startDate, endDate) => {
-                    return surveydb.reportUserAnswer(userId, survey_header_id, startDate, endDate);
+                const reportUserAnswer = (userId, surveyHeaderId, startDate, endDate) => {
+                    return surveydb.reportUserAnswer(userId, surveyHeaderId, startDate, endDate);
                 }
                 return reportUserAnswer
             }
+
 
         } else if (res[0].user_level_id == 2) {
 
@@ -27,7 +29,6 @@ const userLevelAnswer = (userId, surveyHeaderId, startDate, endDate, viewType) =
             return reportUserAnswer
 
         } else {
-            console.log("viewType of report total answer==>", viewType)
             if (viewType == "all") {
 
                 const reportDistributorAnswers = (userId, surveyHeaderId, startDate, endDate) => {
@@ -35,6 +36,7 @@ const userLevelAnswer = (userId, surveyHeaderId, startDate, endDate, viewType) =
                 }
                 return reportDistributorAnswers
             } else {
+
                 const reportUserAnswer = (userId, surveyHeaderId, startDate, endDate) => {
                     return surveydb.reportUserAnswer(userId, surveyHeaderId, startDate, endDate);
                 }

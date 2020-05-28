@@ -88,11 +88,10 @@ const userLevelAnswer = (userId, surveyHeaderId, startDate, endDate, viewType) =
             } else {
 
                 const dateTimeMenuApi = (userId, startDate, endDate) => {
-                    return surveydb.dateTimeMenuApi(userId, startDate, endDate)
-
-
+                    return surveydb.dateTimeMenuApi(userId, startDate, endDate);
                 }
                 return dateTimeMenuApi
+
             }
 
         } else if (res[0].user_level_id == 2) {
@@ -104,14 +103,14 @@ const userLevelAnswer = (userId, surveyHeaderId, startDate, endDate, viewType) =
 
         } else {
             if (viewType == "all") {
-
+                
                 const dateTimeMenuDistributorApi = (userId, startDate, endDate) => {
                     return surveydb.dateTimeMenuDistributorApi(userId, startDate, endDate);
                 }
 
                 return dateTimeMenuDistributorApi
             } else {
-
+                
                 const dateTimeMenuApi = (userId, startDate, endDate) => {
                     return surveydb.dateTimeMenuApi(userId, startDate, endDate)
 

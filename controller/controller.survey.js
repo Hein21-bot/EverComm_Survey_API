@@ -192,7 +192,7 @@ const userLevelMenuAnswer = (req, res) => {
     const viewType = req.body.viewType
 
     surveyService.userLevelAnswer(userId, surveyHeaderId, startDate, endDate, viewType).then(data => {
-        console.log("ViewType is ==>", viewType)
+        // console.log(data)
         data(userId, startDate, endDate).then(data => {
 
             let surveySections = Object.keys(groupArray(data, 'survey_header_id')).map((v, k) => {

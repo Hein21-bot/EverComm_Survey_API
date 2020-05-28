@@ -11,8 +11,8 @@ const userLevelAnswer = (req, res) => {
     const viewType = req.body.viewType
 
     reportTotalAnswersService.userLevelAnswer(userId, surveyHeaderId, startDate, endDate,viewType).then(data => {
-
-        data(userId, surveyHeaderId, startDate, endDate).then(data => {
+        
+        data(userId, surveyHeaderId, startDate, endDate).then(data => {           
 
 
             let surveySections = Object.keys(groupArray(data[0], 'survey_section_id')).map((v, k) => {
@@ -44,6 +44,7 @@ const userLevelAnswer = (req, res) => {
             }];
 
             res.json(response({ success: true, payload: ans }))
+            
 
         }).catch(err => res.json(response({ success: false, message: err.toString() })));
     })
