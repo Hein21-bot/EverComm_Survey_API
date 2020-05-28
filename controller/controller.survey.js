@@ -86,15 +86,6 @@ const surveyMenuApi = (req, res) => {
 }
 
 
-// const surveyList = (req, res) => {
-//     let userId = req.params.user_id;
-//     let survey_header_id = req.params.survey_header_id
-//     surveyService.surveyList(userId, survey_header_id).then(data => {
-//         res.json(response({ success: true, payload: data }))
-
-//     }).catch(err => res.json(response({ success: false, message: err })));
-// }
-
 const newSurveyList = (req, res) => {
     let userId = req.params.user_id;
     let survey_header_id = req.params.survey_header_id
@@ -191,23 +182,24 @@ const userLevelMenuAnswer = (req, res) => {
     const userId = req.params.userId
     const startDate = req.body.startDate
     const endDate = req.body.endDate
+    const viewType = req.body.viewType
 
-    surveyService.userLevelAnswer(userId, surveyHeaderId, startDate, endDate).then(data => {
-        // console.log(data)
+    surveyService.userLevelAnswer(userId, surveyHeaderId, startDate, endDate,viewType).then(data => {
+        console.log("ViewType is ==>",viewType)
         data(userId, startDate, endDate).then(data => {
 
             let surveySections = Object.keys(groupArray(data, 'survey_header_id')).map((v, k) => {
                 return groupArray(data, 'survey_header_id')[v];
             }).map((v1, k1) => {
                 return {
-                    "survey_header_id": v1[0].survey_header_id, "survey_name": v1[0].survey_name, "survey_created_date": v1[0].created_date.toString(), "amount_of_survey":
-                        Object.keys(groupArray(v1, 'buildings_id')).map((v2, k2) => {
-                            return groupArray(v1, 'buildings_id')[v2];
-                        }).map((v3, k3) => {
-                            return {
-                                "building_id": v3[0].buildings_id, "building_name": v3[0].building_name
-                            }
-                        }),
+                    "survey_header_id": v1[0].survey_header_id, "survey_name": v1[0].survey_name, "survey_created_date": v1[0].created_date.toString(),
+                    "amount_of_survey": Object.keys(groupArray(v1, 'buildings_id')).map((v2, k2) => {
+                        return groupArray(v1, 'buildings_id')[v2];
+                    }).map((v3, k3) => {
+                        return {
+                            "building_id": v3[0].buildings_id, "building_name": v3[0].building_name
+                        }
+                    }),
                     "survey_section": Object.keys(groupArray(v1, 'survey_section_id')).map((v4, k4) => {
                         return groupArray(v1, 'survey_section_id')[v4];
                     }).map((v5, k5) => {

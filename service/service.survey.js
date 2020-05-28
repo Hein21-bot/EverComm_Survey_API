@@ -33,20 +33,29 @@ const dateTimeMenuApi = (userId, startDate, endDate) => {
     return surveydb.dateTimeMenuApi(userId, startDate, endDate)
 }
 
-const userLevelAnswer = (userId, surveyHeaderId, startDate, endDate) => {
-    return surveydb.userLevelAnswer(userId, surveyHeaderId).then(res => {
+const userLevelAnswer = (userId, surveyHeaderId, startDate, endDate, viewType) => {
+    return surveydb.userLevelAnswer(userId, surveyHeaderId, viewType).then(res => {
         if (res[0].user_level_id == 1) {
-            console.log(res[0].user_level_id )
-            
-            const dateTimeMenuAdminApi = (userId, startDate, endDate) => {
-                return surveydb.dateTimeMenuAdminApi(userId, startDate, endDate);
+
+            if (viewType == "all") {
+
+                const dateTimeMenuAdminApi = (userId, startDate, endDate) => {
+                    return surveydb.dateTimeMenuAdminApi(userId, startDate, endDate);
+                }
+
+                return dateTimeMenuAdminApi
+            } else {
+
+                const dateTimeMenuApi = (userId, startDate, endDate) => {
+                    return surveydb.dateTimeMenuApi(userId, startDate, endDate)
+
+
+                }
+                return dateTimeMenuApi
             }
-            console.log(res[0].user_level_id )
-            return dateTimeMenuAdminApi
 
         } else {
-            console.log(res[0].user_level_id);
-            
+
             const dateTimeMenuApi = (userId, startDate, endDate) => {
                 return surveydb.dateTimeMenuApi(userId, startDate, endDate);
             }
@@ -56,4 +65,4 @@ const userLevelAnswer = (userId, surveyHeaderId, startDate, endDate) => {
     }).catch(err => (response({ success: false, message: err.toString() })));
 }
 
-module.exports = { getQuestion, addAnswer, deleteAnswer, getMenu, surveyList, surveyMenuApi, newSurveyList, dateTimeMenuApi ,userLevelAnswer};
+module.exports = { getQuestion, addAnswer, deleteAnswer, getMenu, surveyList, surveyMenuApi, newSurveyList, dateTimeMenuApi, userLevelAnswer };
