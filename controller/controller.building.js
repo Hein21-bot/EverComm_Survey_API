@@ -28,33 +28,9 @@ const addBuilding = (req, res) => {
         });
 }
 
-const getBuilding = (req, res) => {
-    buildingService.getAdmin().then(data => {
-        res.json(response({ success: true, payload: data }))
-    }).catch(err => res.json(response({ success: false, message: err })));
-}
-
-const updateBuilding = (req, res) => {
-    const buildingId = req.body.buildingId
-    const active = req.body.active 
-
-
-    buildingService.updateBuilding(buildingId, active)
-        .then(data => {
-            return res.json(
-                response({
-                    success: true,
-                    message: "Updated!",
-                    payload: data
-                })
-            );
-
-        }).catch(err => {
-            res.json(response({ success: false, message: err }));
-        });
-}
 
 
 
-module.exports = { addBuilding, getBuilding, updateBuilding }
+
+module.exports = { addBuilding }
 

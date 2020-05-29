@@ -41,9 +41,6 @@ const surveyList = (userId, survey_header_id) => {
     return surveydb.surveyList(userId, survey_header_id);
 }
 
-// const surveyMenuApi = (userId) => {
-//     return surveydb.surveyMenuApi(userId)
-// }
 
 const surveyMenuApi = (userId, surveyHeaderId, startDate, endDate, viewType) => {
     return surveydb.userLevelAnswer(userId, surveyHeaderId, viewType).then(res => {
@@ -66,59 +63,10 @@ const surveyMenuApi = (userId, surveyHeaderId, startDate, endDate, viewType) => 
     }).catch(err => (response({ success: false, message: err.toString() })));
 }
 
-const newSurveyList = (userId, survey_header_id) => {
-    return surveydb.newSurveyList(userId, survey_header_id)
-}
 
 const dateTimeMenuApi = (userId, startDate, endDate) => {
     return surveydb.dateTimeMenuApi(userId, startDate, endDate)
 }
 
-const userLevelAnswer = (userId, surveyHeaderId, startDate, endDate, viewType) => {
-    return surveydb.userLevelAnswer(userId, surveyHeaderId, viewType).then(res => {
-        if (res[0].user_level_id == 1) {
 
-            if (viewType == "all") {
-
-                const dateTimeMenuAdminApi = (userId, startDate, endDate) => {
-                    return surveydb.dateTimeMenuAdminApi(userId, startDate, endDate);
-                }
-
-                return dateTimeMenuAdminApi
-            } else {
-
-                const dateTimeMenuApi = (userId, startDate, endDate) => {
-                    return surveydb.dateTimeMenuApi(userId, startDate, endDate);
-                }
-                return dateTimeMenuApi
-
-            }
-
-        } else if (res[0].user_level_id == 2) {
-
-            const dateTimeMenuApi = (userId, startDate, endDate) => {
-                return surveydb.dateTimeMenuApi(userId, startDate, endDate);
-            }
-            return dateTimeMenuApi
-
-        } else {
-            if (viewType == "all") {
-                
-                const dateTimeMenuDistributorApi = (userId, startDate, endDate) => {
-                    return surveydb.dateTimeMenuDistributorApi(userId, startDate, endDate);
-                }
-
-                return dateTimeMenuDistributorApi
-            } else {
-                
-                const dateTimeMenuApi = (userId, startDate, endDate) => {
-                    return surveydb.dateTimeMenuApi(userId, startDate, endDate)
-
-                }
-                return dateTimeMenuApi
-            }
-        }
-    }).catch(err => (response({ success: false, message: err.toString() })));
-}
-
-module.exports = { getQuestion, addAnswer, deleteAnswer, getMenu, surveyList, surveyMenuApi, newSurveyList, dateTimeMenuApi, userLevelAnswer };
+module.exports = { getQuestion, addAnswer, deleteAnswer, getMenu, surveyList, surveyMenuApi, dateTimeMenuApi };

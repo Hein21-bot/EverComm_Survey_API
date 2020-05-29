@@ -84,24 +84,6 @@ const checkDuplicateEmailUpdate = (email, user_id) => {
   return query(`Select Count(*) as DE from tbl_login_users where email = '${email}' and login_user_id != ${user_id}`)
 }
 
-//user
-
-const getAdmin = () => {
-  query = util.promisify(mypool.query).bind(mypool)
-  return query(`SELECT * FROM tbl_login_users where user_level_id = 1`)
-}
-
-const getCompany = () => {
-  query = util.promisify(mypool.query).bind(mypool)
-  return query('Select company_id,company_name from tbl_company')
-}
-
-
-const addCompany = (companyName) => {
-  query = util.promisify(mypool.query).bind(mypool)
-  return (`Insert into tbl_company(company_name,remark,active,created_by) Values (${companyName},"ok",1,1)`)
-
-}
 
 
 
@@ -116,130 +98,6 @@ const getQuestion = (user_id, survey_header_id, buildingId) => {
             tbl_answers where users_id = ${user_id} and survey_headers_id = ${survey_header_id} and building_id = ${buildingId};`)
 }
 
-const isExistAdmin = (username, userId) => {
-  query = util.promisify(mypool.query).bind(mypool)
-  return query(`SELECT * FROM tbl_user WHERE username = '${username}' && userId <> ${userId} `)
-}
-
-const addAdmin = (username, password, active, employeeId) => {
-  query = util.promisify(mypool.query).bind(mypool)
-  return query(`INSERT INTO tbl_user(username, password, active, employeeId) VALUES(?,?,?,?)`, [username, password, active, employeeId])
-}
-
-const updateAdmin = (userId, username, password, active, employeeId) => {
-  query = util.promisify(mypool.query).bind(mypool)
-  return query(`UPDATE tbl_user SET username = '${username}', password = '${password}', active = ${active}, employeeId = ${employeeId} 
-  WHERE userId = ${userId} `)
-}
-
-const getAdminById = (userId) => {
-  query = util.promisify(mypool.query).bind(mypool)
-  return query(`SELECT * FROM tbl_user WHERE userId = ${userId} `)
-}
-
-//unit
-const getUnit = () => {
-  query = util.promisify(mypool.query).bind(mypool)
-  return query(`Select * from tbl_units`)
-}
-
-
-const addUnit = (units) => {
-  query = util.promisify(mypool.query).bind(mypool)
-  return query(`INSERT INTO tbl_units(unit_name) VALUES(?)`,
-    [units]
-  )
-}
-
-const deleteUnit = (unit_id) => {
-  query = util.promisify(mypool.query).bind(mypool)
-  return query('DELETE FROM tbl_units WHERE unit_id = "' + unit_id + '"')
-}
-
-const updateUnit = (unit_id, units) => {
-  query = util.promisify(mypool.query).bind(mypool)
-  return query(`UPDATE tbl_units SET unit_name = ('${units}') WHERE unit_id = ${unit_id} `)
-}
-
-// survey_header
-
-const addHeader = (surveyname, remark, active, adminId) => {
-  query = util.promisify(mypool.query).bind(mypool)
-  return query(`INSERT INTO tbl_survey_headers(survey_name, remark, active, admin_id) VALUES(?,?,?,?)`,
-    [surveyname, remark, active, adminId])
-}
-
-const deleteHeader = (header_id) => {
-  query = util.promisify(mypool.query).bind(mypool)
-  return query('DELETE FROM tbl_survey_headers WHERE survey_header_id = "' + header_id + '"')
-}
-
-const updateHeader = (header_id, surveyname, remark, active, adminId) => {
-  query = util.promisify(mypool.query).bind(mypool)
-  return query(`UPDATE tbl_survey_headers SET survey_name = ('${surveyname}'), remark = ('${remark}'), active = ${active} , 
-  admin_id = ('${adminId}') WHERE survey_header_id = ${header_id} `)
-}
-
-// survey_section
-
-const addSection = (sectionName, pageNo, active, surveyHeaderId) => {
-  query = util.promisify(mypool.query).bind(mypool)
-  return query(`INSERT INTO tbl_survey_sections(section_name, page_no, active, survey_headers_id) VALUES(?,?,?,?)`,
-    [sectionName, pageNo, active, surveyHeaderId])
-}
-
-const deleteSection = (section_id) => {
-  query = util.promisify(mypool.query).bind(mypool)
-  return query('DELETE FROM tbl_survey_sections WHERE survey_id = "' + section_id + '"')
-}
-
-const updateSection = (section_id, sectionName, pageNo, active, surveyHeaderId) => {
-  query = util.promisify(mypool.query).bind(mypool)
-  return query(`UPDATE tbl_survey_sections SET section_name = '${sectionName}', page_no = ${pageNo}, active = ${active} , 
-  survey_headers_id = ${surveyHeaderId} WHERE survey_id = ${section_id} `)
-}
-
-// option_choice
-
-const addOptionChoice = (optionChoiceName, questionId) => {
-  query = util.promisify(mypool.query).bind(mypool)
-  return query(`INSERT INTO tbl_option_choices(option_choice_name, questions_id) VALUES(?,?)`,
-    [optionChoiceName, questionId])
-}
-
-const deleteOptionChoice = (option_choice_id) => {
-  query = util.promisify(mypool.query).bind(mypool)
-  return query('DELETE FROM tbl_option_choices WHERE option_choice_id = "' + option_choice_id + '"')
-}
-
-const updateOptionChoice = (option_choice_id, optionChoiceName, questionId) => {
-  query = util.promisify(mypool.query).bind(mypool)
-  return query(`UPDATE tbl_option_choices SET option_choice_name = '${optionChoiceName}', questions_id = ${questionId} WHERE 
-  option_choice_id = ${option_choice_id} `)
-}
-
-// option_Group
-
-const getOptionGroup = () => {
-  query = util.promisify(mypool.query).bind(mypool)
-  return query(`Select * from tbl_option_groups`)
-}
-
-const addOptionGroup = (optionGroupName) => {
-  query = util.promisify(mypool.query).bind(mypool)
-  return query(`INSERT INTO tbl_option_groups(option_group_name) VALUES(?)`,
-    [optionGroupName])
-}
-
-const deleteOptionGroup = (option_group_id) => {
-  query = util.promisify(mypool.query).bind(mypool)
-  return query('DELETE FROM tbl_option_groups WHERE option_group_id = "' + option_group_id + '"')
-}
-
-const updateOptionGroup = (option_group_id, optionGroupName) => {
-  query = util.promisify(mypool.query).bind(mypool)
-  return query(`UPDATE tbl_option_groups SET option_group_name = '${optionGroupName}' WHERE option_group_id = ${option_group_id} `)
-}
 
 // answers
 
@@ -261,23 +119,6 @@ const updateAnswer = (answer_id, other, optionChoiceId, userId, questionId) => {
   questions_id = ${questionId} WHERE answer_id = ${answer_id} `)
 }
 
-// input_type
-
-const addInputType = (name) => {
-  query = util.promisify(mypool.query).bind(mypool)
-  return query(`INSERT INTO tbl_input_types(name) VALUES(?)`,
-    [name])
-}
-
-const deleteInputType = (input_type_id) => {
-  query = util.promisify(mypool.query).bind(mypool)
-  return query('DELETE FROM tbl_input_types WHERE input_type_id = "' + input_type_id + '"')
-}
-
-const updateInputType = (input_type_id, name) => {
-  query = util.promisify(mypool.query).bind(mypool)
-  return query(`UPDATE tbl_input_types SET name = '${name}' WHERE input_type_id = ${input_type_id} `)
-}
 
 // questions
 
@@ -367,30 +208,37 @@ const reportTotalAnswers = (userId, surveyHeaderId, startDate, endDate) => {
 
 const reportDistributorAnswers = (userId, surveyHeaderId, startDate, endDate) => {
   query = util.promisify(mypool.query).bind(mypool)
-  return (startDate != null) ? query(`select  distinct(acount) as acount,t4.other ,t4.option_choice_name, t4.question_name,t4.question_id,
-  sh.survey_name,ss.section_name,sh.survey_header_id,ss.survey_section_id,i.input_type_id,(select count(option_choices_id) as atcount 
-  from tbl_answers as aa where date(answered_date)  >= '2020-5-1' and date(answered_date) <= '2020-5-28' and 
-  survey_headers_id=6 and 
-      aa.questions_id=t4.question_id group by questions_id order by atcount DESC)as atcount
-        from(select  acount ,option_choice_name, question_name,question_id,other,survey_sections_id,survey_headers_id,input_types_id from
-  (
-      (select distinct(acount)as acount ,oc.option_choice_name, q.question_name,q.question_id,other,q.survey_sections_id,q.input_types_id,
-      q.survey_headers_id from
-        (SELECT count(option_choices_id)as acount,option_choices_id,questions_id,other FROM evercomm_survey.tbl_answers WHERE 
-          date(answered_date)  >=' 2020-5-1' and date(answered_date) <= '2020-5-28' 
-            GROUP BY option_choices_id,questions_id,other) as t1 
-              right join evercomm_survey.tbl_option_choices oc on oc.option_choice_id = t1.option_choices_id
-              left join evercomm_survey.tbl_questions q on oc.questions_id = q.question_id where survey_headers_id=6) union
-      (select distinct(acount)as acount ,oc.option_choice_name, q.question_name,q.question_id,other,q.survey_sections_id,q.input_types_id,
-      q.survey_headers_id from
-        (SELECT count(option_choices_id)as acount,option_choices_id,questions_id,other FROM evercomm_survey.tbl_answers WHERE 
-          date(answered_date)  >= '2020-5-1' and date(answered_date) <= '2020-5-28' and other like '{"YearOfManufacturing%' 
-            GROUP BY option_choices_id,questions_id,other) as t2
-            left join evercomm_survey.tbl_user_survey us on t4.survey_headers_id = us.survey_header_id
-            left join evercomm_survey.tbl_input_types i on t4.input_types_id = input_type_id
-            left join evercomm_survey.tbl_survey_headers sh on sh.survey_header_id = t4.survey_headers_id        
-              left join evercomm_survey.tbl_survey_sections ss on ss.survey_section_id = t4.survey_sections_id 
-              where us.user_id = ${userId};
+  return (startDate != null) ? query(`select  distinct(acount) as acount,t4.other ,t4.option_choice_name, t4.question_name,t4.question_id,sh.survey_name,
+  ss.section_name,sh.survey_header_id,
+  ss.survey_section_id,i.input_type_id,(select count(option_choices_id) as atcount 
+  from tbl_answers as aa where survey_headers_id=${surveyHeaderId} and date(answered_date)  >= '${startDate}' and 
+  date(answered_date) <= '${endDate}' and
+        aa.questions_id=t4.question_id group by questions_id order by atcount DESC)as atcount
+          from(select  acount ,option_choice_name, question_name,question_id,other,survey_sections_id,survey_headers_id,input_types_id from
+    (
+        (select distinct(acount)as acount ,oc.option_choice_name, q.question_name,q.question_id,other,q.survey_sections_id,q.input_types_id,
+        q.survey_headers_id from
+          (SELECT count(option_choices_id)as acount,option_choices_id,questions_id,other FROM evercomm_survey.tbl_answers where
+          date(answered_date)  >= '${startDate}' and date(answered_date) <= '${endDate}'
+              GROUP BY option_choices_id,questions_id,other) as t1 
+                right join evercomm_survey.tbl_option_choices oc on oc.option_choice_id = t1.option_choices_id
+                left join evercomm_survey.tbl_questions q on oc.questions_id = q.question_id where survey_headers_id=${surveyHeaderId}) 
+                union
+        (select distinct(acount)as acount ,oc.option_choice_name, q.question_name,q.question_id,other,q.survey_sections_id,q.input_types_id,
+        q.survey_headers_id from
+          (SELECT count(option_choices_id)as acount,option_choices_id,questions_id,other FROM evercomm_survey.tbl_answers WHERE 
+          date(answered_date)  >= '${startDate}' and date(answered_date) <= '${endDate}' and
+      other like '{"YearOfManufacturing%' 
+              GROUP BY option_choices_id,questions_id,other) as t2
+                left join evercomm_survey.tbl_option_choices oc on oc.option_choice_id = t2.option_choices_id
+                left join evercomm_survey.tbl_questions q on t2.questions_id = q.question_id where survey_headers_id=${surveyHeaderId}) )
+                as t3 
+                order by question_id) as t4
+                right join tbl_user_survey us on t4.survey_headers_id = us.survey_header_id
+                  left join evercomm_survey.tbl_input_types i on t4.input_types_id = input_type_id
+                  left join evercomm_survey.tbl_survey_headers sh on sh.survey_header_id = t4.survey_headers_id        
+                    left join evercomm_survey.tbl_survey_sections ss on ss.survey_section_id = t4.survey_sections_id 
+                   where question_id != "" and us.user_id = ${userId};
     select survey_headers_id,count(distinct building_id) as Number_of_buildings from evercomm_survey.tbl_answers where 
     survey_headers_id=${surveyHeaderId};`)
     : query(`select  distinct(acount) as acount,t4.other ,t4.option_choice_name, t4.question_name,t4.question_id,sh.survey_name,
@@ -498,16 +346,6 @@ const userLevelAnswer = (userId, surveyHeaderId, startDate, endDate) => {
 }
 
 
-
-const getFormInfo = (companyId) => {
-  query = util.promisify(mypool.query).bind(mypool)
-  return companyId != 0 ? query(`select b.building_id,b.building_name,b.address,c.company_id,c.company_name from 
-  tbl_buildings as b left join tbl_company as c on b.company_id = c.company_id where b.active = true AND c.company_id = ${companyId}`)
-    : query(`select b.building_id,b.building_name,b.address,c.company_id,c.company_name from tbl_buildings as b left join 
-    tbl_company as c on b.company_id = c.company_id where b.active = true`)
-}
-
-
 const surveyList = (userId, survey_header_id) => {
   query = util.promisify(mypool.query).bind(mypool)
   return query(`select survey_header_id, t2.building_id as building_id, b.building_name as building_name, answers, (select count(*) from      
@@ -535,12 +373,6 @@ const surveyList = (userId, survey_header_id) => {
               tbl_buildings.user_id = ${userId} and tbl_buildings.survey_headers_id=${survey_header_id}`)
 }
 
-const newSurveyList = (userId, survey_header_id) => {
-  query = util.promisify(mypool.query).bind(mypool)
-  return query(`SELECT distinct b.user_id,b.survey_headers_id,b.building_id,b.building_name 
-      FROM evercomm_survey.tbl_buildings as b inner join evercomm_survey.tbl_answers a on
-          b.user_id = ${userId} and b.survey_headers_id= ${survey_header_id} and b.active= 1`)
-}
 
 
 // @hmh
@@ -551,11 +383,6 @@ const addBuilding = (buildingName, companyName, address, postalCode, country, co
   return query(`INSERT INTO tbl_buildings(building_name, company_name, remark, active, created_by, address, postal_code,country,
     comment,user_id,survey_headers_id) VALUES(?,?,?,?,?,?,?,?,?,?,?)`,
     [buildingName, companyName, 'ok', 1, 1, address, postalCode, country, comment, userId, surveyHeadersId])
-}
-
-const updateBuilding = (buildingId, active) => {
-  const query = util.promisify(mypool.query).bind(mypool)
-  return query(`UPDATE tbl_buildings SET active = ${active} WHERE building_id = ${buildingId}`)
 }
 
 
@@ -596,14 +423,14 @@ const dateTimeMenuApi = (userId, startDate, endDate) => {
      FROM (
       select 
         distinct a.building_id as building_id,sh.survey_header_id as survey_header_id, sh.survey_name as survey_name ,b.building_name,
-          b.building_id as buildings_id,ss.section_name as section_name,ss.survey_section_id as survey_section_id,
+          b.building_id as buildings_id,ss.section_name as section_name,ss.survey_section_id as survey_section_id,a.users_id,
           sh.created_date as created_date from tbl_survey_headers as sh 
-            left join tbl_answers a on sh.survey_header_id=a.survey_headers_id and a.users_id = ${userId} and 
+            left join tbl_answers a on sh.survey_header_id=a.survey_headers_id and  
                 date(a.answered_date) >= '${startDate}' and date(a.answered_date) <= '${endDate}'
             left join tbl_survey_sections ss on sh.survey_header_id = ss.survey_headers_id
             left join tbl_buildings b on b.building_id = a.building_id
             left join tbl_user_survey us on us.survey_header_id = sh.survey_header_id 
-              ) as t1 where t1.survey_name != "" and users_id = ${userId}
+              ) as t1 where t1.survey_name != "" and t1.users_id = ${userId}
                 group by survey_header_id,section_name,survey_section_id,building_name,buildings_id,created_date
                   order by  survey_section_id`
   return (startDate != null) ? query(overAllQuery) : (endDate != null) ? query(overAllQuery) :
@@ -654,7 +481,7 @@ const dateTimeMenuAdminApi = (userId, startDate, endDate) => {
 
 const dateTimeMenuDistributorApi = (userId, startDate, endDate) => {
   query = util.promisify(mypool.query).bind(mypool)
-  // console.log("startDate is ==>", startDate)
+
   const overAllQuery = `SELECT survey_header_id,survey_name,count(building_id) as amount_of_survey,section_name,survey_section_id,
   building_name,buildings_id,created_date
    FROM (    
@@ -688,18 +515,13 @@ const dateTimeMenuDistributorApi = (userId, startDate, endDate) => {
 
 
 module.exports = {
-  getQuestion, login, isExistAdmin, addAdmin, updateAdmin, getAdmin, getAdminById, addUser, checkDuplicateEmailInsert,
+  getQuestion, login, addUser, checkDuplicateEmailInsert,
   checkDuplicateEmailUpdate, dateTimeMenuDistributorApi,
-  addUnit, deleteUnit, updateUnit, getUnit, reportDistributorAnswers,
-  addHeader, deleteHeader, updateHeader,
-  addSection, deleteSection, updateSection,
-  addOptionChoice, deleteOptionChoice, updateOptionChoice,
-  addOptionGroup, deleteOptionGroup, updateOptionGroup, getOptionGroup,
+  reportDistributorAnswers,
   addAnswer, deleteAnswer, updateAnswer,
-  addInputType, deleteInputType, updateInputType,
   addQuestion, deleteQuestion, updateQuestion, reportTotalAnswers,
   getMenu, updateUser, getMenuLevl, surveyMenuApiLevel,
-  getFormInfo, getCompany, addCompany, surveyList, addBuilding, updateBuilding,
-  surveyMenuApi, newSurveyList, userLevelAnswer, reportUserAnswer, dateTimeMenuApi, dateTimeMenuAdminApi
+  surveyList, addBuilding,
+  surveyMenuApi, userLevelAnswer, reportUserAnswer, dateTimeMenuApi, dateTimeMenuAdminApi
 }
 

@@ -3,6 +3,7 @@ const express = require("express")
 const router = express.Router()
 
 
-router.post('/totalReportAnswers/:surveyHeaderId', reportTotalAnswersController.userLevelAnswer);
+router.post('/reportTotalAnswers/:surveyHeaderId', reportTotalAnswersController.userLevelAnswer);
+router.post('/reportMenu/:userId', reportTotalAnswersController.userLevelMenuAnswer);
 
 module.exports = router
