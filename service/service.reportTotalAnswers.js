@@ -7,10 +7,10 @@ const userLevelAnswer = (userId, surveyHeaderId, startDate, endDate, viewType) =
         if (res[0].user_level_id == 1) {
 
             if (viewType == "all") {
-
                 const reportTotalAnswers = (userId, surveyHeaderId, startDate, endDate) => {
-                    return surveydb.reportTotalAnswers(userId, surveyHeaderId, startDate, endDate);
+                    return surveydb.reportTotalAnswers(userId, surveyHeaderId, startDate, endDate)                        
                 }
+
                 return reportTotalAnswers
             } else {
 

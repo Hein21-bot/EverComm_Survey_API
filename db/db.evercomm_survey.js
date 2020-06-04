@@ -208,8 +208,8 @@ const reportTotalAnswers = (userId, surveyHeaderId, startDate, endDate) => {
 
 const reportDistributorAnswers = (userId, surveyHeaderId, startDate, endDate) => {
   query = util.promisify(mypool.query).bind(mypool)
-  return (startDate != null) ? query(`select  distinct(acount) as acount,t4.other ,t4.option_choice_name, t4.question_name,t4.question_id,sh.survey_name,
-  ss.section_name,sh.survey_header_id,
+  return (startDate != null) ? query(`select  distinct(acount) as acount,t4.other ,t4.option_choice_name, t4.question_name,t4.question_id,
+  sh.survey_name,ss.section_name,sh.survey_header_id,
   ss.survey_section_id,i.input_type_id,(select count(option_choices_id) as atcount 
   from tbl_answers as aa where survey_headers_id=${surveyHeaderId} and date(answered_date)  >= '${startDate}' and 
   date(answered_date) <= '${endDate}' and

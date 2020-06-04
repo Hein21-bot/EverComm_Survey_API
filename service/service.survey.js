@@ -2,20 +2,17 @@ const { surveydb } = require('../db')
 const response = require('../model/response')
 
 const getQuestion = (admin_id, surey_header_id, buildingId) => {
-    return surveydb.getQuestion(admin_id, surey_header_id, buildingId);
+    return surveydb.getQuestion(admin_id, surey_header_id, buildingId)
 }
 
 const addAnswer = (other, optionChoiceId, userId, questionId, surey_headers_id, building_id) => {
-    return surveydb.addAnswer(other, optionChoiceId, userId, questionId, surey_headers_id, building_id);
+    return surveydb.addAnswer(other, optionChoiceId, userId, questionId, surey_headers_id, building_id)
 }
 
 const deleteAnswer = (userId, survey_headers_id, building_id) => {
     return surveydb.deleteAnswer(userId, survey_headers_id, building_id);
 }
 
-// const getMenu = (userId) => {
-//     return surveydb.getMenu(userId);
-// }
 const getMenu = (userId, surveyHeaderId, startDate, endDate, viewType) => {
     return surveydb.userLevelAnswer(userId, surveyHeaderId, viewType).then(res => {
         if (res[0].user_level_id == 1) {

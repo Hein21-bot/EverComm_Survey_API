@@ -15,23 +15,34 @@ const getQuestion = (req, res) => {
         let surveySections = Object.keys(groupArray(data[0], 'survey_section_id')).map((v, k) => {
             return groupArray(data[0], 'survey_section_id')[v];
         });
-
         let ans = [{
-            "survey_header_id": surveySections[0][0].survey_header_id, "survey_name": surveySections[0][0].survey_name, survey_sections:
+            "survey_header_id": surveySections[0][0].survey_header_id, "survey_name": surveySections[0][0].survey_name, "survey_sections":
                 surveySections.map(section => {
-                    count += Object.keys(groupArray(section, 'question_id')).length;
                     return {
-                        "survey_section_id": section[0].survey_section_id, "section_name": section[0].section_name, "questions":
-                            Object.keys(groupArray(section, 'question_id')).map((v, k) => {
-                                return groupArray(section, 'question_id')[v];
+                        "survey_section_id": section[0].survey_section_id, "section_name": section[0].section_name, "devicesQuestions":
+                            Object.keys(groupArray(section, 'device_type')).map((v, k) => {
+                                // count = Object.keys(groupArray(section[0].device_type, 'question_id'))
+                                // console.log(count)
+                                return groupArray(section, 'device_type')[v]
                             }).map((v1, k1) => {
                                 return {
-                                    "question_id": v1[0].question_id, "question_name": v1[0].question_name, "input_type_id": v1[0].input_types_id, "option_choices": v1.map(c => {
-                                        return { "option_choice_id": c.option_choice_id, "option_choice_name": c.option_choice_name }
-                                    })
+                                    "deviceName": v1[0].device_type, "questions":
+                                        Object.keys(groupArray(v1, 'question_id')).map((v2, k2) => {
+                                            return groupArray(v1, 'question_id')[v2]
+                                        }).map((v3, k3) => {
+                                            return {
+                                                "question_id": v3[0].question_id, "question_name": v3[0].question_name,
+                                                "input_type_id": v3[0].input_types_id, "option_choices": v3.map(c => {
+                                                    return {
+                                                        "option_choice_id": c.option_choice_id, "option_choice_name": c.option_choice_name
+                                                    }
+                                                })
+                                            }
+                                        })
                                 }
                             })
-                    };
+                    }
+
                 }), "question_count": count,
             "answers": data[1]
         }];
