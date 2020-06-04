@@ -15,37 +15,81 @@ const getQuestion = (req, res) => {
         let surveySections = Object.keys(groupArray(data[0], 'survey_section_id')).map((v, k) => {
             return groupArray(data[0], 'survey_section_id')[v];
         });
+
+        // let dd= surveySections[0].filter(d=> {
+        //     return  d.device_type=='chiller 1' || d.device_type=='condenser 1' || d.device_type == 'evaporator 1' || 
+        //     d.device_type == "cooling tower 1" || d.device_type == '1' || d.device_type == '7'})
+        //    const rr=dd.map(c=>console.log((c.question_id)))
+        // console.log(surveySections[0][0].device_type)
+
+
         let ans = [{
             "survey_header_id": surveySections[0][0].survey_header_id, "survey_name": surveySections[0][0].survey_name, "survey_sections":
                 surveySections.map(section => {
+                    // console.log("=====>", Object.keys(groupArray(section, 'device_type')))
+
                     return {
                         "survey_section_id": section[0].survey_section_id, "section_name": section[0].section_name, "devicesQuestions":
                             Object.keys(groupArray(section, 'device_type')).map((v, k) => {
-                                // count = Object.keys(groupArray(section[0].device_type, 'question_id'))
-                                // console.log(count)
                                 return groupArray(section, 'device_type')[v]
                             }).map((v1, k1) => {
-                                return {
-                                    "deviceName": v1[0].device_type, "questions":
-                                        Object.keys(groupArray(v1, 'question_id')).map((v2, k2) => {
-                                            return groupArray(v1, 'question_id')[v2]
-                                        }).map((v3, k3) => {
-                                            return {
-                                                "question_id": v3[0].question_id, "question_name": v3[0].question_name,
-                                                "input_type_id": v3[0].input_types_id, "option_choices": v3.map(c => {
-                                                    return {
-                                                        "option_choice_id": c.option_choice_id, "option_choice_name": c.option_choice_name
-                                                    }
-                                                })
-                                            }
-                                        })
+                                if (k1 == 0) {
+                                    count += Object.keys(groupArray(v1, 'question_id')).length
+
+                                    return {
+                                        "deviceName": v1[0].device_type, "questions":
+                                            Object.keys(groupArray(v1, 'question_id')).map((v2, k2) => {
+                                                return groupArray(v1, 'question_id')[v2]
+                                            }).map((v3, k3) => {
+                                                return {
+                                                    "question_id": v3[0].question_id, "question_name": v3[0].question_name,
+                                                    "input_type_id": v3[0].input_types_id, "option_choices": v3.map(c => {
+                                                        return {
+                                                            "option_choice_id": c.option_choice_id, "option_choice_name": c.option_choice_name
+                                                        }
+                                                    })
+                                                }
+                                            })
+                                    }
                                 }
+                                else { return }
+
+
+                                // return {
+                                //     "deviceName": v1[0].device_type, "questions":
+                                //         Object.keys(groupArray(v1, 'question_id')).map((v2, k2) => {
+                                //             // if(k2 == 0) count1++;
+                                //             // else count2++;
+                                //             // if(k2 == 0) count += groupArray(v1, 'question_id')[v2].length;
+                                //             return groupArray(v1, 'question_id')[v2]
+                                //         }).map((v3, k3) => {
+
+                                //             return {
+
+                                //                 "question_id": v3[0].question_id, "question_name": v3[0].question_name,
+                                //                 "input_type_id": v3[0].input_types_id, "option_choices": v3.map(c => {
+                                //                     return {
+                                //                         "option_choice_id": c.option_choice_id, "option_choice_name": c.option_choice_name
+                                //                     }
+                                //                 })
+                                //             }
+                                //         })
+                                // }
                             })
                     }
 
                 }), "question_count": count,
             "answers": data[1]
         }];
+
+        // let tmparr = ans[0];
+        // let test = 0;
+        // tmparr.survey_sections.map((v, k) => {
+        //     test += v.devicesQuestions[0].questions.length;
+        // });
+
+        // ans[0].question_count = test;
+
         res.json(response({ success: true, payload: ans }))
 
     }).catch(err => res.json(response({ success: false, message: err })));
