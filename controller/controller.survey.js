@@ -8,6 +8,7 @@ const getQuestion = (req, res) => {
     const survey_header_id = req.params.survey_header_id;
     const buildingId = req.params.buildingId;
     let count = 0;
+    let zz = 0;
 
 
     surveyService.getQuestion(admin_id, survey_header_id, buildingId).then(data => {
@@ -34,8 +35,7 @@ const getQuestion = (req, res) => {
                                 return groupArray(section, 'device_type')[v]
                             }).map((v1, k1) => {
                                 if (k1 == 0) {
-                                    count += Object.keys(groupArray(v1, 'question_id')).length
-                                    // count -= Object.keys(groupArray(v1, 'option_choice_id')).length
+                                    count += Object.keys(groupArray(v1.filter(d => d.input_types_id !== 8), 'question_id')).length
 
                                     return {
                                         "deviceName": v1[0].device_type, "questions":
@@ -48,6 +48,8 @@ const getQuestion = (req, res) => {
                                                         return {
                                                             "option_choice_id": c.option_choice_id, "option_choice_name": c.option_choice_name
                                                         }
+
+
                                                     })
                                                 }
                                             })
