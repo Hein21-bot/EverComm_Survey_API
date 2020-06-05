@@ -16,7 +16,7 @@ const userLevelAnswer = (req, res) => {
 
 
             let surveySections = Object.keys(groupArray(data[0], 'survey_section_id')).map((v, k) => {
-                return groupArray(data[0], 'survey_section_id')[v];
+                return groupArray(data[0].filter(d=>d.input_type_id!==null), 'survey_section_id')[v];
             });
 
 
@@ -31,10 +31,9 @@ const userLevelAnswer = (req, res) => {
                                 }).map((v1, k1) => {
                                     return {
                                         "question_id": v1[0].question_id, "question_name": v1[0].question_name, "totalAnsCount": v1[0].atcount,
-                                        "Not_Answer": v1[0].Not_Answer,
                                         "input_type_id": v1[0].input_type_id, "option_choices": v1.map(c => {
                                             return {
-                                                "option_choice_name": c.option_choice_name, "totalAns": c.acount, "Percentage": "("+c.Per+")%",
+                                                "option_choice_name": c.option_choice_name, "totalAns": c.acount,
                                                 "other": c.other != null && c.other.includes('{') ?
                                                     JSON.parse(c.other) : c.other
                                             }
@@ -43,7 +42,7 @@ const userLevelAnswer = (req, res) => {
                                     }
                                 })
                         };
-                    }),"building_count": data[1]
+                    }), "building_count": data[1]
             }];
 
             res.json(response({ success: true, payload: ans }))
