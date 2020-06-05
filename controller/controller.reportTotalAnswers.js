@@ -14,21 +14,25 @@ const userLevelAnswer = (req, res) => {
 
         data(userId, surveyHeaderId, startDate, endDate).then(data => {
 
+console.log(data[0].filter(d=>d.input_type_id!==null));
 
             let surveySections = Object.keys(groupArray(data[0], 'survey_section_id')).map((v, k) => {
-                return groupArray(data[0], 'survey_section_id')[v];
+                return groupArray(data[0].filter(d=>d.input_type_id!==null), 'survey_section_id')[v];
             });
 
 
             let ans = [{
                 "survey_header_id": surveySections[0][0].survey_header_id, "survey_name": surveySections[0][0].survey_name,
                 "Number_of_buildings": surveySections[0][0].Number_of_buildings, "survey_sections":
-                    surveySections.map(section => {
+                surveySections.map(section => {
+
+
                         return {
                             "survey_section_id": section[0].survey_section_id, "section_name": section[0].section_name, "questions":
                                 Object.keys(groupArray(section, 'question_id')).map((v, k) => {
                                     return groupArray(section, 'question_id')[v];
                                 }).map((v1, k1) => {
+                                    
                                     return {
                                         "question_id": v1[0].question_id, "question_name": v1[0].question_name, "totalAnsCount": v1[0].atcount,
                                         "Not_Answer": v1[0].Not_Answer,
