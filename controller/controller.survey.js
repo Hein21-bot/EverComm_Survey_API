@@ -95,10 +95,10 @@ const getQuestion = (req, res) => {
 const surveyList = (req, res) => {
     let userId = req.params.user_id;
     let survey_header_id = req.params.survey_header_id
-    surveyService.surveyList(userId, survey_header_id).then(data => {
+    surveyService.surveyList(userId, survey_header_id).then(data => {   
         let surveyList = {
-            "survey_list": data[0],
-            "new_survey_list": data[1]
+            "survey_list": data[0],             //pending and completed for questions
+            "new_survey_list": data[1]          //for building 
         }
         res.json(response({ success: true, payload: surveyList }))
 

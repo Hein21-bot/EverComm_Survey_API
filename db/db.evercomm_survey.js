@@ -87,7 +87,7 @@ const checkDuplicateEmailUpdate = (email, user_id) => {
 
 
 
-//Question 
+//Question
 
 const getQuestion = (user_id, survey_header_id, buildingId) => {
   query = util.promisify(mypool.query).bind(mypool)
@@ -349,7 +349,7 @@ const userLevelAnswer = (userId, surveyHeaderId, startDate, endDate) => {
 const surveyList = (userId, survey_header_id) => {
   query = util.promisify(mypool.query).bind(mypool)
   return query(`select survey_header_id, t2.building_id as building_id, b.building_name as building_name, answers, (select count(*) from      
-  tbl_questions qq where qq.survey_headers_id=t2.survey_header_id
+  tbl_questions qq where qq.survey_headers_id=t2.survey_header_id and qq.input_types_id != 8
     ) as questions
         from (
     select survey_header_id, building_id, count(qcount) as questions, count(acount) as answers
