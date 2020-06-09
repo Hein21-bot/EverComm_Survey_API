@@ -87,7 +87,7 @@ const checkDuplicateEmailUpdate = (email, user_id) => {
 
 
 
-//Question 
+//Question
 
 const getQuestion = (user_id, survey_header_id, buildingId) => {
   query = util.promisify(mypool.query).bind(mypool)
@@ -95,21 +95,22 @@ const getQuestion = (user_id, survey_header_id, buildingId) => {
       left join tbl_survey_sections as s on s.survey_section_id = q.survey_sections_id left join tbl_survey_headers as h
         on h.survey_header_id = s.survey_headers_id where h.survey_header_id = ${survey_header_id} and h.active = true;
           select other,option_choices_id as optionChoiceId,users_id as userId,questions_id as questionId, survey_headers_id,building_id from  
-            tbl_answers where users_id = ${user_id} and survey_headers_id = ${survey_header_id} and building_id = ${buildingId};`)
+            tbl_answers where users_id = ${user_id} and survey_headers_id = ${survey_header_id} and building_id = ${buildingId};
+            select condenser,chiller,evaporator,cooling_tower from tbl_buildings where building_id=${buildingId}`)
 }
 
 
 // answers
 
-const addAnswer = (other, optionChoiceId, userId, questionId, survey_headers_id, building_id) => {
+const addAnswer = (other, optionChoiceId, userId, questionId, survey_headers_id, building_id, device_type) => {
   query = util.promisify(mypool.query).bind(mypool)
-  return query(`INSERT INTO tbl_answers(other, option_choices_id, users_id, questions_id,survey_headers_id,building_id) VALUES(?,?,?,?,?,?)`,
-    [other, optionChoiceId, userId, questionId, survey_headers_id, building_id])
+  return query(`INSERT INTO tbl_answers(other, option_choices_id, users_id, questions_id,survey_headers_id,building_id,device_type) VALUES (?,?,?,?,?,?,?)`,
+    [other, optionChoiceId, userId, questionId, survey_headers_id, building_id, device_type])
 }
 
-const deleteAnswer = (userId, survey_headers_id, building_id) => {
+const deleteAnswer = (userId, survey_headers_id, building_id, device_type) => {
   query = util.promisify(mypool.query).bind(mypool)
-  return query('DELETE FROM tbl_answers WHERE users_id = "' + userId + '"  AND survey_headers_id= "' + survey_headers_id + '" AND building_id="' + building_id + '"')
+  return query('DELETE FROM tbl_answers WHERE users_id = "' + userId + '"  AND survey_headers_id= "' + survey_headers_id + '" AND building_id="' + building_id + '" AND device_type = "' + device_type + '"')
 }
 
 
@@ -349,7 +350,7 @@ const userLevelAnswer = (userId, surveyHeaderId, startDate, endDate) => {
 const surveyList = (userId, survey_header_id) => {
   query = util.promisify(mypool.query).bind(mypool)
   return query(`select survey_header_id, t2.building_id as building_id, b.building_name as building_name, answers, (select count(*) from      
-  tbl_questions qq where qq.survey_headers_id=t2.survey_header_id
+  tbl_questions qq where qq.survey_headers_id=t2.survey_header_id and qq.input_types_id != 8
     ) as questions
         from (
     select survey_header_id, building_id, count(qcount) as questions, count(acount) as answers
