@@ -27,54 +27,24 @@ const getQuestion = (req, res) => {
         let ans = [{
             "survey_header_id": surveySections[0][0].survey_header_id, "survey_name": surveySections[0][0].survey_name, "survey_sections":
                 surveySections.map(section => {
-                    // console.log("=====>", Object.keys(groupArray(section, 'device_type')))
-
+                    count += Object.keys(groupArray(section.filter(d => d.input_types_id !== 8), 'question_id')).length
+                    // console.log(section)
                     return {
-                        "survey_section_id": section[0].survey_section_id, "section_name": section[0].section_name, "devicesQuestions":
-                            Object.keys(groupArray(section, 'device_type')).map((v, k) => {
-                                return groupArray(section, 'device_type')[v]
+                        "survey_section_id": section[0].survey_section_id, "section_name": section[0].section_name, "questions":
+                            Object.keys(groupArray(section, 'question_id')).map((v, k) => {
+                                return groupArray(section, 'question_id')[v]
                             }).map((v1, k1) => {
-                                if (k1 == 0) {
-                                    count += Object.keys(groupArray(v1.filter(d => d.input_types_id !== 8), 'question_id')).length
-
-                                    return {
-                                        "deviceName": v1[0].device_type, "questions":
-                                            Object.keys(groupArray(v1, 'question_id')).map((v2, k2) => {
-                                                return groupArray(v1, 'question_id')[v2]
-                                            }).map((v3, k3) => {
-                                                return {
-                                                    "question_id": v3[0].question_id, "question_name": v3[0].question_name,
-                                                    "input_type_id": v3[0].input_types_id, "option_choices": v3.map(c => {
-                                                        return {
-                                                            "option_choice_id": c.option_choice_id, "option_choice_name": c.option_choice_name
-                                                        }
-
-
-                                                    })
-                                                }
-                                            })
-                                    }
-                                }
-                                else {
-                                    return {
-                                        "deviceName": v1[0].device_type, "questions":
-                                            Object.keys(groupArray(v1, 'question_id')).map((v2, k2) => {
-                                                return groupArray(v1, 'question_id')[v2]
-                                            }).map((v3, k3) => {
-                                                return {
-                                                    "question_id": v3[0].question_id, "question_name": v3[0].question_name,
-                                                    "input_type_id": v3[0].input_types_id, "option_choices": v3.map(c => {
-                                                        return {
-                                                            "option_choice_id": c.option_choice_id, "option_choice_name": c.option_choice_name
-                                                        }
-                                                    })
-                                                }
-                                            })
-                                    }
+                                // console.log(v1)
+                                return {
+                                    "question_id": v1[0].question_id, "question_name": v1[0].question_name, "input_type_id": v1[0].input_types_id, "option_choices": v1.map(c => {
+                                        // console.log(v1)
+                                        return {
+                                            "option_choice_id": c.option_choice_id, "option_choice_name": c.option_choice_name
+                                        }
+                                    })
                                 }
                             })
                     }
-
                 }), "question_count": count,
             "answers": data[1]
         }];
@@ -92,10 +62,38 @@ const getQuestion = (req, res) => {
     }).catch(err => res.json(response({ success: false, message: err })));
 }
 
+// return {
+//     "survey_section_id": section[0].survey_section_id, "section_name": section[0].section_name, "devicesQuestions":
+//         Object.keys(groupArray(section, 'device_type')).map((v, k) => {
+//             return groupArray(section, 'device_type')[v]
+//         }).map((v1, k1) => {
+//             count += Object.keys(groupArray(v1.filter(d => d.input_types_id !== 8), 'question_id')).length
+
+//             return {
+//                 "deviceName": v1[0].device_type, "questions":
+//                     Object.keys(groupArray(v1, 'question_id')).map((v2, k2) => {
+//                         return groupArray(v1, 'question_id')[v2]
+//                     }).map((v3, k3) => {
+//                         return {
+//                             "question_id": v3[0].question_id, "question_name": v3[0].question_name,
+//                             "input_type_id": v3[0].input_types_id, "option_choices": v3.map(c => {
+//                                 return {
+//                                     "option_choice_id": c.option_choice_id, "option_choice_name": c.option_choice_name
+//                                 }
+
+
+//                             })
+//                         }
+//                     })
+
+//             }
+//         })
+// }
+
 const surveyList = (req, res) => {
     let userId = req.params.user_id;
     let survey_header_id = req.params.survey_header_id
-    surveyService.surveyList(userId, survey_header_id).then(data => {   
+    surveyService.surveyList(userId, survey_header_id).then(data => {
         let surveyList = {
             "survey_list": data[0],             //pending and completed for questions
             "new_survey_list": data[1]          //for building 
@@ -148,7 +146,8 @@ const addAnswer = (req, res) => {
             let questionId = data.questionId;
             let survey_headers_id = data.survey_headers_id;
             let building_id = data.building_id
-            surveyService.addAnswer(other, optionChoiceId, userId, questionId, survey_headers_id, building_id).then(data => {
+            let device_type = data.device_type
+            surveyService.addAnswer(other, optionChoiceId, userId, questionId, survey_headers_id, building_id, device_type).then(data => {
 
                 count++;
                 if (count == targetCount) resolve({ "answeredCount": count });

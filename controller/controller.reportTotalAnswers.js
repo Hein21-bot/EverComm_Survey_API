@@ -16,7 +16,7 @@ const userLevelAnswer = (req, res) => {
 
 
             let surveySections = Object.keys(groupArray(data[0], 'survey_section_id')).map((v, k) => {
-                return groupArray(data[0].filter(d=>d.input_type_id!==null), 'survey_section_id')[v];
+                return groupArray(data[0].filter(d => d.input_type_id !== null), 'survey_section_id')[v];
             });
 
 
@@ -25,20 +25,29 @@ const userLevelAnswer = (req, res) => {
                 "Number_of_buildings": surveySections[0][0].Number_of_buildings, "survey_sections":
                     surveySections.map(section => {
                         return {
-                            "survey_section_id": section[0].survey_section_id, "section_name": section[0].section_name, "questions":
-                                Object.keys(groupArray(section, 'question_id')).map((v, k) => {
-                                    return groupArray(section, 'question_id')[v];
+                            "survey_section_id": section[0].survey_section_id, "section_name": section[0].section_name, "devicesQuestions":
+                                Object.keys(groupArray(section, 'device_type')).map((v, k) => {
+                                    return groupArray(section, 'device_type')[v]
                                 }).map((v1, k1) => {
-                                    return {
-                                        "question_id": v1[0].question_id, "question_name": v1[0].question_name, "totalAnsCount": v1[0].atcount,
-                                        "input_type_id": v1[0].input_type_id, "option_choices": v1.map(c => {
-                                            return {
-                                                "option_choice_name": c.option_choice_name, "totalAns": c.acount,
-                                                "other": c.other != null && c.other.includes('{') ?
-                                                    JSON.parse(c.other) : c.other
-                                            }
-                                        })
+                                    count += Object.keys(groupArray(v1.filter(d => d.input_types_id !== 8), 'question_id')).length
 
+                                    return {
+                                        "deviceName": v1[0].device_type, "questions":
+                                            Object.keys(groupArray(v1, 'question_id')).map((v2, k2) => {
+                                                return groupArray(v1, 'question_id')[v2]
+                                            }).map((v3, k3) => {
+                                                return {
+                                                    "question_id": v3[0].question_id, "question_name": v3[0].question_name,
+                                                    "input_type_id": v3[0].input_types_id, "option_choices": v3.map(c => {
+                                                        return {
+                                                            "option_choice_name": c.option_choice_name, "totalAns": c.acount,
+                                                            "other": c.other != null && c.other.includes('{') ?
+                                                                JSON.parse(c.other) : c.other
+                                                        }
+                                                    })
+
+                                                }
+                                            })
                                     }
                                 })
                         };
