@@ -20,7 +20,6 @@ console.log(data[0].filter(d=>d.input_type_id!==null));
                 return groupArray(data[0].filter(d=>d.input_type_id!==null), 'survey_section_id')[v];
             });
 
-
             let ans = [{
                 "survey_header_id": surveySections[0][0].survey_header_id, "survey_name": surveySections[0][0].survey_name,
                 "Number_of_buildings": surveySections[0][0].Number_of_buildings, "survey_sections":
