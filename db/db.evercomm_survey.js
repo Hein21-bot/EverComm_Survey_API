@@ -102,15 +102,20 @@ const getQuestion = (user_id, survey_header_id, buildingId) => {
 
 // answers
 
-const addAnswer = (other, optionChoiceId, userId, questionId, survey_headers_id, building_id, device_type) => {
+const addAnswer = (other, optionChoiceId, userId, questionId, survey_headers_id, building_id) => {
   query = util.promisify(mypool.query).bind(mypool)
-  return query(`INSERT INTO tbl_answers(other, option_choices_id, users_id, questions_id,survey_headers_id,building_id,device_type) VALUES (?,?,?,?,?,?,?)`,
-    [other, optionChoiceId, userId, questionId, survey_headers_id, building_id, device_type])
+  return query(`INSERT INTO tbl_answers(other, option_choices_id, users_id, questions_id,survey_headers_id,building_id) VALUES (?,?,?,?,?,?)`,
+    [other, optionChoiceId, userId, questionId, survey_headers_id, building_id])
 }
 
-const deleteAnswer = (userId, survey_headers_id, building_id, device_type) => {
+// const deleteAnswer = (userId, survey_headers_id, building_id, device_type) => {
+//   query = util.promisify(mypool.query).bind(mypool)
+//   return query('DELETE FROM tbl_answers WHERE users_id = "' + userId + '"  AND survey_headers_id= "' + survey_headers_id + '" AND building_id="' + building_id + '" AND device_type = "' + device_type + '"')
+// }
+
+const deleteAnswer = (userId, survey_headers_id, building_id) => {
   query = util.promisify(mypool.query).bind(mypool)
-  return query('DELETE FROM tbl_answers WHERE users_id = "' + userId + '"  AND survey_headers_id= "' + survey_headers_id + '" AND building_id="' + building_id + '" AND device_type = "' + device_type + '"')
+  return query('DELETE FROM tbl_answers WHERE users_id = "' + userId + '"  AND survey_headers_id= "' + survey_headers_id + '" AND building_id="' + building_id + '"')
 }
 
 

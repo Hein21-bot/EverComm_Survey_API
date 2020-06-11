@@ -5,12 +5,20 @@ const getQuestion = (admin_id, surey_header_id, buildingId) => {
     return surveydb.getQuestion(admin_id, surey_header_id, buildingId)
 }
 
-const addAnswer = (other, optionChoiceId, userId, questionId, surey_headers_id, building_id, device_type) => {
-    return surveydb.addAnswer(other, optionChoiceId, userId, questionId, surey_headers_id, building_id, device_type)
+// const addAnswer = (other, optionChoiceId, userId, questionId, surey_headers_id, building_id, device_type) => {
+//     return surveydb.addAnswer(other, optionChoiceId, userId, questionId, surey_headers_id, building_id, device_type)
+// }
+
+const addAnswer = (other, optionChoiceId, userId, questionId, surey_headers_id, building_id) => {
+    return surveydb.addAnswer(other, optionChoiceId, userId, questionId, surey_headers_id, building_id)
 }
 
-const deleteAnswer = (userId, survey_headers_id, building_id, device_type) => {
-    return surveydb.deleteAnswer(userId, survey_headers_id, building_id, device_type);
+// const deleteAnswer = (userId, survey_headers_id, building_id, device_type) => {
+//     return surveydb.deleteAnswer(userId, survey_headers_id, building_id, device_type);
+// }
+
+const deleteAnswer = (userId, survey_headers_id, building_id) => {
+    return surveydb.deleteAnswer(userId, survey_headers_id, building_id);
 }
 
 const getMenu = (userId, surveyHeaderId, startDate, endDate, viewType) => {
@@ -66,4 +74,4 @@ const dateTimeMenuApi = (userId, startDate, endDate) => {
 }
 
 
-module.exports = { getQuestion, addAnswer, deleteAnswer, getMenu, surveyList, surveyMenuApi, dateTimeMenuApi };
+  module.exports = { getQuestion, addAnswer, deleteAnswer, getMenu, surveyList, surveyMenuApi, dateTimeMenuApi };

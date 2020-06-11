@@ -176,7 +176,7 @@ const addAnswer = (req, res) => {
       let questionId = data.questionId;
       let survey_headers_id = data.survey_headers_id;
       let building_id = data.building_id;
-      let device_type = data.device_type;
+      // let device_type = data.device_type;
       surveyService
         .addAnswer(
           other,
@@ -185,7 +185,7 @@ const addAnswer = (req, res) => {
           questionId,
           survey_headers_id,
           building_id,
-          device_type
+          // device_type
         )
         .then((data) => {
           count++;
