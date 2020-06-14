@@ -10,10 +10,14 @@ const addBuilding = (req, res) => {
     const country = req.body.country
     const comment = req.body.comment
     const userId = req.body.userId
+    const chiller=req.body.chiller
+    const condenser=req.body.condenser
+    const evaporator=req.body.evaporator
+    const coolingTower=req.body.coolingTower
 
     const surveyHeadersId = req.body.surveyHeaderId
 
-    buildingService.addBuilding(buildingName, companyName, address, postalCode, country, comment, userId, surveyHeadersId)
+    buildingService.addBuilding(buildingName, companyName, address, postalCode, country, comment, userId, surveyHeadersId,chiller,condenser,evaporator,coolingTower)
         .then(data => {
             return res.json(
                 response({

@@ -30,12 +30,14 @@ const getQuestion = (req, res) => {
           survey_header_id: surveySections[0][0].survey_header_id,
           survey_name: surveySections[0][0].survey_name,
           survey_sections: surveySections.map((section) => {
+            
             count += Object.keys(
               groupArray(
-                section.filter((d) => d.input_types_id !== 8),
+                // section.filter((d) => d.input_types_id !== 8),
+                section,
                 "question_id"
               )
-            ).length;
+            ).length*3;
             console.log("Section=====>", section);
             return {
               survey_section_id: section[0].survey_section_id,
