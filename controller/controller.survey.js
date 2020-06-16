@@ -166,6 +166,7 @@ const surveyMenuApi = (req, res) => {
 
 const addAnswer = (req, res) => {
   let targetCount = req.body.data.length;
+console.log(req.body);
 
   let count = 0;
   let queryLoop = new Promise((resolve, reject) => {
@@ -181,6 +182,7 @@ const addAnswer = (req, res) => {
       let questionId = data.questionId;
       let survey_headers_id = data.survey_headers_id;
       let building_id = data.building_id;
+      let totalQuestionCount=req.body.total
       // let device_type = data.device_type;
       surveyService
         .addAnswer(
@@ -189,7 +191,8 @@ const addAnswer = (req, res) => {
           userId,
           questionId,
           survey_headers_id,
-          building_id
+          building_id,
+          totalQuestionCount
           // device_type
         )
         .then((data) => {

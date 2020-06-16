@@ -9,8 +9,8 @@ const getQuestion = (admin_id, surey_header_id, buildingId) => {
 //     return surveydb.addAnswer(other, optionChoiceId, userId, questionId, surey_headers_id, building_id, device_type)
 // }
 
-const addAnswer = (other, optionChoiceId, userId, questionId, surey_headers_id, building_id) => {
-    return surveydb.addAnswer(other, optionChoiceId, userId, questionId, surey_headers_id, building_id)
+const addAnswer = (other, optionChoiceId, userId, questionId, surey_headers_id, building_id,totalQuestionCount) => {
+    return surveydb.addAnswer(other, optionChoiceId, userId, questionId, surey_headers_id, building_id,totalQuestionCount)
 }
 
 // const deleteAnswer = (userId, survey_headers_id, building_id, device_type) => {

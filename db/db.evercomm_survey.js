@@ -1,47 +1,43 @@
-const mysql = require("mysql")
-const util = require("util")
+const mysql = require("mysql");
+const util = require("util");
 
-require('dotenv').config()
-
+require("dotenv").config();
 
 const mypool = mysql.createConnection({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PASS,
   database: process.env.DB_NAME,
-  multipleStatements: true
+  multipleStatements: true,
 });
 
 // login
 
 const login = (email) => {
-
-  query = util.promisify(mypool.query).bind(mypool)
-  return query(`SELECT * FROM tbl_login_users WHERE email = '${email}';`)
-}
+  query = util.promisify(mypool.query).bind(mypool);
+  return query(`SELECT * FROM tbl_login_users WHERE email = '${email}';`);
+};
 
 // addUser
 
-
 const addUser = (userName, password, email, companyName) => {
-  query = util.promisify(mypool.query).bind(mypool)
-  return query(`INSERT INTO tbl_login_users(user_name,password,email,active,user_level_id,company_name) VALUES(?,?,?,?,?,?)`,
-    [userName, password, email, 1, 2, companyName])
-
-}
+  query = util.promisify(mypool.query).bind(mypool);
+  return query(
+    `INSERT INTO tbl_login_users(user_name,password,email,active,user_level_id,company_name) VALUES(?,?,?,?,?,?)`,
+    [userName, password, email, 1, 2, companyName]
+  );
+};
 
 const updateUser = (userId, userName, password, email) => {
-  query = util.promisify(mypool.query).bind(mypool)
+  query = util.promisify(mypool.query).bind(mypool);
   return query(`UPDATE tbl_login_users SET user_name = '${userName}', password = '${password}', email = '${email}' WHERE 
-  login_user_id = ${userId} `)
-
-}
-
+  login_user_id = ${userId} `);
+};
 
 //menu
 
 const getMenu = (userId) => {
-  query = util.promisify(mypool.query).bind(mypool)
+  query = util.promisify(mypool.query).bind(mypool);
   return query(`select survey_header_id, survey_header_name, count(qcount) as questions, count(acount) as answers
   from (
     SELECT
@@ -53,10 +49,10 @@ const getMenu = (userId) => {
     group by q.question_id
   ) as t1
   group by survey_header_id;`);
-}
+};
 
 const getMenuLevl = (userId) => {
-  query = util.promisify(mypool.query).bind(mypool)
+  query = util.promisify(mypool.query).bind(mypool);
   return query(`select t1.survey_header_id, survey_header_name, count(qcount) as questions, count(acount) as answers
   from (
     SELECT
@@ -69,44 +65,59 @@ const getMenuLevl = (userId) => {
       
     group by q.question_id
   ) as t1 where survey_header_name !=""
-  group by survey_header_id;`)
-}
+  group by survey_header_id;`);
+};
 
 // email
 
 const checkDuplicateEmailInsert = (email) => {
-  query = util.promisify(mypool.query).bind(mypool)
-  return query(`Select Count(*) as DE from tbl_login_users where email = '${email}'`)
-}
+  query = util.promisify(mypool.query).bind(mypool);
+  return query(
+    `Select Count(*) as DE from tbl_login_users where email = '${email}'`
+  );
+};
 
 const checkDuplicateEmailUpdate = (email, user_id) => {
-  query = util.promisify(mypool.query).bind(mypool)
-  return query(`Select Count(*) as DE from tbl_login_users where email = '${email}' and login_user_id != ${user_id}`)
-}
-
-
-
+  query = util.promisify(mypool.query).bind(mypool);
+  return query(
+    `Select Count(*) as DE from tbl_login_users where email = '${email}' and login_user_id != ${user_id}`
+  );
+};
 
 //Question
 
 const getQuestion = (user_id, survey_header_id, buildingId) => {
-  query = util.promisify(mypool.query).bind(mypool)
+  query = util.promisify(mypool.query).bind(mypool);
   return query(`select * from tbl_questions as q left join tbl_option_choices as o  on q.question_id = o.questions_id
       left join tbl_survey_sections as s on s.survey_section_id = q.survey_sections_id left join tbl_survey_headers as h
         on h.survey_header_id = s.survey_headers_id where h.survey_header_id = ${survey_header_id} and h.active = true;
           select other,option_choices_id as optionChoiceId,users_id as userId,questions_id as questionId, survey_headers_id,building_id from  
             tbl_answers where users_id = ${user_id} and survey_headers_id = ${survey_header_id} and building_id = ${buildingId};
-            select chiller,condenser,evaporator,cooling_tower from tbl_buildings where building_id=${buildingId}`)
-}
-
+            select chiller,condenser,evaporator,cooling_tower from tbl_buildings where building_id=${buildingId}`);
+};
 
 // answers
 
-const addAnswer = (other, optionChoiceId, userId, questionId, survey_headers_id, building_id) => {
-  query = util.promisify(mypool.query).bind(mypool)
-  return query(`INSERT INTO tbl_answers(other, option_choices_id, users_id, questions_id,survey_headers_id,building_id) VALUES (?,?,?,?,?,?)`,
-    [other, optionChoiceId, userId, questionId, survey_headers_id, building_id])
-}
+const addAnswer = (
+  other,
+  optionChoiceId,
+  userId,
+  questionId,
+  survey_headers_id,
+  building_id,
+  totalQuestionCount
+) => {
+  query = util.promisify(mypool.query).bind(mypool);
+  console.log(totalQuestionCount);
+  
+  return query(
+    `INSERT INTO tbl_answers(other, option_choices_id, users_id, questions_id,survey_headers_id,building_id) VALUES (?,?,?,?,?,?);
+    UPDATE tbl_buildings SET total_questions = ${totalQuestionCount} WHERE (building_id = ${building_id});
+`,
+    [other, optionChoiceId, userId, questionId, survey_headers_id, building_id]
+  );
+
+};
 
 // const deleteAnswer = (userId, survey_headers_id, building_id, device_type) => {
 //   query = util.promisify(mypool.query).bind(mypool)
@@ -114,46 +125,81 @@ const addAnswer = (other, optionChoiceId, userId, questionId, survey_headers_id,
 // }
 
 const deleteAnswer = (userId, survey_headers_id, building_id) => {
-  query = util.promisify(mypool.query).bind(mypool)
-  return query('DELETE FROM tbl_answers WHERE users_id = "' + userId + '"  AND survey_headers_id= "' + survey_headers_id + '" AND building_id="' + building_id + '"')
-}
-
+  query = util.promisify(mypool.query).bind(mypool);
+  return query(
+    'DELETE FROM tbl_answers WHERE users_id = "' +
+      userId +
+      '"  AND survey_headers_id= "' +
+      survey_headers_id +
+      '" AND building_id="' +
+      building_id +
+      '"'
+  );
+};
 
 const updateAnswer = (answer_id, other, optionChoiceId, userId, questionId) => {
-  query = util.promisify(mypool.query).bind(mypool)
+  query = util.promisify(mypool.query).bind(mypool);
   return query(`UPDATE tbl_answers SET other = '${other}', option_choices_id = ${optionChoiceId}, users_id = ${userId} , 
-  questions_id = ${questionId} WHERE answer_id = ${answer_id} `)
-}
-
+  questions_id = ${questionId} WHERE answer_id = ${answer_id} `);
+};
 
 // questions
 
-const addQuestion = (questionName, required, isOther, optionGroupId, untiId, surveySectionId, inputTypeId) => {
-  query = util.promisify(mypool.query).bind(mypool)
-  return query(`INSERT INTO tbl_questions(question_name, required, is_other, option_groups_id, units_id, survey_sections_id, input_types_id) 
+const addQuestion = (
+  questionName,
+  required,
+  isOther,
+  optionGroupId,
+  untiId,
+  surveySectionId,
+  inputTypeId
+) => {
+  query = util.promisify(mypool.query).bind(mypool);
+  return query(
+    `INSERT INTO tbl_questions(question_name, required, is_other, option_groups_id, units_id, survey_sections_id, input_types_id) 
   VALUES(?,?,?,?,?,?,?)`,
-    [questionName, required, isOther, optionGroupId, untiId, surveySectionId, inputTypeId])
-}
-
+    [
+      questionName,
+      required,
+      isOther,
+      optionGroupId,
+      untiId,
+      surveySectionId,
+      inputTypeId,
+    ]
+  );
+};
 
 const deleteQuestion = (question_id) => {
-  query = util.promisify(mypool.query).bind(mypool)
-  return query('DELETE FROM tbl_questions WHERE question_id = "' + question_id + '"')
-}
+  query = util.promisify(mypool.query).bind(mypool);
+  return query(
+    'DELETE FROM tbl_questions WHERE question_id = "' + question_id + '"'
+  );
+};
 
-const updateQuestion = (question_id, questionName, required, isOther, optionGroupId, untiId, surveySectionId, inputTypeId) => {
-  query = util.promisify(mypool.query).bind(mypool)
+const updateQuestion = (
+  question_id,
+  questionName,
+  required,
+  isOther,
+  optionGroupId,
+  untiId,
+  surveySectionId,
+  inputTypeId
+) => {
+  query = util.promisify(mypool.query).bind(mypool);
   return query(`UPDATE tbl_questions SET question_name = '${questionName}', required = ${required}, is_other = ${isOther} , 
   option_groups_id = ${optionGroupId} , units_id = ${untiId} , survey_sections_id = ${surveySectionId} , input_types_id = ${inputTypeId} 
-  WHERE question_id = ${question_id} `)
-}
+  WHERE question_id = ${question_id} `);
+};
 
 // @HeinMinHtet
 // AnswerCount
 
 const reportTotalAnswers = (userId, surveyHeaderId, startDate, endDate) => {
-  query = util.promisify(mypool.query).bind(mypool)
-  return (startDate != null) ? query(`select  distinct(acount) as acount,t4.other ,t4.option_choice_name, t4.question_name,t4.question_id,
+  query = util.promisify(mypool.query).bind(mypool);
+  return startDate != null
+    ? query(`select  distinct(acount) as acount,t4.other ,t4.option_choice_name, t4.question_name,t4.question_id,
   sh.survey_name,ss.section_name,sh.survey_header_id,ss.survey_section_id,i.input_type_id,(select count(option_choices_id) as atcount 
   from tbl_answers as aa where date(answered_date)  >= '${startDate}' and date(answered_date) <= '${endDate}' and 
   survey_headers_id=${surveyHeaderId} and 
@@ -209,12 +255,18 @@ const reportTotalAnswers = (userId, surveyHeaderId, startDate, endDate) => {
                       left join evercomm_survey.tbl_survey_sections ss on ss.survey_section_id = t4.survey_sections_id where 
                         survey_header_id = ${surveyHeaderId} and survey_header_id!="" order by question_id;
       select survey_headers_id,count(distinct building_id) as Number_of_buildings from evercomm_survey.tbl_answers where 
-      survey_headers_id=${surveyHeaderId};`)
-}
+      survey_headers_id=${surveyHeaderId};`);
+};
 
-const reportDistributorAnswers = (userId, surveyHeaderId, startDate, endDate) => {
-  query = util.promisify(mypool.query).bind(mypool)
-  return (startDate != null) ? query(`select  distinct(acount) as acount,t4.other ,t4.option_choice_name, t4.question_name,t4.question_id,
+const reportDistributorAnswers = (
+  userId,
+  surveyHeaderId,
+  startDate,
+  endDate
+) => {
+  query = util.promisify(mypool.query).bind(mypool);
+  return startDate != null
+    ? query(`select  distinct(acount) as acount,t4.other ,t4.option_choice_name, t4.question_name,t4.question_id,
   sh.survey_name,ss.section_name,sh.survey_header_id,
   ss.survey_section_id,i.input_type_id,(select count(option_choices_id) as atcount 
   from tbl_answers as aa where survey_headers_id=${surveyHeaderId} and date(answered_date)  >= '${startDate}' and 
@@ -276,14 +328,13 @@ const reportDistributorAnswers = (userId, surveyHeaderId, startDate, endDate) =>
                       left join evercomm_survey.tbl_survey_sections ss on ss.survey_section_id = t4.survey_sections_id 
                      where question_id != "" and us.user_id = ${userId};
                      select survey_headers_id,count(distinct building_id) as Number_of_buildings from evercomm_survey.tbl_answers where 
-      survey_headers_id=${surveyHeaderId};`)
-}
-
-
+      survey_headers_id=${surveyHeaderId};`);
+};
 
 const reportUserAnswer = (userId, surveyHeaderId, startDate, endDate) => {
-  query = util.promisify(mypool.query).bind(mypool)
-  return (startDate != null) ? query(`select  distinct(acount) as acount,t4.other ,t4.option_choice_name, t4.question_name,t4.question_id,
+  query = util.promisify(mypool.query).bind(mypool);
+  return startDate != null
+    ? query(`select  distinct(acount) as acount,t4.other ,t4.option_choice_name, t4.question_name,t4.question_id,
   sh.survey_name,ss.section_name,
   sh.survey_header_id,ss.survey_section_id,i.input_type_id,
   (select count(option_choices_id) as atcount from tbl_answers as aa where date(answered_date)  >= '${startDate}' and 
@@ -314,8 +365,8 @@ const reportUserAnswer = (userId, surveyHeaderId, startDate, endDate) => {
                     left join evercomm_survey.tbl_survey_sections ss on ss.survey_section_id = t4.survey_sections_id where 
                       survey_header_id = ${surveyHeaderId} and survey_header_id!="" order by question_id;
                       select survey_headers_id,count(distinct building_id) as Number_of_buildings from evercomm_survey.tbl_answers where 
-                      survey_headers_id=${surveyHeaderId} and users_id = ${userId};`) :
-    query(`select  distinct(acount) as acount,t4.other ,t4.option_choice_name, t4.question_name,t4.question_id,sh.survey_name,ss.section_name,
+                      survey_headers_id=${surveyHeaderId} and users_id = ${userId};`)
+    : query(`select  distinct(acount) as acount,t4.other ,t4.option_choice_name, t4.question_name,t4.question_id,sh.survey_name,ss.section_name,
     sh.survey_header_id,
     ss.survey_section_id,i.input_type_id,(select count(option_choices_id) as atcount 
     from tbl_answers as aa where survey_headers_id=${surveyHeaderId} and users_id = ${userId} and
@@ -343,59 +394,104 @@ const reportUserAnswer = (userId, surveyHeaderId, startDate, endDate) => {
                       left join evercomm_survey.tbl_survey_sections ss on ss.survey_section_id = t4.survey_sections_id where 
                         survey_header_id = ${surveyHeaderId} and survey_header_id!="" order by question_id;
                         select survey_headers_id,count(distinct building_id) as Number_of_buildings from evercomm_survey.tbl_answers where 
-                        survey_headers_id=${surveyHeaderId} and users_id = ${userId};`)
-}
+                        survey_headers_id=${surveyHeaderId} and users_id = ${userId};`);
+};
 
 const userLevelAnswer = (userId, surveyHeaderId, startDate, endDate) => {
-  query = util.promisify(mypool.query).bind(mypool)
-  return query(`SELECT user_level_id FROM evercomm_survey.tbl_login_users where login_user_id = ${userId};`)
-}
-
+  query = util.promisify(mypool.query).bind(mypool);
+  return query(
+    `SELECT user_level_id FROM evercomm_survey.tbl_login_users where login_user_id = ${userId};`
+  );
+};
 
 const surveyList = (userId, survey_header_id) => {
-  query = util.promisify(mypool.query).bind(mypool)
-  return query(`select survey_header_id, t2.building_id as building_id, b.building_name as building_name, answers, (select count(*) from      
-  tbl_questions qq where qq.survey_headers_id=t2.survey_header_id and qq.input_types_id != 8
-    ) as questions
-        from (
-    select survey_header_id, building_id, count(qcount) as questions, count(acount) as answers
-        from (
-    SELECT
-        distinct  q.question_id as qcount, a.questions_id as acount, q.survey_headers_id as survey_header_id,h.survey_name as 
-        survey_header_name,a.building_id as building_id
-    FROM
-        tbl_questions as q
-          left join tbl_answers a on q.survey_headers_id=a.survey_headers_id and q.question_id=a.questions_id and a.users_id = ${userId}
-            left join tbl_survey_headers h on h.survey_header_id = q.survey_headers_id   
-              left join tbl_buildings b on a.building_id = b.building_id
-            where q.survey_headers_id= ${survey_header_id} and a.building_id!=""  and b.active = 1
-              ) as t1 
-      group by survey_header_id, building_id
-        ) as t2
-          left join tbl_buildings b on b.building_id=t2.building_id;
+  query = util.promisify(mypool.query).bind(mypool);
+  return query(`SELECT 
+  survey_header_id,
+  t2.building_id AS building_id,
+  b.building_name AS building_name,
+  answers,
+  b.total_questions As total_question_count,
+  (SELECT 
+          COUNT(*)
+      FROM
+          tbl_questions qq
+      WHERE
+          qq.survey_headers_id = t2.survey_header_id) AS questions
+FROM
+  (SELECT 
+      survey_header_id, building_id, COUNT(acount) AS answers
+  FROM
+      (SELECT DISTINCT
+      a.questions_id AS qcount,
+          a.questions_id AS acount,
+          q.survey_headers_id AS survey_header_id,
+          h.survey_name AS survey_header_name,
+          a.building_id AS building_id
+  FROM
+      tbl_questions AS q
+LEFT JOIN tbl_answers a ON q.survey_headers_id = a.survey_headers_id
+AND a.users_id = ${userId}
+  LEFT JOIN tbl_survey_headers h ON h.survey_header_id = q.survey_headers_id
+  LEFT JOIN tbl_buildings b ON a.building_id = b.building_id
+  WHERE
+      q.survey_headers_id = ${survey_header_id}
+          AND a.building_id != ''
+          AND b.active = 1) AS t1
+  GROUP BY survey_header_id , building_id) AS t2
+      LEFT JOIN
+  tbl_buildings b ON b.building_id = t2.building_id;
         SELECT distinct tbl_buildings.user_id,tbl_buildings.survey_headers_id,
           tbl_buildings.building_id,tbl_buildings.building_name FROM
             evercomm_survey.tbl_buildings inner join evercomm_survey.tbl_answers on
-              tbl_buildings.user_id = ${userId} and tbl_buildings.survey_headers_id=${survey_header_id}`)
-}
-
-
+              tbl_buildings.user_id = ${userId} and tbl_buildings.survey_headers_id=${survey_header_id};`);
+};
 
 // @hmh
 // buildings
 
-const addBuilding = (buildingName, companyName, address, postalCode, country, comment, userId, surveyHeadersId,chiller,condenser,evaporator,coolingTower) => {
-  const query = util.promisify(mypool.query).bind(mypool)
-  return query(`INSERT INTO tbl_buildings(building_name, company_name, remark, active, created_by, address, postal_code,country,
+const addBuilding = (
+  buildingName,
+  companyName,
+  address,
+  postalCode,
+  country,
+  comment,
+  userId,
+  surveyHeadersId,
+  chiller,
+  condenser,
+  evaporator,
+  coolingTower
+) => {
+  const query = util.promisify(mypool.query).bind(mypool);
+  return query(
+    `INSERT INTO tbl_buildings(building_name, company_name, remark, active, created_by, address, postal_code,country,
     comment,user_id,survey_headers_id,chiller,condenser,evaporator,cooling_tower) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
-    [buildingName, companyName, 'ok', 1, 1, address, postalCode, country, comment, userId, surveyHeadersId,chiller,condenser,evaporator,coolingTower])
-}
-
+    [
+      buildingName,
+      companyName,
+      "ok",
+      1,
+      1,
+      address,
+      postalCode,
+      country,
+      comment,
+      userId,
+      surveyHeadersId,
+      chiller,
+      condenser,
+      evaporator,
+      coolingTower,
+    ]
+  );
+};
 
 // surveyMenuApi
 
 const surveyMenuApi = (userId) => {
-  query = util.promisify(mypool.query).bind(mypool)
+  query = util.promisify(mypool.query).bind(mypool);
   return query(`SELECT survey_header_id,survey_name,count(building_id) as amount_of_survey,section_name,survey_section_id,created_date
   FROM (
     select 
@@ -404,11 +500,11 @@ const surveyMenuApi = (userId) => {
         from tbl_survey_headers as sh 
           left join tbl_answers a on sh.survey_header_id=a.survey_headers_id and a.users_id = ${userId}
           left join tbl_survey_sections ss on sh.survey_header_id = ss.survey_headers_id
-            ) as t1 group by survey_header_id,section_name,survey_section_id;`)
-}
+            ) as t1 group by survey_header_id,section_name,survey_section_id;`);
+};
 
 const surveyMenuApiLevel = (userId) => {
-  query = util.promisify(mypool.query).bind(mypool)
+  query = util.promisify(mypool.query).bind(mypool);
   return query(`SELECT survey_header_id,survey_name,count(building_id) as amount_of_survey,section_name,survey_section_id,created_date
   FROM (
     select 
@@ -418,11 +514,11 @@ const surveyMenuApiLevel = (userId) => {
           left join tbl_answers a on sh.survey_header_id=a.survey_headers_id and a.users_id = ${userId}
           left join tbl_survey_sections ss on sh.survey_header_id = ss.survey_headers_id
           right join tbl_user_survey us on us.survey_header_id = sh.survey_header_id and us.user_id = ${userId}
-            ) as t1 where t1.survey_name != "" group by survey_header_id,section_name,survey_section_id;`)
-}
+            ) as t1 where t1.survey_name != "" group by survey_header_id,section_name,survey_section_id;`);
+};
 
 const dateTimeMenuApi = (userId, startDate, endDate) => {
-  query = util.promisify(mypool.query).bind(mypool)
+  query = util.promisify(mypool.query).bind(mypool);
   // console.log("startDate is ==>", startDate)
   const overAllQuery = `SELECT survey_header_id,survey_name,count(building_id) as amount_of_survey,section_name,
   survey_section_id, building_name,buildings_id,created_date 
@@ -438,9 +534,12 @@ const dateTimeMenuApi = (userId, startDate, endDate) => {
             left join tbl_user_survey us on us.survey_header_id = sh.survey_header_id 
               ) as t1 where t1.survey_name != "" and t1.users_id = ${userId}
                 group by survey_header_id,section_name,survey_section_id,building_name,buildings_id,created_date
-                  order by  survey_section_id`
-  return (startDate != null) ? query(overAllQuery) : (endDate != null) ? query(overAllQuery) :
-    query(`SELECT survey_header_id,survey_name,count(building_id) as amount_of_survey,section_name,survey_section_id,
+                  order by  survey_section_id`;
+  return startDate != null
+    ? query(overAllQuery)
+    : endDate != null
+    ? query(overAllQuery)
+    : query(`SELECT survey_header_id,survey_name,count(building_id) as amount_of_survey,section_name,survey_section_id,
     building_name,buildings_id,created_date
      FROM ( 
        select distinct a.building_id as building_id,sh.survey_header_id as survey_header_id, sh.survey_name as survey_name ,b.building_name,
@@ -452,11 +551,11 @@ const dateTimeMenuApi = (userId, startDate, endDate) => {
               left join tbl_user_survey us on us.survey_header_id = sh.survey_header_id 
               ) as t1 where t1.survey_name != ""  and t1.users_id = ${userId}
                   group by survey_header_id,section_name,survey_section_id,building_name,buildings_id,created_date
-                   `)
-}
+                   `);
+};
 
 const dateTimeMenuAdminApi = (userId, startDate, endDate) => {
-  query = util.promisify(mypool.query).bind(mypool)
+  query = util.promisify(mypool.query).bind(mypool);
   // console.log("startDate is ==>", startDate)
   const overAllQuery = `SELECT survey_header_id,survey_name,count(building_id) as amount_of_survey,section_name,
   survey_section_id, building_name,buildings_id,created_date 
@@ -470,9 +569,12 @@ const dateTimeMenuAdminApi = (userId, startDate, endDate) => {
             left join tbl_survey_sections ss on sh.survey_header_id = ss.survey_headers_id
             left join tbl_buildings b on b.building_id = a.building_id) as t1 
                 group by survey_header_id,section_name,survey_section_id,building_name,buildings_id,created_date
-                  order by  survey_section_id`
-  return (startDate != null) ? query(overAllQuery) : (endDate != null) ? query(overAllQuery) :
-    query(`SELECT survey_header_id,survey_name,count(building_id) as amount_of_survey,section_name,survey_section_id,
+                  order by  survey_section_id`;
+  return startDate != null
+    ? query(overAllQuery)
+    : endDate != null
+    ? query(overAllQuery)
+    : query(`SELECT survey_header_id,survey_name,count(building_id) as amount_of_survey,section_name,survey_section_id,
       building_name,buildings_id,created_date
        FROM (    
          select distinct a.building_id as building_id,sh.survey_header_id as survey_header_id, sh.survey_name as survey_name ,b.building_name,
@@ -482,11 +584,11 @@ const dateTimeMenuAdminApi = (userId, startDate, endDate) => {
                 left join tbl_survey_sections ss on sh.survey_header_id = ss.survey_headers_id
                 left join tbl_buildings b on b.building_id = a.building_id) as t1 
                     group by survey_header_id,section_name,survey_section_id,building_name,buildings_id,created_date
-                      order by  survey_section_id`)
-}
+                      order by  survey_section_id`);
+};
 
 const dateTimeMenuDistributorApi = (userId, startDate, endDate) => {
-  query = util.promisify(mypool.query).bind(mypool)
+  query = util.promisify(mypool.query).bind(mypool);
 
   const overAllQuery = `SELECT survey_header_id,survey_name,count(building_id) as amount_of_survey,section_name,survey_section_id,
   building_name,buildings_id,created_date
@@ -501,9 +603,12 @@ const dateTimeMenuDistributorApi = (userId, startDate, endDate) => {
             right join tbl_user_survey us on us.survey_header_id = sh.survey_header_id and us.user_id = ${userId}
             ) as t1 where t1.survey_name != "" 
                 group by survey_header_id,section_name,survey_section_id,building_name,buildings_id,created_date
-                  order by  survey_section_id`
-  return (startDate != null) ? query(overAllQuery) : (endDate != null) ? query(overAllQuery) :
-    query(`SELECT survey_header_id,survey_name,count(building_id) as amount_of_survey,section_name,survey_section_id,
+                  order by  survey_section_id`;
+  return startDate != null
+    ? query(overAllQuery)
+    : endDate != null
+    ? query(overAllQuery)
+    : query(`SELECT survey_header_id,survey_name,count(building_id) as amount_of_survey,section_name,survey_section_id,
     building_name,buildings_id,created_date
      FROM (    
        select distinct a.building_id as building_id,sh.survey_header_id as survey_header_id, sh.survey_name as survey_name ,b.building_name,
@@ -515,19 +620,33 @@ const dateTimeMenuDistributorApi = (userId, startDate, endDate) => {
               right join tbl_user_survey us on us.survey_header_id = sh.survey_header_id and us.user_id = ${userId}
               ) as t1 where t1.survey_name != "" 
                   group by survey_header_id,section_name,survey_section_id,building_name,buildings_id,created_date
-                    order by  survey_section_id`)
-}
-
-
+                    order by  survey_section_id`);
+};
 
 module.exports = {
-  getQuestion, login, addUser, checkDuplicateEmailInsert,
-  checkDuplicateEmailUpdate, dateTimeMenuDistributorApi,
+  getQuestion,
+  login,
+  addUser,
+  checkDuplicateEmailInsert,
+  checkDuplicateEmailUpdate,
+  dateTimeMenuDistributorApi,
   reportDistributorAnswers,
-  addAnswer, deleteAnswer, updateAnswer,
-  addQuestion, deleteQuestion, updateQuestion, reportTotalAnswers,
-  getMenu, updateUser, getMenuLevl, surveyMenuApiLevel,
-  surveyList, addBuilding,
-  surveyMenuApi, userLevelAnswer, reportUserAnswer, dateTimeMenuApi, dateTimeMenuAdminApi
-}
-
+  addAnswer,
+  deleteAnswer,
+  updateAnswer,
+  addQuestion,
+  deleteQuestion,
+  updateQuestion,
+  reportTotalAnswers,
+  getMenu,
+  updateUser,
+  getMenuLevl,
+  surveyMenuApiLevel,
+  surveyList,
+  addBuilding,
+  surveyMenuApi,
+  userLevelAnswer,
+  reportUserAnswer,
+  dateTimeMenuApi,
+  dateTimeMenuAdminApi,
+};
