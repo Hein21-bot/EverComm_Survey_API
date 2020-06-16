@@ -13,6 +13,7 @@ const getQuestion = (req, res) => {
   surveyService
     .getQuestion(admin_id, survey_header_id, buildingId)
     .then((data) => {
+      
       let surveySections = Object.keys(
         groupArray(data[0], "survey_section_id")
       ).map((v, k) => {
@@ -30,15 +31,13 @@ const getQuestion = (req, res) => {
           survey_header_id: surveySections[0][0].survey_header_id,
           survey_name: surveySections[0][0].survey_name,
           survey_sections: surveySections.map((section) => {
-            
             count += Object.keys(
               groupArray(
                 // section.filter((d) => d.input_types_id !== 8),
                 section,
                 "question_id"
               )
-            ).length*3;
-            console.log("Section=====>", section);
+            ).length;
             return {
               survey_section_id: section[0].survey_section_id,
               section_name: section[0].section_name,
@@ -47,13 +46,11 @@ const getQuestion = (req, res) => {
                   return groupArray(section, "question_id")[v];
                 })
                 .map((v1, k1) => {
-                  // console.log(v1)
                   return {
                     question_id: v1[0].question_id,
                     question_name: v1[0].question_name,
                     input_type_id: v1[0].input_types_id,
                     option_choices: v1.map((c) => {
-                      // console.log(v1)
                       return {
                         option_choice_id: c.option_choice_id,
                         option_choice_name: c.option_choice_name,
@@ -61,6 +58,12 @@ const getQuestion = (req, res) => {
                     }),
                   };
                 }),
+              section_question_count: Object.keys(
+                groupArray(section, "question_id")
+              ).map((v, k) => {
+              
+                  return groupArray(section, "question_id")[v];
+              }).length,
             };
           }),
           question_count: count,
@@ -186,7 +189,7 @@ const addAnswer = (req, res) => {
           userId,
           questionId,
           survey_headers_id,
-          building_id,
+          building_id
           // device_type
         )
         .then((data) => {
