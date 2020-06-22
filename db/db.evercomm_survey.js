@@ -15,7 +15,11 @@ const mypool = mysql.createConnection({
 
 const login = (email) => {
   query = util.promisify(mypool.query).bind(mypool);
-  return query(`SELECT * FROM tbl_login_users WHERE email = '${email}';`);
+  console.log(email);
+
+  return query(    
+  `CALL userLogin(?);`,[email]
+  );
 };
 
 // addUser
@@ -23,101 +27,63 @@ const login = (email) => {
 const addUser = (userName, password, email, companyName) => {
   query = util.promisify(mypool.query).bind(mypool);
   return query(
-    `INSERT INTO tbl_login_users(user_name,password,email,active,user_level_id,company_name) VALUES(?,?,?,?,?,?)`,
-    [userName, password, email, 1, 2, companyName]
+    `CALL addUser(?,?,?,?,?,?);`,[userName, password, email, 1, 2, companyName]
   );
 };
 
 const updateUser = (userId, userName, password, email) => {
   query = util.promisify(mypool.query).bind(mypool);
-  return query(`UPDATE tbl_login_users SET user_name = '${userName}', password = '${password}', email = '${email}' WHERE 
-  login_user_id = ${userId} `);
+  // UPDATE tbl_login_users SET user_name = '${userName}', password = '${password}', email = '${email}' WHERE 
+  // login_user_id = ${userId}
+  return query(
+      `CALL updateUser(?,?,?,?);`,[userName,password,email,userId]
+   );
 };
 
 //menu
 
 const getMenu = (userId) => {
   query = util.promisify(mypool.query).bind(mypool);
-  return query(`select survey_header_id, survey_header_name, count(qcount) as questions, count(acount) as answers
-  from (
-    SELECT
-      distinct q.question_id as qcount, a.questions_id as acount, q.survey_headers_id as survey_header_id,h.survey_name as survey_header_name
-    FROM
-      tbl_questions as q
-    left join tbl_answers a on q.survey_headers_id=a.survey_headers_id and q.question_id=a.questions_id and a.users_id = ${userId} 
-      left join tbl_survey_headers h on h.survey_header_id = q.survey_headers_id
-    group by q.question_id
-  ) as t1
-  group by survey_header_id;`);
+  return query(
+    `Call getMenu(?);`,[userId]);
 };
 
 const getMenuLevl = (userId) => {
   query = util.promisify(mypool.query).bind(mypool);
-  return query(`select t1.survey_header_id, survey_header_name, count(qcount) as questions, count(acount) as answers
-  from (
-    SELECT
-      distinct q.question_id as qcount, a.questions_id as acount, q.survey_headers_id as survey_header_id,h.survey_name as survey_header_name
-    FROM
-      tbl_questions as q
-    left join tbl_answers a on q.survey_headers_id=a.survey_headers_id and q.question_id=a.questions_id 
-		left join tbl_user_survey us on us.survey_header_id = q.survey_headers_id and us.user_id = ${userId}
-		left join tbl_survey_headers h on h.survey_header_id = us.survey_header_id
-      
-    group by q.question_id
-  ) as t1 where survey_header_name !=""
-  group by survey_header_id;`);
+  return query(`CALL getMenuLevel()`,[userId]);
 };
-
-// email
 
 const checkDuplicateEmailInsert = (email) => {
   query = util.promisify(mypool.query).bind(mypool);
   return query(
-    `Select Count(*) as DE from tbl_login_users where email = '${email}'`
+    `CALL checkDuplicateEmailInsert(?);`,[email]
   );
 };
 
 const checkDuplicateEmailUpdate = (email, user_id) => {
   query = util.promisify(mypool.query).bind(mypool);
   return query(
-    `Select Count(*) as DE from tbl_login_users where email = '${email}' and login_user_id != ${user_id}`
+    `CALL checkDuplicateEmailUpdate(?,?);`,[email,user_id]
   );
 };
 
 //Question
 
 const getQuestion = (user_id, survey_header_id, buildingId) => {
-  query = util.promisify(mypool.query).bind(mypool);
-  return query(`select * from tbl_questions as q left join tbl_option_choices as o  on q.question_id = o.questions_id
-      left join tbl_survey_sections as s on s.survey_section_id = q.survey_sections_id left join tbl_survey_headers as h
-        on h.survey_header_id = s.survey_headers_id where h.survey_header_id = ${survey_header_id} and h.active = true;
-          select other,option_choices_id as optionChoiceId,users_id as userId,questions_id as questionId, survey_headers_id,building_id from  
-            tbl_answers where users_id = ${user_id} and survey_headers_id = ${survey_header_id} and building_id = ${buildingId};
-            select chiller,condenser,evaporator,cooling_tower from tbl_buildings where building_id=${buildingId}`);
-};
+  query = util.promisify(mypool.query).bind(mypool)
+  return query(
+    `Call getQuestions(${user_id}, ${survey_header_id}, ${buildingId});`
+  )
+}
 
 // answers
 
-const addAnswer = (
-  other,
-  optionChoiceId,
-  userId,
-  questionId,
-  survey_headers_id,
-  building_id,
-  totalQuestionCount
-) => {
-  query = util.promisify(mypool.query).bind(mypool);
-  console.log(totalQuestionCount);
-  
+const addAnswer = (other, optionChoiceId, userId, questionId, survey_headers_id, building_id, device_type) => {
+  query = util.promisify(mypool.query).bind(mypool)
   return query(
-    `INSERT INTO tbl_answers(other, option_choices_id, users_id, questions_id,survey_headers_id,building_id) VALUES (?,?,?,?,?,?);
-    UPDATE tbl_buildings SET total_questions = ${totalQuestionCount} WHERE (building_id = ${building_id});
-`,
-    [other, optionChoiceId, userId, questionId, survey_headers_id, building_id]
-  );
-
-};
+    `Call addAnswers(${other}, ${optionChoiceId}, ${userId}, ${questionId}, ${survey_headers_id}, ${building_id}, ${device_type})`
+  )
+}
 
 // const deleteAnswer = (userId, survey_headers_id, building_id, device_type) => {
 //   query = util.promisify(mypool.query).bind(mypool)
@@ -139,8 +105,7 @@ const deleteAnswer = (userId, survey_headers_id, building_id) => {
 
 const updateAnswer = (answer_id, other, optionChoiceId, userId, questionId) => {
   query = util.promisify(mypool.query).bind(mypool);
-  return query(`UPDATE tbl_answers SET other = '${other}', option_choices_id = ${optionChoiceId}, users_id = ${userId} , 
-  questions_id = ${questionId} WHERE answer_id = ${answer_id} `);
+  return query(`CALL updateAnswer(?,?,?,?,?)`,[answer_id, other, optionChoiceId, userId, questionId]);
 };
 
 // questions

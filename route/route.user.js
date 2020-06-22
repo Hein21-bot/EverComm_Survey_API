@@ -4,7 +4,7 @@ const { userController } = require('../controller')
 
 
 router.post('/register', userController.addUser);
-router.put('/:user_id', userController.updateUser);
+router.put('/updateUser/:user_id', userController.updateUser);
 
 
 module.exports = router
