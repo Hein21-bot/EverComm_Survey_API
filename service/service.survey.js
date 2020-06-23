@@ -49,7 +49,8 @@ const surveyList = (userId, survey_header_id) => {
 
 const surveyMenuApi = (userId, surveyHeaderId, startDate, endDate, viewType) => {
     return surveydb.userLevelAnswer(userId, surveyHeaderId, viewType).then(res => {
-        if (res[0].user_level_id == 1) {
+        console.log(res[0][0].user_level_id)
+        if (res[0][0].user_level_id == 1) {
 
 
             const surveyMenuApi = (userId) => {

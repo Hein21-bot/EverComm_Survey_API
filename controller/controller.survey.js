@@ -118,6 +118,7 @@ const surveyList = (req, res) => {
   surveyService
     .surveyList(userId, survey_header_id)
     .then((data) => {
+      // console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",data)
       let surveyList = {
         survey_list: data[0], //pending and completed for questions
         new_survey_list: data[1], //for building
@@ -133,11 +134,13 @@ const surveyMenuApi = (req, res) => {
     .surveyMenuApi(userId)
     .then((data) => {
       data(userId).then((data) => {
-        let surveySections = Object.keys(groupArray(data, "survey_header_id"))
+        // console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",data)
+        let surveySections = Object.keys(groupArray(data[0], "survey_header_id"))
           .map((v, k) => {
-            return groupArray(data, "survey_header_id")[v];
+            return groupArray(data[0], "survey_header_id")[v];
           })
           .map((v1, k1) => {
+            // console.log(v1)
             return {
               survey_header_id: v1[0].survey_header_id,
               survey_name: v1[0].survey_name,
@@ -166,7 +169,6 @@ const surveyMenuApi = (req, res) => {
 
 const addAnswer = (req, res) => {
   let targetCount = req.body.data.length;
-console.log(req.body);
 
   let count = 0;
   let queryLoop = new Promise((resolve, reject) => {
@@ -185,17 +187,9 @@ console.log(req.body);
       let totalQuestionCount=req.body.total
       // let device_type = data.device_type;
       surveyService
-        .addAnswer(
-          other,
-          optionChoiceId,
-          userId,
-          questionId,
-          survey_headers_id,
-          building_id,
-          totalQuestionCount
-          // device_type
-        )
+        .addAnswer(other,optionChoiceId, userId,questionId,survey_headers_id,building_id,totalQuestionCount )
         .then((data) => {
+          // console.log('DDDDDDDDDDDDDDDDDDDDDDDDDDD',data[0])
           count++;
           if (count == targetCount) resolve({ answeredCount: count });
         })
