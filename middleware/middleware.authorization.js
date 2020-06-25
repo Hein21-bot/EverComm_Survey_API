@@ -6,7 +6,6 @@ const privateKey = fs.readFileSync("./security/private.key");
 const jwt = require("jsonwebtoken");
 
 const routeMiddleware = (req, res, next) => {
-  // console.log("Hello")
   const allowedRoutes = ["/auth/login"];
   if (allowedRoutes.findIndex(r => r === req.url) >= 0) return next();
 

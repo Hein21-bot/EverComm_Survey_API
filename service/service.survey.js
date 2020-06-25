@@ -9,8 +9,8 @@ const getQuestion = (admin_id, surey_header_id, buildingId) => {
 //     return surveydb.addAnswer(other, optionChoiceId, userId, questionId, surey_headers_id, building_id, device_type)
 // }
 
-const addAnswer = (other, optionChoiceId, userId, questionId, surey_headers_id, building_id,totalQuestionCount) => {
-    return surveydb.addAnswer(other, optionChoiceId, userId, questionId, surey_headers_id, building_id,totalQuestionCount)
+const addAnswer = (other, optionChoiceId, userId, questionId, surey_headers_id, building_id, keyValue, totalQuestionCount) => {
+    return surveydb.addAnswer(other, optionChoiceId, userId, questionId, surey_headers_id, building_id, keyValue, totalQuestionCount)
 }
 
 // const deleteAnswer = (userId, survey_headers_id, building_id, device_type) => {
@@ -23,7 +23,7 @@ const deleteAnswer = (userId, survey_headers_id, building_id) => {
 
 const getMenu = (userId, surveyHeaderId, startDate, endDate, viewType) => {
     return surveydb.userLevelAnswer(userId, surveyHeaderId, viewType).then(res => {
-        if (res[0].user_level_id == 1) {
+        if (res[0][0].user_level_id == 1) {
 
 
             const getMenu = (userId) => {
@@ -49,7 +49,6 @@ const surveyList = (userId, survey_header_id) => {
 
 const surveyMenuApi = (userId, surveyHeaderId, startDate, endDate, viewType) => {
     return surveydb.userLevelAnswer(userId, surveyHeaderId, viewType).then(res => {
-        console.log(res[0][0].user_level_id)
         if (res[0][0].user_level_id == 1) {
 
 
@@ -75,4 +74,4 @@ const dateTimeMenuApi = (userId, startDate, endDate) => {
 }
 
 
-  module.exports = { getQuestion, addAnswer, deleteAnswer, getMenu, surveyList, surveyMenuApi, dateTimeMenuApi };
+module.exports = { getQuestion, addAnswer, deleteAnswer, getMenu, surveyList, surveyMenuApi, dateTimeMenuApi };

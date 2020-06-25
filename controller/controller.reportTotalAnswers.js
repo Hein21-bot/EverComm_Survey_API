@@ -5,7 +5,7 @@ var groupArray = require("group-array");
 const userLevelAnswer = (req, res) => {
   let surveyHeaderId = req.params.surveyHeaderId;
   const userId = req.body.userId;
-  const startDate = req.body.startDate;
+  const startDate = req.body.startDate ;
   const endDate = req.body.endDate;
   const viewType = req.body.viewType;
 
@@ -14,13 +14,13 @@ const userLevelAnswer = (req, res) => {
     .then((data) => {
       data(userId, surveyHeaderId, startDate, endDate)
         .then((data) => {
-          console.log(data[0].filter((d) => d.input_type_id !== null));
 
           let surveySections = Object.keys(
             groupArray(data[0], "survey_section_id")
           ).map((v, k) => {
             return groupArray(
-              data[0].filter((d) => d.input_type_id !== null),
+              // data[0].filter((d) => d.input_type_id !== null),
+              data[0],
               "survey_section_id"
             )[v];
           });
@@ -34,10 +34,8 @@ const userLevelAnswer = (req, res) => {
                             Object.keys(groupArray(section, 'question_id')).map((v, k) => {
                                 return groupArray(section, 'question_id')[v]
                             }).map((v1, k1) => {
-                                // console.log(v1)
                                 return {
                                     "question_id": v1[0].question_id, "question_name": v1[0].question_name, "input_type_id": v1[0].input_types_id, "option_choices": v1.map(c => {
-                                        // console.log(v1)
                                         return {
                                             "option_choice_name": c.option_choice_name, "totalAns": c.acount,
                                             "other": c.other != null && c.other.includes('{') ?
@@ -49,7 +47,6 @@ const userLevelAnswer = (req, res) => {
                     };
                 }), "building_count": data[1]
         }];
-
           res.json(response({ success: true, payload: ans }));
         })
         .catch((err) =>
@@ -68,12 +65,11 @@ const userLevelMenuAnswer = (req, res) => {
   reportTotalAnswersService
     .userLevelMenuAnswer(userId, surveyHeaderId, startDate, endDate, viewType)
     .then((data) => {
-      // console.log(data)
       data(userId, startDate, endDate)
         .then((data) => {
-          let surveySections = Object.keys(groupArray(data, "survey_header_id"))
+          let surveySections = Object.keys(groupArray(data[0], "survey_header_id"))
             .map((v, k) => {
-              return groupArray(data, "survey_header_id")[v];
+              return groupArray(data[0], "survey_header_id")[v];
             })
             .map((v1, k1) => {
               return {

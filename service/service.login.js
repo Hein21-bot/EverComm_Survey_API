@@ -10,7 +10,6 @@ const login = (email, password, callbackWhenDone) => {
       const result = res[0][0];
       if (res[0].length) {
         const hash = result.password.toString();
-        console.log("====>", result.password.toString());
         return bcrypt.compare(password, hash, function (err, response) {
           if (response === true) {
             const payload = {

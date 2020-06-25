@@ -14,8 +14,8 @@ const addBuilding = (req, res) => {
     const condenser=req.body.condenser
     const evaporator=req.body.evaporator
     const coolingTower=req.body.coolingTower
-
     const surveyHeadersId = req.body.surveyHeaderId
+
 
     buildingService.addBuilding(buildingName, companyName, address, postalCode, country, comment, userId, surveyHeadersId,chiller,condenser,evaporator,coolingTower)
         .then(data => {

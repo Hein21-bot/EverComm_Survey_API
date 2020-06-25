@@ -4,7 +4,7 @@ const response = require('../model/response')
 
 const userLevelAnswer = (userId, surveyHeaderId, startDate, endDate, viewType) => {
     return surveydb.userLevelAnswer(userId, surveyHeaderId).then(res => {
-        if (res[0].user_level_id == 1) {
+        if (res[0][0].user_level_id == 1) {
 
             if (viewType == "all") {
                 const reportTotalAnswers = (userId, surveyHeaderId, startDate, endDate) => {
@@ -21,7 +21,7 @@ const userLevelAnswer = (userId, surveyHeaderId, startDate, endDate, viewType) =
             }
 
 
-        } else if (res[0].user_level_id == 2) {
+        } else if (res[0][0].user_level_id == 2) {
 
             const reportUserAnswer = (userId, surveyHeaderId, startDate, endDate) => {
                 return surveydb.reportUserAnswer(userId, surveyHeaderId, startDate, endDate);
@@ -49,7 +49,7 @@ const userLevelAnswer = (userId, surveyHeaderId, startDate, endDate, viewType) =
 
 const userLevelMenuAnswer = (userId, surveyHeaderId, startDate, endDate, viewType) => {
     return surveydb.userLevelAnswer(userId, surveyHeaderId, viewType).then(res => {
-        if (res[0].user_level_id == 1) {
+        if (res[0][0].user_level_id == 1) {
 
             if (viewType == "all") {
 
@@ -67,7 +67,7 @@ const userLevelMenuAnswer = (userId, surveyHeaderId, startDate, endDate, viewTyp
 
             }
 
-        } else if (res[0].user_level_id == 2) {
+        } else if (res[0][0].user_level_id == 2) {
 
             const dateTimeMenuApi = (userId, startDate, endDate) => {
                 return surveydb.dateTimeMenuApi(userId, startDate, endDate);

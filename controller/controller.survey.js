@@ -8,12 +8,11 @@ const getQuestion = (req, res) => {
   const survey_header_id = req.params.survey_header_id;
   const buildingId = req.params.buildingId;
   let count = 0;
-  let zz = 0;
+  
+  console.log("Ddddddddddddd",req.params)
 
-  surveyService
-    .getQuestion(admin_id, survey_header_id, buildingId)
-    .then((data) => {
-      
+  surveyService.getQuestion(admin_id, survey_header_id, buildingId).then((data) => {
+
       let surveySections = Object.keys(
         groupArray(data[0], "survey_section_id")
       ).map((v, k) => {
@@ -61,8 +60,8 @@ const getQuestion = (req, res) => {
               section_question_count: Object.keys(
                 groupArray(section, "question_id")
               ).map((v, k) => {
-              
-                  return groupArray(section, "question_id")[v];
+
+                return groupArray(section, "question_id")[v];
               }).length,
             };
           }),
@@ -118,7 +117,6 @@ const surveyList = (req, res) => {
   surveyService
     .surveyList(userId, survey_header_id)
     .then((data) => {
-      // console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",data)
       let surveyList = {
         survey_list: data[0], //pending and completed for questions
         new_survey_list: data[1], //for building
@@ -129,39 +127,35 @@ const surveyList = (req, res) => {
 };
 
 const surveyMenuApi = (req, res) => {
-  let userId = req.params.user_id;
-  surveyService
-    .surveyMenuApi(userId)
-    .then((data) => {
-      data(userId).then((data) => {
-        // console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",data)
-        let surveySections = Object.keys(groupArray(data[0], "survey_header_id"))
-          .map((v, k) => {
-            return groupArray(data[0], "survey_header_id")[v];
-          })
-          .map((v1, k1) => {
-            // console.log(v1)
-            return {
-              survey_header_id: v1[0].survey_header_id,
-              survey_name: v1[0].survey_name,
-              amount_of_survey: v1[0].amount_of_survey,
-              created_date: v1[0].created_date.toString(),
-              survey_section: Object.keys(groupArray(v1, "survey_section_id"))
-                .map((v2, k2) => {
-                  return groupArray(v1, "survey_section_id")[v2];
-                })
-                .map((v3, k3) => {
-                  return {
-                    survey_section_id: v3[0].survey_section_id,
-                    survey_section_name: v3[0].section_name,
-                  };
-                }),
-            };
-          });
+  let userId = req.params.userId;
+  surveyService.surveyMenuApi(userId).then((data) => {
+    data(userId).then((data) => {
+      let surveySections = Object.keys(groupArray(data[0], "survey_header_id"))
+        .map((v, k) => {
+          return groupArray(data[0], "survey_header_id")[v];
+        })
+        .map((v1, k1) => {
+          return {
+            survey_header_id: v1[0].survey_header_id,
+            survey_name: v1[0].survey_name,
+            amount_of_survey: v1[0].amount_of_survey,
+            created_date: v1[0].created_date.toString(),
+            survey_section: Object.keys(groupArray(v1, "survey_section_id"))
+              .map((v2, k2) => {
+                return groupArray(v1, "survey_section_id")[v2];
+              })
+              .map((v3, k3) => {
+                return {
+                  survey_section_id: v3[0].survey_section_id,
+                  survey_section_name: v3[0].section_name,
+                };
+              }),
+          };
+        });
 
-        res.json(response({ success: true, payload: surveySections }));
-      });
-    })
+      res.json(response({ success: true, payload: surveySections }));
+    });
+  })
     .catch((err) =>
       res.json(response({ success: false, message: err.toString() }))
     );
@@ -172,11 +166,8 @@ const addAnswer = (req, res) => {
 
   let count = 0;
   let queryLoop = new Promise((resolve, reject) => {
-    surveyService.deleteAnswer(
-      req.body.data[0].userId,
-      req.body.data[0].survey_headers_id,
-      req.body.data[0].building_id
-    );
+    surveyService.deleteAnswer(req.body.data[0].userId, req.body.data[0].survey_headers_id, req.body.data[0].building_id);
+    console.log("ANswer data map is ", req.body.data)
     req.body.data.map((data) => {
       let other = data.other;
       let optionChoiceId = data.optionChoiceId;
@@ -184,24 +175,25 @@ const addAnswer = (req, res) => {
       let questionId = data.questionId;
       let survey_headers_id = data.survey_headers_id;
       let building_id = data.building_id;
-      let totalQuestionCount=req.body.total
-      // let device_type = data.device_type;
-      surveyService
-        .addAnswer(other,optionChoiceId, userId,questionId,survey_headers_id,building_id,totalQuestionCount )
+      let keyValue = data.keys
+      let totalQuestionCount = req.body.total
+      // console.log("GGGGGGGGGGGGGGGGGG",req.body)
+
+      surveyService.addAnswer(other, optionChoiceId, userId, questionId, survey_headers_id, building_id, keyValue, totalQuestionCount)
         .then((data) => {
-          // console.log('DDDDDDDDDDDDDDDDDDDDDDDDDDD',data[0])
+          // console.log("GGGGGGGGG",data)
           count++;
           if (count == targetCount) resolve({ answeredCount: count });
         })
-        .catch((err) => reject(err));
+        .catch((err) => reject(err.toString()));
     });
   });
 
-  queryLoop
-    .then((data) => {
+  queryLoop.then((data) => {
+      console.log(res.json(response({ success: true, payload: data })))
       res.json(response({ success: true, payload: data }));
     })
-    .catch((err) => res.json(response({ success: false, message: err })));
+    .catch((err) => res.json(response({ success: false, message: err.toString() })));
 };
 
 const deleteAnswer = (req, res) => {
@@ -274,14 +266,12 @@ const dateTimeMenuApi = (req, res) => {
 };
 
 const getMenu = (req, res) => {
-  let userId = req.params.user_id;
-  surveyService
-    .getMenu(userId)
-    .then((data) => {
-      data(userId).then((data) => {
-        res.json(response({ success: true, payload: data }));
-      });
-    })
+  let userId = req.params.userId;
+  surveyService.getMenu(userId).then((data) => {
+    data(userId).then((data) => {
+      res.json(response({ success: true, payload: data }));
+    });
+  })
     .catch((err) => res.json(response({ success: false, message: err })));
 };
 
