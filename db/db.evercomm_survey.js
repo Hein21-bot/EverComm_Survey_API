@@ -79,13 +79,24 @@ const getQuestion = (user_id, survey_header_id, buildingId) => {
 
 // answers
 
-const addAnswer = (other, optionChoiceId, userId, questionId, survey_headers_id, building_id, keyValue, totalQuestionCount) => {
+const addAnswer = (
+  other,
+  optionChoiceId,
+  userId,
+  questionId,
+  survey_headers_id,
+  building_id,
+  keyValue,
+  totalQuestionCount
+) => {
   query = util.promisify(mypool.query).bind(mypool);
+  console.log("--------->",keyValue,'<--------------------------');
+
   return query(
     `INSERT INTO tbl_answers(other, option_choices_id, users_id, questions_id,survey_headers_id,building_id,keyValue) VALUES 
-    ('${other}', ${optionChoiceId}, ${userId}, ${questionId}, ${survey_headers_id}, ${building_id}, ${keyValue});
+    ('${other}', ${optionChoiceId}, ${userId}, '${questionId}', ${survey_headers_id}, ${building_id}, ${keyValue});
     UPDATE tbl_buildings SET total_questions = ${totalQuestionCount} WHERE building_id = ${building_id};`
-  );
+  )
 };
 
 // const deleteAnswer = (userId, survey_headers_id, building_id, device_type) => {
