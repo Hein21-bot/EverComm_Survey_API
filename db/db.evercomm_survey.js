@@ -90,7 +90,6 @@ const addAnswer = (
   totalQuestionCount
 ) => {
   query = util.promisify(mypool.query).bind(mypool);
-  console.log("--------->",keyValue,'<--------------------------');
 
   return query(
     `INSERT INTO tbl_answers(other, option_choices_id, users_id, questions_id,survey_headers_id,building_id,keyValue) VALUES 
