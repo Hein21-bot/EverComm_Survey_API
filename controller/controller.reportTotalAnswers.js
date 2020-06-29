@@ -28,9 +28,9 @@ const userLevelAnswer = (req, res) => {
                 }).map((v1, k1) => {
                   return {
                     "question_id": v1[0].question_id, "question_name": v1[0].question_name, "input_type_id": v1[0].input_type_id,
-                    "totalAnsCount": v1[0].atcount, "option_choices": v1.map(c => {
+                    "totalAnsCount": v1[0].atcount != null ? v1[0].atcount : 0, "option_choices": v1.map(c => {
                       return {
-                        "option_choice_name": c.option_choice_name, "totalAns": c.acount,
+                        "option_choice_name": c.option_choice_name, "totalAns": c.acount != null ? c.acount : 0,
                         "other": c.other != null && c.other.includes('{') ?
                           JSON.parse(c.other) : c.other
                       }
