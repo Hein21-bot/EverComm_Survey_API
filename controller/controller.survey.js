@@ -10,7 +10,7 @@ const getQuestion = (req, res) => {
   const buildingId = req.params.buildingId;
   let count = 0;
   
-  console.log("Ddddddddddddd",req.params)
+  // console.log("Ddddddddddddd",req.params)
 
   surveyService.getQuestion(admin_id, survey_header_id, buildingId).then((data) => {
 
@@ -162,13 +162,15 @@ const surveyMenuApi = (req, res) => {
     );
 };
 
-const addAnswer = (req, res) => {
+const addAnswer =  (req, res) => {
   let targetCount = req.body.data.length;
 
   let count = 0;
   let queryLoop = new Promise((resolve, reject) => {
     surveyService.deleteAnswer(req.body.data[0].userId, req.body.data[0].survey_headers_id, req.body.data[0].building_id);
-    req.body.data.map((data) => {
+    // console.log("ANswer data map is ", req.body.data)
+    req.body.data.map( async data => {
+      console.log("ANswer data map is ", data)
       let other = data.other;
       let optionChoiceId = data.optionChoiceId;
       let userId = data.userId;
@@ -178,20 +180,21 @@ const addAnswer = (req, res) => {
       let keyValue = data.keyValue
       let totalQuestionCount = req.body.total
       let answeredDate=moment(new Date()).format("YYYY-MM-DD HH:mm:ss")
-      console.log(keyValue);
-      
-      surveyService.addAnswer(other, optionChoiceId, userId, questionId, survey_headers_id, building_id, keyValue, totalQuestionCount,answeredDate)
-        .then((data) => {
-          console.log("GGGGGGGGG",data)
-          count++;
-          if (count == targetCount) resolve({ answeredCount: count });
-        })
-        .catch((err) => reject(err.toString()));
+      // console.log("GGGGGGGGGGGGGGGGGG",req.body)
+      try{
+      let addData = await surveyService.addAnswer(other, optionChoiceId, userId, questionId, survey_headers_id, building_id, keyValue, totalQuestionCount,answeredDate)
+        count++;
+        if (count == targetCount) resolve({ answeredCount: count });
+        // console.log(answeredCount)
+      }
+      catch(error){
+        console.log("error add Answer ",error.toString())
+      }
     });
   });
 
   queryLoop.then((data) => {
-      console.log(res.json(response({ success: true, payload: data })))
+      // console.log(res.json(response({ success: true, payload: data })))
       res.json(response({ success: true, payload: data }));
     })
     .catch((err) => res.json(response({ success: false, message: err.toString() })));

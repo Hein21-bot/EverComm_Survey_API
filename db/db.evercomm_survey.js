@@ -97,12 +97,13 @@ const addAnswer = (
     `INSERT INTO tbl_answers(other, option_choices_id, users_id, questions_id,survey_headers_id,building_id,answered_date,keyValue) VALUES 
     ('${other}', ${optionChoiceId}, ${userId}, ${questionId}, ${survey_headers_id}, ${building_id}, '${answeredDate}',${keyValue});
     UPDATE tbl_buildings SET total_questions = ${totalQuestionCount} WHERE building_id = ${building_id};`
-  );
+  )
 };
 
 // const deleteAnswer = (userId, survey_headers_id, building_id, device_type) => {
 //   query = util.promisify(mypool.query).bind(mypool)
-//   return query('DELETE FROM tbl_answers WHERE users_id = "' + userId + '"  AND survey_headers_id= "' + survey_headers_id + '" AND building_id="' + building_id + '" AND device_type = "' + device_type + '"')
+//   return query('DELETE FROM tbl_answers WHERE users_id = "' + userId + '"  AND survey_headers_id= "' + survey_headers_id + 
+// '" AND building_id="' + building_id + '" AND device_type = "' + device_type + '"')
 // }
 
 const deleteAnswer = (userId, survey_headers_id, building_id) => {
@@ -232,7 +233,8 @@ const addBuilding = (
 ) => {
   const query = util.promisify(mypool.query).bind(mypool);
   return query(
-    `INSERT INTO tbl_buildings (building_name, company_name, remark, active, address, postal_code,country,comment,user_id,survey_headers_id,chiller,condenser,evaporator,cooling_tower)  VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)	
+    `INSERT INTO tbl_buildings (building_name, company_name, remark, active, address, postal_code,country,comment,
+      user_id,survey_headers_id,chiller,condenser,evaporator,cooling_tower)  VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)	
     `,
     [
       buildingName,
