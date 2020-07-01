@@ -71,19 +71,31 @@ const checkDuplicateEmailUpdate = (email, user_id) => {
 //Question
 
 const getQuestion = (user_id, survey_header_id, buildingId) => {
-  query = util.promisify(mypool.query).bind(mypool)
+  query = util.promisify(mypool.query).bind(mypool);
   return query(
     `Call getQuestions( ${survey_header_id}, ${user_id},${buildingId});`
-  )
-}
+  );
+};
 
 // answers
 
-const addAnswer = (other, optionChoiceId, userId, questionId, survey_headers_id, building_id, keyValue, totalQuestionCount) => {
+const addAnswer = (
+  other,
+  optionChoiceId,
+  userId,
+  questionId,
+  survey_headers_id,
+  building_id,
+  keyValue,
+  totalQuestionCount,
+  answeredDate
+) => {
   query = util.promisify(mypool.query).bind(mypool);
+  console.log(answeredDate,keyValue);
+  
   return query(
-    `INSERT INTO tbl_answers(other, option_choices_id, users_id, questions_id,survey_headers_id,building_id,keyValue) VALUES 
-    ('${other}', ${optionChoiceId}, ${userId}, ${questionId}, ${survey_headers_id}, ${building_id}, ${keyValue});
+    `INSERT INTO tbl_answers(other, option_choices_id, users_id, questions_id,survey_headers_id,building_id,answered_date,keyValue) VALUES 
+    ('${other}', ${optionChoiceId}, ${userId}, ${questionId}, ${survey_headers_id}, ${building_id}, '${answeredDate}',${keyValue});
     UPDATE tbl_buildings SET total_questions = ${totalQuestionCount} WHERE building_id = ${building_id};`
   );
 };
@@ -97,12 +109,12 @@ const deleteAnswer = (userId, survey_headers_id, building_id) => {
   query = util.promisify(mypool.query).bind(mypool);
   return query(
     'DELETE FROM tbl_answers WHERE users_id = "' +
-    userId +
-    '"  AND survey_headers_id= "' +
-    survey_headers_id +
-    '" AND building_id="' +
-    building_id +
-    '"'
+      userId +
+      '"  AND survey_headers_id= "' +
+      survey_headers_id +
+      '" AND building_id="' +
+      building_id +
+      '"'
   );
 };
 
@@ -128,7 +140,7 @@ const addQuestion = (
       optionGroupId,
       untiId,
       surveySectionId,
-      inputTypeId
+      inputTypeId,
     ]
   );
 };
@@ -163,11 +175,10 @@ const reportTotalAnswers = (userId, surveyHeaderId, startDate, endDate) => {
   query = util.promisify(mypool.query).bind(mypool);
   return startDate != null
     ? query(
-      `Call reportTotalAnswerDate(${surveyHeaderId},'${startDate}','${endDate}')`
-    )
+        `Call reportTotalAnswerDate(${surveyHeaderId},'${startDate}','${endDate}')`
+      )
     : query(`Call reportTotalAnswer(${surveyHeaderId})`);
 };
-
 
 const reportDistributorAnswers = (
   userId,
@@ -178,18 +189,17 @@ const reportDistributorAnswers = (
   query = util.promisify(mypool.query).bind(mypool);
   return startDate != null
     ? query(
-      `Call reportDistributorAnswersDate(${surveyHeaderId},${userId},'${startDate}','${endDate}')`
-    )
+        `Call reportDistributorAnswersDate(${surveyHeaderId},${userId},'${startDate}','${endDate}')`
+      )
     : query(`Call reportDistributorAnswers(${surveyHeaderId},${userId})`);
 };
-
 
 const reportUserAnswer = (userId, surveyHeaderId, startDate, endDate) => {
   query = util.promisify(mypool.query).bind(mypool);
   return startDate != null
     ? query(
-      `Call reportUserAnswerDate(${surveyHeaderId},${userId},'${startDate}','${endDate}')`
-    )
+        `Call reportUserAnswerDate(${surveyHeaderId},${userId},'${startDate}','${endDate}')`
+      )
     : query(`Call reportUserAnswer(${surveyHeaderId},${userId})`);
 };
 
@@ -250,12 +260,10 @@ const surveyMenuApi = (userId) => {
   return query(`CALL surveyMenu(?)`, [userId]);
 };
 
-
 const surveyMenuApiLevel = (userId) => {
   query = util.promisify(mypool.query).bind(mypool);
   return query(`CALL surveyMenuLevel(?)`, [userId]);
 };
-
 
 const dateTimeMenuApi = (userId, startDate, endDate) => {
   query = util.promisify(mypool.query).bind(mypool);
@@ -263,10 +271,9 @@ const dateTimeMenuApi = (userId, startDate, endDate) => {
   return startDate != null
     ? query(overAllQuery)
     : endDate != null
-      ? query(overAllQuery)
-      : query(`Call reportMenuUser(${userId})`);
+    ? query(overAllQuery)
+    : query(`Call reportMenuUser(${userId})`);
 };
-
 
 const dateTimeMenuAdminApi = (userId, startDate, endDate) => {
   query = util.promisify(mypool.query).bind(mypool);
@@ -274,10 +281,9 @@ const dateTimeMenuAdminApi = (userId, startDate, endDate) => {
   return startDate != null
     ? query(overAllQuery)
     : endDate != null
-      ? query(overAllQuery)
-      : query(`Call reportMenuAdmin()`);
+    ? query(overAllQuery)
+    : query(`Call reportMenuAdmin()`);
 };
-
 
 const dateTimeMenuDistributorApi = (userId, startDate, endDate) => {
   query = util.promisify(mypool.query).bind(mypool);
@@ -286,8 +292,8 @@ const dateTimeMenuDistributorApi = (userId, startDate, endDate) => {
   return startDate != null
     ? query(overAllQuery)
     : endDate != null
-      ? query(overAllQuery)
-      : query(`Call reportMenuDistributor(${userId})`);
+    ? query(overAllQuery)
+    : query(`Call reportMenuDistributor(${userId})`);
 };
 
 module.exports = {

@@ -2,6 +2,7 @@ const { surveyService } = require("../service");
 const response = require("../model/response");
 const { surveydb } = require("../db");
 var groupArray = require("group-array");
+const moment = require("moment");
 
 const getQuestion = (req, res) => {
   const admin_id = req.params.admin_id;
@@ -167,7 +168,6 @@ const addAnswer = (req, res) => {
   let count = 0;
   let queryLoop = new Promise((resolve, reject) => {
     surveyService.deleteAnswer(req.body.data[0].userId, req.body.data[0].survey_headers_id, req.body.data[0].building_id);
-    console.log("ANswer data map is ", req.body.data)
     req.body.data.map((data) => {
       let other = data.other;
       let optionChoiceId = data.optionChoiceId;
@@ -175,13 +175,14 @@ const addAnswer = (req, res) => {
       let questionId = data.questionId;
       let survey_headers_id = data.survey_headers_id;
       let building_id = data.building_id;
-      let keyValue = data.keys
+      let keyValue = data.keyValue
       let totalQuestionCount = req.body.total
-      // console.log("GGGGGGGGGGGGGGGGGG",req.body)
-
-      surveyService.addAnswer(other, optionChoiceId, userId, questionId, survey_headers_id, building_id, keyValue, totalQuestionCount)
+      let answeredDate=moment(new Date()).format("YYYY-MM-DD HH:mm:ss")
+      console.log(keyValue);
+      
+      surveyService.addAnswer(other, optionChoiceId, userId, questionId, survey_headers_id, building_id, keyValue, totalQuestionCount,answeredDate)
         .then((data) => {
-          // console.log("GGGGGGGGG",data)
+          console.log("GGGGGGGGG",data)
           count++;
           if (count == targetCount) resolve({ answeredCount: count });
         })
