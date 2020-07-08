@@ -8,7 +8,7 @@ const userLevelAnswer = (userId, surveyHeaderId, startDate, endDate, viewType) =
 
             if (viewType == "all") {
                 const reportTotalAnswers = (userId, surveyHeaderId, startDate, endDate) => {
-                    return surveydb.reportTotalAnswers(userId, surveyHeaderId, startDate, endDate)                        
+                    return surveydb.reportTotalAnswers(userId, surveyHeaderId, startDate, endDate)
                 }
 
                 return reportTotalAnswers
@@ -94,6 +94,13 @@ const userLevelMenuAnswer = (userId, surveyHeaderId, startDate, endDate, viewTyp
     }).catch(err => (response({ success: false, message: err.toString() })));
 }
 
+const typeAndArea = () => {
+    return surveydb.typeAndArea()
+}
+
+const typeAndBMS = () => {
+    return surveydb.typeAndBMS()
+}
 
 
-module.exports = { userLevelAnswer, userLevelMenuAnswer }
+module.exports = { userLevelAnswer, userLevelMenuAnswer, typeAndArea, typeAndBMS }

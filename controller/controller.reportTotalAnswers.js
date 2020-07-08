@@ -90,4 +90,47 @@ const userLevelMenuAnswer = (req, res) => {
     });
 };
 
-module.exports = { userLevelAnswer, userLevelMenuAnswer };
+const typeAndArea = (req, res) => {
+  reportTotalAnswersService.typeAndArea()
+    .then(data => {
+
+
+      res.json(response({ success: true, payload: data }));
+    })
+    .catch((err) =>
+      res.json(response({ success: false, message: err.toString() }))
+    );
+}
+
+const typeAndBMS = (req, res) => {
+  reportTotalAnswersService.typeAndBMS()
+    .then(data => {
+      let surveySections = Object.keys(groupArray(data, "building_type")).map((v, k) => {
+        return groupArray(data, "building_type")[v];
+      }).map((v1,k1)=> {
+        return {
+          building_type: v1[0].building_type,categories: Object.keys(groupArray(v1,"option_choice_name")).map((v2,k2)=> {
+            return groupArray(v1,"option_choice_name")[v2]
+          }).map((v3,k3)=> {
+            return{
+              option_choice_name:v3[0].option_choice_name
+            }
+          }),
+          data: Object.keys(groupArray(v1, "option_choice_name")).map((v4, k4) => {
+            return groupArray(v1, "option_choice_name")[v4];
+          }).map((v5, k5) => {
+            return {
+              option_count: v5[0].option_count,
+            };
+          }),
+        }
+      })
+
+      res.json(response({ success: true, payload: surveySections }));
+    })
+    .catch((err) =>
+      res.json(response({ success: false, message: err.toString() }))
+    );
+}
+
+module.exports = { userLevelAnswer, userLevelMenuAnswer, typeAndArea, typeAndBMS };

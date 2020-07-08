@@ -1,5 +1,6 @@
 const mysql = require("mysql");
 const util = require("util");
+const { query } = require("express");
 
 require("dotenv").config();
 
@@ -14,7 +15,7 @@ const mypool = mysql.createConnection({
 // login
 
 const login = (email) => {
-  query = util.promisify(mypool.query).bind(mypool);
+  let query = util.promisify(mypool.query).bind(mypool);
   // console.log(email);
 
   return query(`CALL userLogin(?);`, [email]);
@@ -23,7 +24,7 @@ const login = (email) => {
 // addUser
 
 const addUser = (userName, password, email, companyName) => {
-  query = util.promisify(mypool.query).bind(mypool);
+ let query = util.promisify(mypool.query).bind(mypool);
   return query(`CALL addUser(?,?,?,?,?,?);`, [
     userName,
     password,
@@ -35,7 +36,7 @@ const addUser = (userName, password, email, companyName) => {
 };
 
 const updateUser = (userId, userName, password, email) => {
-  query = util.promisify(mypool.query).bind(mypool);
+ let query = util.promisify(mypool.query).bind(mypool);
   // UPDATE tbl_login_users SET user_name = '${userName}', password = '${password}', email = '${email}' WHERE
   // login_user_id = ${userId}
   return query(`CALL updateUser(?,?,?,?);`, [
@@ -49,29 +50,29 @@ const updateUser = (userId, userName, password, email) => {
 //menu
 
 const getMenu = (userId) => {
-  query = util.promisify(mypool.query).bind(mypool);
+ let query = util.promisify(mypool.query).bind(mypool);
   return query(`Call getMenu(?);`, [userId]);
 };
 
 const getMenuLevl = (userId) => {
-  query = util.promisify(mypool.query).bind(mypool);
+ let query = util.promisify(mypool.query).bind(mypool);
   return query(`CALL getMenuLevel()`, [userId]);
 };
 
 const checkDuplicateEmailInsert = (email) => {
-  query = util.promisify(mypool.query).bind(mypool);
+ let query = util.promisify(mypool.query).bind(mypool);
   return query(`CALL checkDuplicateEmailInsert(?);`, [email]);
 };
 
 const checkDuplicateEmailUpdate = (email, user_id) => {
-  query = util.promisify(mypool.query).bind(mypool);
+  let query = util.promisify(mypool.query).bind(mypool);
   return query(`CALL checkDuplicateEmailUpdate(?,?);`, [email, user_id]);
 };
 
 //Question
 
 const getQuestion = (user_id, survey_header_id, buildingId) => {
-  query = util.promisify(mypool.query).bind(mypool)
+ let query = util.promisify(mypool.query).bind(mypool)
   return query(
     `Call getQuestions( ${survey_header_id}, ${user_id},${buildingId});`
   )
@@ -87,14 +88,15 @@ const addAnswer = (
   survey_headers_id,
   building_id,
   keyValue,
-  totalQuestionCount
+  totalQuestionCount,
+  buildingType
 ) => {
-  query = util.promisify(mypool.query).bind(mypool);
+ let query = util.promisify(mypool.query).bind(mypool);
 
   return query(
     `INSERT INTO tbl_answers(other, option_choices_id, users_id, questions_id,survey_headers_id,building_id,keyValue) VALUES 
     ('${other}', ${optionChoiceId}, ${userId}, '${questionId}', ${survey_headers_id}, ${building_id}, ${keyValue});
-    UPDATE tbl_buildings SET total_questions = ${totalQuestionCount} WHERE building_id = ${building_id};`
+    UPDATE tbl_buildings SET total_questions = ${totalQuestionCount}, building_type = '${buildingType}' WHERE building_id = ${building_id};`
   )
 };
 
@@ -105,7 +107,7 @@ const addAnswer = (
 // }
 
 const deleteAnswer = (userId, survey_headers_id, building_id) => {
-  query = util.promisify(mypool.query).bind(mypool);
+ let  query = util.promisify(mypool.query).bind(mypool);
   return query(
     'DELETE FROM tbl_answers WHERE users_id = "' +
     userId +
@@ -128,7 +130,7 @@ const addQuestion = (
   surveySectionId,
   inputTypeId
 ) => {
-  query = util.promisify(mypool.query).bind(mypool);
+ let query = util.promisify(mypool.query).bind(mypool);
   return query(
     `INSERT INTO tbl_questions(question_name, required, is_other, option_groups_id, units_id, survey_sections_id, input_types_id) 
   VALUES(?,?,?,?,?,?,?)`,
@@ -145,7 +147,7 @@ const addQuestion = (
 };
 
 const deleteQuestion = (question_id) => {
-  query = util.promisify(mypool.query).bind(mypool);
+ let query = util.promisify(mypool.query).bind(mypool);
   return query(
     'DELETE FROM tbl_questions WHERE question_id = "' + question_id + '"'
   );
@@ -161,7 +163,7 @@ const updateQuestion = (
   surveySectionId,
   inputTypeId
 ) => {
-  query = util.promisify(mypool.query).bind(mypool);
+ let query = util.promisify(mypool.query).bind(mypool);
   return query(`UPDATE tbl_questions SET question_name = '${questionName}', required = ${required}, is_other = ${isOther} , 
   option_groups_id = ${optionGroupId} , units_id = ${untiId} , survey_sections_id = ${surveySectionId} , input_types_id = ${inputTypeId} 
   WHERE question_id = ${question_id} `);
@@ -171,7 +173,7 @@ const updateQuestion = (
 // AnswerCount
 
 const reportTotalAnswers = (userId, surveyHeaderId, startDate, endDate) => {
-  query = util.promisify(mypool.query).bind(mypool);
+ let query = util.promisify(mypool.query).bind(mypool);
   return startDate != null
     ? query(
       `Call reportTotalAnswerDate(${surveyHeaderId},'${startDate}','${endDate}')`
@@ -186,7 +188,7 @@ const reportDistributorAnswers = (
   startDate,
   endDate
 ) => {
-  query = util.promisify(mypool.query).bind(mypool);
+ let query = util.promisify(mypool.query).bind(mypool);
   return startDate != null
     ? query(
       `Call reportDistributorAnswersDate(${surveyHeaderId},${userId},'${startDate}','${endDate}')`
@@ -196,7 +198,7 @@ const reportDistributorAnswers = (
 
 
 const reportUserAnswer = (userId, surveyHeaderId, startDate, endDate) => {
-  query = util.promisify(mypool.query).bind(mypool);
+ let query = util.promisify(mypool.query).bind(mypool);
   return startDate != null
     ? query(
       `Call reportUserAnswerDate(${surveyHeaderId},${userId},'${startDate}','${endDate}')`
@@ -205,12 +207,12 @@ const reportUserAnswer = (userId, surveyHeaderId, startDate, endDate) => {
 };
 
 const userLevelAnswer = (userId, surveyHeaderId, startDate, endDate) => {
-  query = util.promisify(mypool.query).bind(mypool);
+ let query = util.promisify(mypool.query).bind(mypool);
   return query(`CALL userLevelAnswers(?)`, [userId]);
 };
 
 const surveyList = (userId, survey_header_id) => {
-  query = util.promisify(mypool.query).bind(mypool);
+ let query = util.promisify(mypool.query).bind(mypool);
   return query(`CALL surveyList(?,?)`, [userId, survey_header_id]);
 };
 
@@ -231,7 +233,7 @@ const addBuilding = (
   evaporator,
   coolingTower
 ) => {
-  const query = util.promisify(mypool.query).bind(mypool);
+  let query = util.promisify(mypool.query).bind(mypool);
   return query(
     `INSERT INTO tbl_buildings (building_name, company_name, remark, active, address, postal_code,country,comment,
       user_id,survey_headers_id,chiller,condenser,evaporator,cooling_tower)  VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)	
@@ -258,19 +260,19 @@ const addBuilding = (
 // surveyMenuApi
 
 const surveyMenuApi = (userId) => {
-  query = util.promisify(mypool.query).bind(mypool);
+ let query = util.promisify(mypool.query).bind(mypool);
   return query(`CALL surveyMenu(?)`, [userId]);
 };
 
 
 const surveyMenuApiLevel = (userId) => {
-  query = util.promisify(mypool.query).bind(mypool);
+ let query = util.promisify(mypool.query).bind(mypool);
   return query(`CALL surveyMenuLevel(?)`, [userId]);
 };
 
 
 const dateTimeMenuApi = (userId, startDate, endDate) => {
-  query = util.promisify(mypool.query).bind(mypool);
+ let query = util.promisify(mypool.query).bind(mypool);
   const overAllQuery = `Call reportMenuUserDate(${userId},'${startDate}','${endDate}')`;
   return startDate != null
     ? query(overAllQuery)
@@ -281,7 +283,7 @@ const dateTimeMenuApi = (userId, startDate, endDate) => {
 
 
 const dateTimeMenuAdminApi = (userId, startDate, endDate) => {
-  query = util.promisify(mypool.query).bind(mypool);
+ let query = util.promisify(mypool.query).bind(mypool);
   const overAllQuery = `Call reportMenuAdminDate('${startDate}','${endDate}')`;
   return startDate != null
     ? query(overAllQuery)
@@ -292,7 +294,7 @@ const dateTimeMenuAdminApi = (userId, startDate, endDate) => {
 
 
 const dateTimeMenuDistributorApi = (userId, startDate, endDate) => {
-  query = util.promisify(mypool.query).bind(mypool);
+ let query = util.promisify(mypool.query).bind(mypool);
 
   const overAllQuery = `Call reportMenuDistributorDate(${userId},'${startDate}','${endDate}')`;
   return startDate != null
@@ -301,6 +303,24 @@ const dateTimeMenuDistributorApi = (userId, startDate, endDate) => {
       ? query(overAllQuery)
       : query(`Call reportMenuDistributor(${userId})`);
 };
+
+const typeAndArea = () => {
+ let query = util.promisify(mypool.query).bind(mypool);
+  return query(`select oc.option_choice_id,oc.option_choice_name,tb.building_type,count(a.option_choices_id) as optionCount from evercomm_survey.tbl_answers as a  
+  left join evercomm_survey.tbl_option_choices as oc on a.option_choices_id = oc.option_choice_id
+  left join evercomm_survey.tbl_buildings as tb on a.building_id = tb.building_id where a.keyValue = 3
+  group by oc.option_choice_name,tb.building_type,oc.option_choice_id order by option_choice_id`)
+}
+
+const typeAndBMS = () => {
+  let query = util.promisify(mypool.query).bind(mypool);
+   return query(`  select oc.option_choice_id,tb.building_type,oc.option_choice_name,count(a.option_choices_id) option_count from evercomm_survey.tbl_answers as a  
+   left join evercomm_survey.tbl_option_choices as oc on a.option_choices_id = oc.option_choice_id
+   left join evercomm_survey.tbl_buildings as tb on a.building_id = tb.building_id where a.keyValue =6
+   group by oc.option_choice_name,tb.building_type,oc.option_choice_id order by option_choice_id`)
+ }
+
+
 
 module.exports = {
   getQuestion,
@@ -327,4 +347,6 @@ module.exports = {
   reportUserAnswer,
   dateTimeMenuApi,
   dateTimeMenuAdminApi,
+  typeAndArea,
+  typeAndBMS
 };
