@@ -92,14 +92,28 @@ const userLevelMenuAnswer = (req, res) => {
 
 const typeAndArea = (req, res) => {
   reportTotalAnswersService.typeAndArea()
-    .then(data => {
-
-
-      res.json(response({ success: true, payload: data }));
+  .then(data => {
+    let surveySections = Object.keys(groupArray(data, "option_choice_name")).map((v, k) => {
+      return groupArray(data, "option_choice_name")[v];
+    }).map((v1,k1)=> {
+      return {
+        option_choice_name: v1[0].option_choice_name,
+        categories: Object.keys(groupArray(v1,"building_type")).map((v2,k2)=> {
+          return groupArray(v1,"building_type")[v2]
+        }).map((v3,k3)=> {
+          return{
+            building_type:v3[0].building_type,
+            optionCount: v3[0].optionCount
+          }
+        })
+      }
     })
-    .catch((err) =>
-      res.json(response({ success: false, message: err.toString() }))
-    );
+
+    res.json(response({ success: true, payload: surveySections }));
+  })
+  .catch((err) =>
+    res.json(response({ success: false, message: err.toString() }))
+  );
 }
 
 const typeAndBMS = (req, res) => {

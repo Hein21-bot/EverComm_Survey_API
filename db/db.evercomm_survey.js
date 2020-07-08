@@ -72,11 +72,7 @@ const checkDuplicateEmailUpdate = (email, user_id) => {
 //Question
 
 const getQuestion = (user_id, survey_header_id, buildingId) => {
-<<<<<<< HEAD
  let query = util.promisify(mypool.query).bind(mypool)
-=======
-  query = util.promisify(mypool.query).bind(mypool);
->>>>>>> a3fa77a3b2d36af2b8aaee3431cbabad8e2f8904
   return query(
     `Call getQuestions( ${survey_header_id}, ${user_id},${buildingId});`
   );
@@ -93,16 +89,6 @@ const addAnswer = (
   building_id,
   keyValue,
   totalQuestionCount,
-<<<<<<< HEAD
-  buildingType
-) => {
- let query = util.promisify(mypool.query).bind(mypool);
-
-  return query(
-    `INSERT INTO tbl_answers(other, option_choices_id, users_id, questions_id,survey_headers_id,building_id,keyValue) VALUES 
-    ('${other}', ${optionChoiceId}, ${userId}, '${questionId}', ${survey_headers_id}, ${building_id}, ${keyValue});
-    UPDATE tbl_buildings SET total_questions = ${totalQuestionCount}, building_type = '${buildingType}' WHERE building_id = ${building_id};`
-=======
   answeredDate
 ) => {
   query = util.promisify(mypool.query).bind(mypool);
@@ -112,7 +98,6 @@ const addAnswer = (
     `INSERT INTO tbl_answers(other, option_choices_id, users_id, questions_id,survey_headers_id,building_id,answered_date,keyValue) VALUES 
     ('${other}', ${optionChoiceId}, ${userId}, ${questionId}, ${survey_headers_id}, ${building_id}, '${answeredDate}',${keyValue});
     UPDATE tbl_buildings SET total_questions = ${totalQuestionCount} WHERE building_id = ${building_id};`
->>>>>>> a3fa77a3b2d36af2b8aaee3431cbabad8e2f8904
   )
 };
 

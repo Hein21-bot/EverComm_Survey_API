@@ -177,16 +177,9 @@ const addAnswer = (req, res) => {
       let building_id = data.building_id;
       let keyValue = data.keyValue
       let totalQuestionCount = req.body.total
-<<<<<<< HEAD
       let buildingType = req.body.buildingType
       try {
         let addData = await surveyService.addAnswer(other, optionChoiceId, userId, questionId, survey_headers_id, building_id, keyValue, totalQuestionCount, buildingType)
-=======
-      let answeredDate=moment(new Date()).format("YYYY-MM-DD HH:mm:ss")
-      // console.log("GGGGGGGGGGGGGGGGGG",req.body)
-      try{
-      let addData = await surveyService.addAnswer(other, optionChoiceId, userId, questionId, survey_headers_id, building_id, keyValue, totalQuestionCount,answeredDate)
->>>>>>> a3fa77a3b2d36af2b8aaee3431cbabad8e2f8904
         count++;
         if (count == targetCount) resolve({ answeredCount: count });
       }
