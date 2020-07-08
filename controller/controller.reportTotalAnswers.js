@@ -105,11 +105,15 @@ const typeAndArea = (req, res) => {
             building_type:v3[0].building_type,
             optionCount: v3[0].optionCount
           }
-        })
+        }).map((obj=> {
+          let rObj = {}
+          rObj[obj.key] = obj.value
+          return rObj
+       }))
       }
     })
 
-    res.json(response({ success: true, payload: surveySections }));
+    res.json(response({ success: true, payload: data }));
   })
   .catch((err) =>
     res.json(response({ success: false, message: err.toString() }))
