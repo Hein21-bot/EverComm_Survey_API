@@ -9,8 +9,13 @@ const getQuestion = (admin_id, surey_header_id, buildingId) => {
 //     return surveydb.addAnswer(other, optionChoiceId, userId, questionId, surey_headers_id, building_id, device_type)
 // }
 
+<<<<<<< HEAD
 const addAnswer = (other, optionChoiceId, userId, questionId, surey_headers_id, building_id, keyValue, totalQuestionCount, buildingType) => {
     return surveydb.addAnswer(other, optionChoiceId, userId, questionId, surey_headers_id, building_id, keyValue, totalQuestionCount, buildingType)
+=======
+const addAnswer = (other, optionChoiceId, userId, questionId, surey_headers_id, building_id, keyValue, totalQuestionCount,answeredDate) => {
+    return surveydb.addAnswer(other, optionChoiceId, userId, questionId, surey_headers_id, building_id, keyValue, totalQuestionCount,answeredDate)
+>>>>>>> a3fa77a3b2d36af2b8aaee3431cbabad8e2f8904
 }
 
 // const deleteAnswer = (userId, survey_headers_id, building_id, device_type) => {
