@@ -94,20 +94,28 @@ const userLevelMenuAnswer = (userId, surveyHeaderId, startDate, endDate, viewTyp
     }).catch(err => (response({ success: false, message: err.toString() })));
 }
 
-// const typeAndArea = () => {
-//     return surveydb.typeAndArea().then(data=> {
-//         if (data.length > 0){
-//             return data.map( v => ({
-//                 ...v,
-//                 option_choice_name:v.option_choice_name
-//             }))
-//             .map( v=> ({
-//                 ...v,
-//                 categories: [v.building_type,v.optionCount]
-//             }))
-//         }
-//     })
-// }
+const typeAndArea = () => {
+    return surveydb.typeAndArea().then(data => {
+        if (data.length > 0) {
+           const result= data.reduce((r,c)=>{
+              const R =[...r]
+              const index = R.findIndex(v=>v.id==c.option_choice_id)
+              if(index===-1){
+                  R.push({id:c.option_choice_id,name:c.option_choice_name,categories:[{[c.building_type]: c.optionCount}] })
+              }
+              else{
+                R[index].categories.push({[c.building_type]: c.optionCount})
+              }
+              return R
+            },[])
+            return result
+        } else return []
+    })
+    .catch(error => {
+        throw error
+    })
+
+}
 
 // const typeAndBMS = () => {
 //     return surveydb.typeAndBMS()
@@ -123,4 +131,4 @@ const graphReportApi = () => {
 
 
 
-module.exports = { userLevelAnswer, userLevelMenuAnswer, graphReportApi }
+module.exports = { userLevelAnswer, userLevelMenuAnswer, typeAndArea, graphReportApi }

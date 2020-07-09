@@ -90,15 +90,15 @@ const userLevelMenuAnswer = (req, res) => {
     });
 };
 
-// const typeAndArea = (req, res) => {
-//   reportTotalAnswersService.typeAndArea()
-//     .then(data => { 
-//       res.json(response({ success: true, payload: data }));
-//     })
-//     .catch((err) =>
-//       res.json(response({ success: false, message: err.toString() }))
-//     );
-// }
+const typeAndArea = (req, res) => {
+  reportTotalAnswersService.typeAndArea()
+    .then(data => {
+      res.json(response({ success: true, payload: data }));
+    })
+    .catch((err) =>
+      res.json(response({ success: false, message: err.toString() }))
+    );
+}
 
 // const typeAndBMS = (req, res) => {
 //   reportTotalAnswersService.typeAndBMS()
@@ -220,4 +220,4 @@ const graphReportApi = (req, res) => {
 };
 
 
-module.exports = { userLevelAnswer, userLevelMenuAnswer, graphReportApi };
+module.exports = { userLevelAnswer, userLevelMenuAnswer, typeAndArea, graphReportApi };

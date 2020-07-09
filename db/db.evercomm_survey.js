@@ -89,15 +89,16 @@ const addAnswer = (
   building_id,
   keyValue,
   totalQuestionCount,
-  answeredDate
+  answeredDate,
+  buildingType
 ) => {
-  query = util.promisify(mypool.query).bind(mypool);
-  console.log(answeredDate,keyValue);
+  let query = util.promisify(mypool.query).bind(mypool);
+  // console.log(answeredDate,keyValue);
   
   return query(
     `INSERT INTO tbl_answers(other, option_choices_id, users_id, questions_id,survey_headers_id,building_id,answered_date,keyValue) VALUES 
-    ('${other}', ${optionChoiceId}, ${userId}, ${questionId}, ${survey_headers_id}, ${building_id}, '${answeredDate}',${keyValue});
-    UPDATE tbl_buildings SET total_questions = ${totalQuestionCount} WHERE building_id = ${building_id};`
+    ('${other}', ${optionChoiceId}, ${userId}, '${questionId}', ${survey_headers_id}, ${building_id}, '${answeredDate}',${keyValue});
+    UPDATE tbl_buildings SET total_questions = ${totalQuestionCount},building_type = '${buildingType}' WHERE building_id = ${building_id};`
   )
 };
 
@@ -299,13 +300,13 @@ const dateTimeMenuDistributorApi = (userId, startDate, endDate) => {
     : query(`Call reportMenuDistributor(${userId})`);
 };
 
-// const typeAndArea = () => {
-//  let query = util.promisify(mypool.query).bind(mypool);
-//   return query(`select oc.option_choice_id,oc.option_choice_name,tb.building_type,count(a.option_choices_id) as optionCount from evercomm_survey.tbl_answers as a  
-//   left join evercomm_survey.tbl_option_choices as oc on a.option_choices_id = oc.option_choice_id
-//   left join evercomm_survey.tbl_buildings as tb on a.building_id = tb.building_id where a.keyValue = 3
-//   group by oc.option_choice_name,tb.building_type,oc.option_choice_id order by option_choice_id`)
-// }
+const typeAndArea = () => {
+ let query = util.promisify(mypool.query).bind(mypool);
+  return query(`select oc.option_choice_id,oc.option_choice_name,tb.building_type,count(a.option_choices_id) as optionCount from evercomm_survey.tbl_answers as a  
+  left join evercomm_survey.tbl_option_choices as oc on a.option_choices_id = oc.option_choice_id
+  left join evercomm_survey.tbl_buildings as tb on a.building_id = tb.building_id where a.keyValue = 3
+  group by oc.option_choice_name,tb.building_type,oc.option_choice_id order by option_choice_id`)
+}
 
 // const typeAndBMS = () => {
 //   let query = util.promisify(mypool.query).bind(mypool);
@@ -330,7 +331,7 @@ const graphReportApi = () => {
   group by oc.option_choice_name,tb.building_type,oc.option_choice_id order by option_choice_id;
   select oc.option_choice_id,tb.building_type,oc.option_choice_name,count(a.option_choices_id) option_count from evercomm_survey.tbl_answers as a  
    left join evercomm_survey.tbl_option_choices as oc on a.option_choices_id = oc.option_choice_id
-   left join evercomm_survey.tbl_buildings as tb on a.building_id = tb.building_id where a.keyValue =6
+   left join evercomm_survey.tbl_buildings as tb on a.building_id = tb.building_id where a.keyValue =345
    group by oc.option_choice_name,tb.building_type,oc.option_choice_id order by option_choice_id;
    SELECT oc.option_choice_name  as optionChoiceName,count(a.option_choices_id) as optionCount FROM evercomm_survey.tbl_answers  as a
   left join tbl_option_choices oc on a.option_choices_id = oc.option_choice_id where a.keyValue = 4
@@ -361,7 +362,7 @@ module.exports = {
   reportUserAnswer,
   dateTimeMenuApi,
   dateTimeMenuAdminApi,
-  // typeAndArea,
+  typeAndArea,
   // typeAndBMS,
   // age,
   graphReportApi
