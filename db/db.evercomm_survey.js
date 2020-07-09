@@ -299,24 +299,43 @@ const dateTimeMenuDistributorApi = (userId, startDate, endDate) => {
     : query(`Call reportMenuDistributor(${userId})`);
 };
 
-const typeAndArea = () => {
- let query = util.promisify(mypool.query).bind(mypool);
+// const typeAndArea = () => {
+//  let query = util.promisify(mypool.query).bind(mypool);
+//   return query(`select oc.option_choice_id,oc.option_choice_name,tb.building_type,count(a.option_choices_id) as optionCount from evercomm_survey.tbl_answers as a  
+//   left join evercomm_survey.tbl_option_choices as oc on a.option_choices_id = oc.option_choice_id
+//   left join evercomm_survey.tbl_buildings as tb on a.building_id = tb.building_id where a.keyValue = 3
+//   group by oc.option_choice_name,tb.building_type,oc.option_choice_id order by option_choice_id`)
+// }
+
+// const typeAndBMS = () => {
+//   let query = util.promisify(mypool.query).bind(mypool);
+//    return query(`select oc.option_choice_id,tb.building_type,oc.option_choice_name,count(a.option_choices_id) option_count from evercomm_survey.tbl_answers as a  
+//    left join evercomm_survey.tbl_option_choices as oc on a.option_choices_id = oc.option_choice_id
+//    left join evercomm_survey.tbl_buildings as tb on a.building_id = tb.building_id where a.keyValue =6
+//    group by oc.option_choice_name,tb.building_type,oc.option_choice_id order by option_choice_id`)
+//  }
+
+//  const age = () => {
+//   let query = util.promisify(mypool.query).bind(mypool);
+//   return query(`SELECT oc.option_choice_name  as optionChoiceName,count(a.option_choices_id) as optionCount FROM evercomm_survey.tbl_answers  as a
+//   left join tbl_option_choices oc on a.option_choices_id = oc.option_choice_id where a.keyValue = 4
+//   group by oc.option_choice_name`)
+// }
+
+const graphReportApi = () => {
+  let query = util.promisify(mypool.query).bind(mypool);
   return query(`select oc.option_choice_id,oc.option_choice_name,tb.building_type,count(a.option_choices_id) as optionCount from evercomm_survey.tbl_answers as a  
   left join evercomm_survey.tbl_option_choices as oc on a.option_choices_id = oc.option_choice_id
   left join evercomm_survey.tbl_buildings as tb on a.building_id = tb.building_id where a.keyValue = 3
-  group by oc.option_choice_name,tb.building_type,oc.option_choice_id order by option_choice_id`)
-}
-
-const typeAndBMS = () => {
-  let query = util.promisify(mypool.query).bind(mypool);
-   return query(`  select oc.option_choice_id,tb.building_type,oc.option_choice_name,count(a.option_choices_id) option_count from evercomm_survey.tbl_answers as a  
+  group by oc.option_choice_name,tb.building_type,oc.option_choice_id order by option_choice_id;
+  select oc.option_choice_id,tb.building_type,oc.option_choice_name,count(a.option_choices_id) option_count from evercomm_survey.tbl_answers as a  
    left join evercomm_survey.tbl_option_choices as oc on a.option_choices_id = oc.option_choice_id
    left join evercomm_survey.tbl_buildings as tb on a.building_id = tb.building_id where a.keyValue =6
-   group by oc.option_choice_name,tb.building_type,oc.option_choice_id order by option_choice_id`)
- }
-
-
-
+   group by oc.option_choice_name,tb.building_type,oc.option_choice_id order by option_choice_id;
+   SELECT oc.option_choice_name  as optionChoiceName,count(a.option_choices_id) as optionCount FROM evercomm_survey.tbl_answers  as a
+  left join tbl_option_choices oc on a.option_choices_id = oc.option_choice_id where a.keyValue = 4
+  group by oc.option_choice_name;`)
+}
 module.exports = {
   getQuestion,
   login,
@@ -342,6 +361,8 @@ module.exports = {
   reportUserAnswer,
   dateTimeMenuApi,
   dateTimeMenuAdminApi,
-  typeAndArea,
-  typeAndBMS
+  // typeAndArea,
+  // typeAndBMS,
+  // age,
+  graphReportApi
 };

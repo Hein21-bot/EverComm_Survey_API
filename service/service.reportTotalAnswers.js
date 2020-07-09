@@ -94,13 +94,33 @@ const userLevelMenuAnswer = (userId, surveyHeaderId, startDate, endDate, viewTyp
     }).catch(err => (response({ success: false, message: err.toString() })));
 }
 
-const typeAndArea = () => {
-    return surveydb.typeAndArea()
+// const typeAndArea = () => {
+//     return surveydb.typeAndArea().then(data=> {
+//         if (data.length > 0){
+//             return data.map( v => ({
+//                 ...v,
+//                 option_choice_name:v.option_choice_name
+//             }))
+//             .map( v=> ({
+//                 ...v,
+//                 categories: [v.building_type,v.optionCount]
+//             }))
+//         }
+//     })
+// }
+
+// const typeAndBMS = () => {
+//     return surveydb.typeAndBMS()
+// }
+
+// const age = () => {
+//     return surveydb.age()
+// }
+
+const graphReportApi = () => {
+    return surveydb.graphReportApi()
 }
 
-const typeAndBMS = () => {
-    return surveydb.typeAndBMS()
-}
 
 
-module.exports = { userLevelAnswer, userLevelMenuAnswer, typeAndArea, typeAndBMS }
+module.exports = { userLevelAnswer, userLevelMenuAnswer, graphReportApi }
