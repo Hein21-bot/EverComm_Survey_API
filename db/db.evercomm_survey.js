@@ -24,7 +24,7 @@ const login = (email) => {
 // addUser
 
 const addUser = (userName, password, email, companyName) => {
- let query = util.promisify(mypool.query).bind(mypool);
+  let query = util.promisify(mypool.query).bind(mypool);
   return query(`CALL addUser(?,?,?,?,?,?);`, [
     userName,
     password,
@@ -36,7 +36,7 @@ const addUser = (userName, password, email, companyName) => {
 };
 
 const updateUser = (userId, userName, password, email) => {
- let query = util.promisify(mypool.query).bind(mypool);
+  let query = util.promisify(mypool.query).bind(mypool);
   // UPDATE tbl_login_users SET user_name = '${userName}', password = '${password}', email = '${email}' WHERE
   // login_user_id = ${userId}
   return query(`CALL updateUser(?,?,?,?);`, [
@@ -50,17 +50,17 @@ const updateUser = (userId, userName, password, email) => {
 //menu
 
 const getMenu = (userId) => {
- let query = util.promisify(mypool.query).bind(mypool);
+  let query = util.promisify(mypool.query).bind(mypool);
   return query(`Call getMenu(?);`, [userId]);
 };
 
 const getMenuLevl = (userId) => {
- let query = util.promisify(mypool.query).bind(mypool);
+  let query = util.promisify(mypool.query).bind(mypool);
   return query(`CALL getMenuLevel()`, [userId]);
 };
 
 const checkDuplicateEmailInsert = (email) => {
- let query = util.promisify(mypool.query).bind(mypool);
+  let query = util.promisify(mypool.query).bind(mypool);
   return query(`CALL checkDuplicateEmailInsert(?);`, [email]);
 };
 
@@ -72,7 +72,7 @@ const checkDuplicateEmailUpdate = (email, user_id) => {
 //Question
 
 const getQuestion = (user_id, survey_header_id, buildingId) => {
- let query = util.promisify(mypool.query).bind(mypool)
+  let query = util.promisify(mypool.query).bind(mypool)
   return query(
     `Call getQuestions( ${survey_header_id}, ${user_id},${buildingId});`
   );
@@ -94,7 +94,7 @@ const addAnswer = (
 ) => {
   let query = util.promisify(mypool.query).bind(mypool);
   // console.log(answeredDate,keyValue);
-  
+
   return query(
     `INSERT INTO tbl_answers(other, option_choices_id, users_id, questions_id,survey_headers_id,building_id,answered_date,keyValue) VALUES 
     ('${other}', ${optionChoiceId}, ${userId}, '${questionId}', ${survey_headers_id}, ${building_id}, '${answeredDate}',${keyValue});
@@ -109,15 +109,15 @@ const addAnswer = (
 // }
 
 const deleteAnswer = (userId, survey_headers_id, building_id) => {
- let  query = util.promisify(mypool.query).bind(mypool);
+  let query = util.promisify(mypool.query).bind(mypool);
   return query(
     'DELETE FROM tbl_answers WHERE users_id = "' +
-      userId +
-      '"  AND survey_headers_id= "' +
-      survey_headers_id +
-      '" AND building_id="' +
-      building_id +
-      '"'
+    userId +
+    '"  AND survey_headers_id= "' +
+    survey_headers_id +
+    '" AND building_id="' +
+    building_id +
+    '"'
   );
 };
 
@@ -132,7 +132,7 @@ const addQuestion = (
   surveySectionId,
   inputTypeId
 ) => {
- let query = util.promisify(mypool.query).bind(mypool);
+  let query = util.promisify(mypool.query).bind(mypool);
   return query(
     `INSERT INTO tbl_questions(question_name, required, is_other, option_groups_id, units_id, survey_sections_id, input_types_id) 
   VALUES(?,?,?,?,?,?,?)`,
@@ -149,7 +149,7 @@ const addQuestion = (
 };
 
 const deleteQuestion = (question_id) => {
- let query = util.promisify(mypool.query).bind(mypool);
+  let query = util.promisify(mypool.query).bind(mypool);
   return query(
     'DELETE FROM tbl_questions WHERE question_id = "' + question_id + '"'
   );
@@ -165,7 +165,7 @@ const updateQuestion = (
   surveySectionId,
   inputTypeId
 ) => {
- let query = util.promisify(mypool.query).bind(mypool);
+  let query = util.promisify(mypool.query).bind(mypool);
   return query(`UPDATE tbl_questions SET question_name = '${questionName}', required = ${required}, is_other = ${isOther} , 
   option_groups_id = ${optionGroupId} , units_id = ${untiId} , survey_sections_id = ${surveySectionId} , input_types_id = ${inputTypeId} 
   WHERE question_id = ${question_id} `);
@@ -175,11 +175,11 @@ const updateQuestion = (
 // AnswerCount
 
 const reportTotalAnswers = (userId, surveyHeaderId, startDate, endDate) => {
- let query = util.promisify(mypool.query).bind(mypool);
+  let query = util.promisify(mypool.query).bind(mypool);
   return startDate != null
     ? query(
-        `Call reportTotalAnswerDate(${surveyHeaderId},'${startDate}','${endDate}')`
-      )
+      `Call reportTotalAnswerDate(${surveyHeaderId},'${startDate}','${endDate}')`
+    )
     : query(`Call reportTotalAnswer(${surveyHeaderId})`);
 };
 
@@ -189,30 +189,30 @@ const reportDistributorAnswers = (
   startDate,
   endDate
 ) => {
- let query = util.promisify(mypool.query).bind(mypool);
+  let query = util.promisify(mypool.query).bind(mypool);
   return startDate != null
     ? query(
-        `Call reportDistributorAnswersDate(${surveyHeaderId},${userId},'${startDate}','${endDate}')`
-      )
+      `Call reportDistributorAnswersDate(${surveyHeaderId},${userId},'${startDate}','${endDate}')`
+    )
     : query(`Call reportDistributorAnswers(${surveyHeaderId},${userId})`);
 };
 
 const reportUserAnswer = (userId, surveyHeaderId, startDate, endDate) => {
- let query = util.promisify(mypool.query).bind(mypool);
+  let query = util.promisify(mypool.query).bind(mypool);
   return startDate != null
     ? query(
-        `Call reportUserAnswerDate(${surveyHeaderId},${userId},'${startDate}','${endDate}')`
-      )
+      `Call reportUserAnswerDate(${surveyHeaderId},${userId},'${startDate}','${endDate}')`
+    )
     : query(`Call reportUserAnswer(${surveyHeaderId},${userId})`);
 };
 
 const userLevelAnswer = (userId, surveyHeaderId, startDate, endDate) => {
- let query = util.promisify(mypool.query).bind(mypool);
+  let query = util.promisify(mypool.query).bind(mypool);
   return query(`CALL userLevelAnswers(?)`, [userId]);
 };
 
 const surveyList = (userId, survey_header_id) => {
- let query = util.promisify(mypool.query).bind(mypool);
+  let query = util.promisify(mypool.query).bind(mypool);
   return query(`CALL surveyList(?,?)`, [userId, survey_header_id]);
 };
 
@@ -260,49 +260,56 @@ const addBuilding = (
 // surveyMenuApi
 
 const surveyMenuApi = (userId) => {
- let query = util.promisify(mypool.query).bind(mypool);
+  let query = util.promisify(mypool.query).bind(mypool);
   return query(`CALL surveyMenu(?)`, [userId]);
 };
 
 const surveyMenuApiLevel = (userId) => {
- let query = util.promisify(mypool.query).bind(mypool);
+  let query = util.promisify(mypool.query).bind(mypool);
   return query(`CALL surveyMenuLevel(?)`, [userId]);
 };
 
 const dateTimeMenuApi = (userId, startDate, endDate) => {
- let query = util.promisify(mypool.query).bind(mypool);
+  let query = util.promisify(mypool.query).bind(mypool);
   const overAllQuery = `Call reportMenuUserDate(${userId},'${startDate}','${endDate}')`;
   return startDate != null
     ? query(overAllQuery)
     : endDate != null
-    ? query(overAllQuery)
-    : query(`Call reportMenuUser(${userId})`);
+      ? query(overAllQuery)
+      : query(`Call reportMenuUser(${userId})`);
 };
 
 const dateTimeMenuAdminApi = (userId, startDate, endDate) => {
- let query = util.promisify(mypool.query).bind(mypool);
+  let query = util.promisify(mypool.query).bind(mypool);
   const overAllQuery = `Call reportMenuAdminDate('${startDate}','${endDate}')`;
   return startDate != null
     ? query(overAllQuery)
     : endDate != null
-    ? query(overAllQuery)
-    : query(`Call reportMenuAdmin()`);
+      ? query(overAllQuery)
+      : query(`Call reportMenuAdmin()`);
 };
 
 const dateTimeMenuDistributorApi = (userId, startDate, endDate) => {
- let query = util.promisify(mypool.query).bind(mypool);
+  let query = util.promisify(mypool.query).bind(mypool);
 
   const overAllQuery = `Call reportMenuDistributorDate(${userId},'${startDate}','${endDate}')`;
   return startDate != null
     ? query(overAllQuery)
     : endDate != null
-    ? query(overAllQuery)
-    : query(`Call reportMenuDistributor(${userId})`);
+      ? query(overAllQuery)
+      : query(`Call reportMenuDistributor(${userId})`);
 };
 
-const typeAndArea = () => {
- let query = util.promisify(mypool.query).bind(mypool);
-  return query(`select oc.option_choice_id,oc.option_choice_name,tb.building_type,count(a.option_choices_id) as optionCount from evercomm_survey.tbl_answers as a  
+const typeAndArea = (startDate, endDate) => {
+  let query = util.promisify(mypool.query).bind(mypool);
+  return startDate != null
+    ?
+    query(`select oc.option_choice_id,oc.option_choice_name,tb.building_type,count(a.option_choices_id) as optionCount from evercomm_survey.tbl_answers as a  
+  left join evercomm_survey.tbl_option_choices as oc on a.option_choices_id = oc.option_choice_id
+  left join evercomm_survey.tbl_buildings as tb on a.building_id = tb.building_id where a.keyValue = 3
+  and a.answered_date between '${startDate}' and '${endDate}'
+  group by oc.option_choice_name,tb.building_type,oc.option_choice_id order by option_choice_id`)
+    : query(`select oc.option_choice_id,oc.option_choice_name,tb.building_type,count(a.option_choices_id) as optionCount from evercomm_survey.tbl_answers as a  
   left join evercomm_survey.tbl_option_choices as oc on a.option_choices_id = oc.option_choice_id
   left join evercomm_survey.tbl_buildings as tb on a.building_id = tb.building_id where a.keyValue = 3
   group by oc.option_choice_name,tb.building_type,oc.option_choice_id order by option_choice_id`)
@@ -323,9 +330,25 @@ const typeAndArea = () => {
 //   group by oc.option_choice_name`)
 // }
 
-const graphReportApi = () => {
+const graphReportApi = (userId, startDate, endDate) => {
   let query = util.promisify(mypool.query).bind(mypool);
-  return query(`select oc.option_choice_id,oc.option_choice_name,tb.building_type,count(a.option_choices_id) as optionCount from evercomm_survey.tbl_answers as a  
+  // console.log(startDate, endDate, "Ddddddddddddddd")
+  return startDate != null || startDate != undefined
+    ? query(`select oc.option_choice_id,oc.option_choice_name,tb.building_type,count(a.option_choices_id) as optionCount from evercomm_survey.tbl_answers as a  
+  left join evercomm_survey.tbl_option_choices as oc on a.option_choices_id = oc.option_choice_id
+  left join evercomm_survey.tbl_buildings as tb on a.building_id = tb.building_id where a.keyValue = 3
+  and a.answered_date between '${startDate} 00:00:00' and '${endDate} 23:59:59'
+  group by oc.option_choice_name,tb.building_type,oc.option_choice_id order by option_choice_id;
+  select oc.option_choice_id,tb.building_type,oc.option_choice_name,count(a.option_choices_id) option_count from evercomm_survey.tbl_answers as a  
+   left join evercomm_survey.tbl_option_choices as oc on a.option_choices_id = oc.option_choice_id
+   left join evercomm_survey.tbl_buildings as tb on a.building_id = tb.building_id where a.keyValue =345
+   and a.answered_date between '${startDate} 00:00:00' and '${endDate} 23:59:59'
+   group by oc.option_choice_name,tb.building_type,oc.option_choice_id order by option_choice_id;
+   SELECT oc.option_choice_name  as optionChoiceName,count(a.option_choices_id) as optionCount FROM evercomm_survey.tbl_answers  as a
+  left join tbl_option_choices oc on a.option_choices_id = oc.option_choice_id where a.keyValue = 4
+  and a.answered_date between '${startDate} 00:00:00' and '${endDate} 23:59:59'
+  group by oc.option_choice_name;`)
+    : query(`select oc.option_choice_id,oc.option_choice_name,tb.building_type,count(a.option_choices_id) as optionCount from evercomm_survey.tbl_answers as a  
   left join evercomm_survey.tbl_option_choices as oc on a.option_choices_id = oc.option_choice_id
   left join evercomm_survey.tbl_buildings as tb on a.building_id = tb.building_id where a.keyValue = 3
   group by oc.option_choice_name,tb.building_type,oc.option_choice_id order by option_choice_id;
@@ -335,8 +358,41 @@ const graphReportApi = () => {
    group by oc.option_choice_name,tb.building_type,oc.option_choice_id order by option_choice_id;
    SELECT oc.option_choice_name  as optionChoiceName,count(a.option_choices_id) as optionCount FROM evercomm_survey.tbl_answers  as a
   left join tbl_option_choices oc on a.option_choices_id = oc.option_choice_id where a.keyValue = 4
-  group by oc.option_choice_name;`)
+  group by oc.option_choice_name`)
 }
+
+const graphReportApiRole = (userId, startDate, endDate) => {
+  let query = util.promisify(mypool.query).bind(mypool)
+  // console.log(startDate, endDate, "userRole")
+  return startDate != null || startDate != undefined
+    ? query(`select oc.option_choice_id,oc.option_choice_name,tb.building_type,count(a.option_choices_id) as optionCount,a.users_id from evercomm_survey.tbl_answers as a  
+  left join evercomm_survey.tbl_option_choices as oc on a.option_choices_id = oc.option_choice_id
+  left join evercomm_survey.tbl_buildings as tb on a.building_id = tb.building_id where a.keyValue = 3 and a.users_id = ${userId}
+  and a.answered_date between '${startDate} 00:00:00' and '${endDate} 23:59:59'
+  group by oc.option_choice_name,tb.building_type,oc.option_choice_id,a.users_id order by option_choice_id;
+  select oc.option_choice_id,tb.building_type,oc.option_choice_name,count(a.option_choices_id) option_count,a.users_id from evercomm_survey.tbl_answers as a  
+   left join evercomm_survey.tbl_option_choices as oc on a.option_choices_id = oc.option_choice_id
+   left join evercomm_survey.tbl_buildings as tb on a.building_id = tb.building_id where a.keyValue =345 and a.users_id = ${userId}
+   and a.answered_date between '${startDate} 00:00:00' and '${endDate} 23:59:59'
+   group by oc.option_choice_name,tb.building_type,oc.option_choice_id,a.users_id order by option_choice_id;
+   SELECT oc.option_choice_name  as optionChoiceName,count(a.option_choices_id) as optionCount,a.users_id FROM evercomm_survey.tbl_answers  as a
+  left join tbl_option_choices oc on a.option_choices_id = oc.option_choice_id where a.keyValue = 4 and a.users_id = ${userId}
+  and a.answered_date between '${startDate} 00:00:00' and '${endDate} 23:59:59'
+  group by oc.option_choice_name,a.users_id; 	
+  `)
+    : query(`select oc.option_choice_id,oc.option_choice_name,tb.building_type,count(a.option_choices_id) as optionCount,a.users_id from evercomm_survey.tbl_answers as a  
+  left join evercomm_survey.tbl_option_choices as oc on a.option_choices_id = oc.option_choice_id
+  left join evercomm_survey.tbl_buildings as tb on a.building_id = tb.building_id where a.keyValue = 3 and a.users_id = ${userId}
+  group by oc.option_choice_name,tb.building_type,oc.option_choice_id,a.users_id order by option_choice_id;
+  select oc.option_choice_id,tb.building_type,oc.option_choice_name,count(a.option_choices_id) option_count,a.users_id from evercomm_survey.tbl_answers as a  
+   left join evercomm_survey.tbl_option_choices as oc on a.option_choices_id = oc.option_choice_id
+   left join evercomm_survey.tbl_buildings as tb on a.building_id = tb.building_id where a.keyValue =345 and a.users_id = ${userId}
+   group by oc.option_choice_name,tb.building_type,oc.option_choice_id,a.users_id order by option_choice_id;
+   SELECT oc.option_choice_name  as optionChoiceName,count(a.option_choices_id) as optionCount,a.users_id FROM evercomm_survey.tbl_answers  as a
+  left join tbl_option_choices oc on a.option_choices_id = oc.option_choice_id where a.keyValue = 4 and a.users_id = ${userId}
+  group by oc.option_choice_name,a.users_id; `)
+}
+
 module.exports = {
   getQuestion,
   login,
@@ -365,5 +421,6 @@ module.exports = {
   typeAndArea,
   // typeAndBMS,
   // age,
-  graphReportApi
+  graphReportApi,
+  graphReportApiRole
 };
