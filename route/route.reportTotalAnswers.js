@@ -10,5 +10,6 @@ router.post('/reportMenu/:userId', reportTotalAnswersController.userLevelMenuAns
 // router.get('/age', reportTotalAnswersController.age);
 // router.get('/graphReportApi', reportTotalAnswersController.graphReportApi);
 router.post('/graphReportUserLevel', reportTotalAnswersController.graphReportApiUserLevel);
+router.get('/chiller', reportTotalAnswersController.chiller);
 
 module.exports = router

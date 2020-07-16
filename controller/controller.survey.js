@@ -176,11 +176,11 @@ const addAnswer = (req, res) => {
       let survey_headers_id = data.survey_headers_id;
       let building_id = data.building_id;
       let keyValue = data.keyValue
-      let answeredDate=moment(new Date()).format("YYYY-MM-DD HH:mm:ss")
+      let answeredDate = moment(new Date()).format("YYYY-MM-DD HH:mm:ss")
       let totalQuestionCount = req.body.total
       let buildingType = req.body.buildingType
       try {
-        let addData = await surveyService.addAnswer(other, optionChoiceId, userId, questionId, survey_headers_id, building_id, keyValue, totalQuestionCount,answeredDate, buildingType)
+        let addData = await surveyService.addAnswer(other, optionChoiceId, userId, questionId, survey_headers_id, building_id, keyValue, totalQuestionCount, answeredDate, buildingType)
         count++;
         if (count == targetCount) resolve({ answeredCount: count });
       }
@@ -274,6 +274,8 @@ const getMenu = (req, res) => {
   })
     .catch((err) => res.json(response({ success: false, message: err })));
 };
+
+
 
 module.exports = {
   getQuestion,

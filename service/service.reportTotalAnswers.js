@@ -1,5 +1,6 @@
 const { surveydb } = require('../db')
 const response = require('../model/response')
+var groupArray = require("group-array");
 
 
 const userLevelAnswer = (userId, surveyHeaderId, startDate, endDate, viewType) => {
@@ -72,28 +73,29 @@ const userLevelMenuAnswer = (userId, surveyHeaderId, startDate, endDate, viewTyp
     }).catch(err => (response({ success: false, message: err.toString() })));
 }
 
-// const typeAndArea = () => {
-//     return surveydb.typeAndArea().then(data => {
-//         if (data.length > 0) {
-//            const result= data.reduce((r,c)=>{
-//               const R =[...r]
-//               const index = R.findIndex(v=>v.id==c.option_choice_id)
-//               if(index===-1){
-//                   R.push({id:c.option_choice_id,name:c.option_choice_name,categories:[{[c.building_type]: c.optionCount}] })
-//               }
-//               else{
-//                 R[index].categories.push({[c.building_type]: c.optionCount})
-//               }
-//               return R
-//             },[])
-//             return result
-//         } else return []
-//     })
-//     .catch(error => {
-//         throw error
-//     })
+const typeAndArea = () => {
+    return surveydb.typeAndArea()
+        .then(data => {
+            if (data.length > 0) {
+                const result = data.reduce((r, c) => {
+                    const R = [...r]
+                    const index = R.findIndex(v => v.id == c.option_choice_id)
+                    if (index === -1) {
+                        R.push({ id: c.option_choice_id, name: c.option_choice_name, categories: [{ [c.building_type]: c.optionCount }] })
+                    }
+                    else {
+                        R[index].categories.push({ [c.building_type]: c.optionCount })
+                    }
+                    return R
+                }, [])
+                return result
+            } else return []
+        })
+        .catch(error => {
+            throw error
+        })
 
-// }
+}
 
 // const typeAndBMS = () => {
 //     return surveydb.typeAndBMS()
@@ -109,13 +111,11 @@ const userLevelMenuAnswer = (userId, surveyHeaderId, startDate, endDate, viewTyp
 
 const graphReportUserLevel = (userId, startDate, endDate, viewType) => {
     return surveydb.userLevelAnswer(userId, viewType).then(res => {
-        // console.log(res[0][0].user_level_id)
         if (res[0][0].user_level_id == 1 || res[0][0].user_level_id == 3) {
             if (viewType == "all") {
                 const graphReportApi = (userId, startDate, endDate) => {
                     return surveydb.graphReportApi(userId, startDate, endDate)
                 }
-                // console.log("All Users data")
                 return graphReportApi
             } else {
                 const graphReportApiRole = (userId, startDate, endDate) => {
@@ -133,5 +133,44 @@ const graphReportUserLevel = (userId, startDate, endDate, viewType) => {
 }
 
 
+const chiller = () => {
+    return surveydb.chiller()
+        .then(data => {
+            if (data.length > 0) {
+                let surveySections3 = Object.keys(groupArray(data, "building_type")).map((v, k) => {
+                    return groupArray(data, "building_type")[v];
+                  }).map((v1, k1) => {
+                    return {
+                      building_type: v1[0].building_type,
+                      categories: Object.keys(groupArray(v1, "option_choice_name")).map((v2, k2) => {
+                        return groupArray(v1, "option_choice_name")[v2]
+                      }).map((v3, k3) => {
+                        return {
+                          option_choice_name: v3[0].option_choice_name,
+                          buildingCount: v3[0].buildingCount
+                        }
+                      }).map((categories => {
+                          let rObj = {}
+                          rObj[categories.option_choice_name.trim()] = categories.buildingCount
+                          return rObj
+                        })).reduce(((r, c) => Object.assign(r, c)), {})
+                    }
+                  })
+                  const reultedData = surveySections3.reduce((r, c) => {
+                    const R = { ...r }
+                    R[c.building_type] = c.categories
+                    
+                    return R
+                  }, {})
+                return reultedData
+            } else return []
+        })
+        .catch(error => {
+            throw error
+        })
 
-module.exports = { userLevelAnswer, userLevelMenuAnswer, graphReportUserLevel }
+}
+
+
+
+module.exports = { userLevelAnswer, userLevelMenuAnswer, graphReportUserLevel, chiller }

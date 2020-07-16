@@ -283,7 +283,55 @@ const graphReportApiUserLevel = (req, res) => {
         }
       })
 
-      let ans = [data[2], surveySections1, surveySections2]
+      let surveySections3 = Object.keys(groupArray(data[3], "building_type")).map((v, k) => {
+        return groupArray(data[3], "building_type")[v];
+      }).map((v1, k1) => {
+        return {
+          building_type: v1[0].building_type,
+          categories: Object.keys(groupArray(v1, "option_choice_name")).map((v2, k2) => {
+            return groupArray(v1, "option_choice_name")[v2]
+          }).map((v3, k3) => {
+            return {
+              option_choice_name: v3[0].option_choice_name,
+              buildingCount: v3[0].buildingCount
+            }
+          }).map((categories => {
+            let rObj = {}
+            rObj[categories.option_choice_name.trim()] = categories.buildingCount
+            return rObj
+          })).reduce(((r, c) => Object.assign(r, c)), {})
+        }
+      })
+      const reultedData = surveySections3.reduce((r, c) => {
+        const R = { ...r }
+        R[c.building_type] = c.categories
+        return R
+      }, {})
+
+      let surveySections4 = Object.keys(groupArray(data[4], "other")).map((v, k) => {
+        return groupArray(data[4], "other")[v];
+      }).map((v1, k1) => {
+        return {
+          years: v1[0].other,
+          categories: Object.keys(groupArray(v1, "option_choice_name")).map((v2, k2) => {
+            return groupArray(v1, "option_choice_name")[v2]
+          }).map((v3, k3) => {
+            return {
+              option_choice_name: v3[0].option_choice_name.replace(/\s/g, ''),
+              optionCount: v3[0].optionCount
+            }
+          }).map((categories => {
+            let rObj = {}
+            rObj[categories.option_choice_name.trim()] = categories.optionCount
+            return rObj
+          })).reduce(((r, c) => Object.assign(r, c)), {})
+        }
+      })
+
+
+      let ans = [data[2], surveySections1, surveySections2, reultedData, surveySections4]
+
+
 
       res.json(response({ success: true, payload: ans }));
     })
@@ -293,4 +341,14 @@ const graphReportApiUserLevel = (req, res) => {
   })
 }
 
-module.exports = { userLevelAnswer, userLevelMenuAnswer, graphReportApiUserLevel };
+const chiller = (req, res) => {
+  reportTotalAnswersService.chiller().then((data) => {
+
+    res.json(response({ success: true, payload: data }));
+  }).catch((err) =>
+    res.json(response({ success: false, message: err.toString() }))
+  );
+}
+
+
+module.exports = { userLevelAnswer, userLevelMenuAnswer, graphReportApiUserLevel, chiller };
