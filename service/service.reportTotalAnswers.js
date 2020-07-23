@@ -137,32 +137,49 @@ const chiller = () => {
     return surveydb.chiller()
         .then(data => {
             if (data.length > 0) {
-                let surveySections3 = Object.keys(groupArray(data, "building_type")).map((v, k) => {
-                    return groupArray(data, "building_type")[v];
-                  }).map((v1, k1) => {
+                let surveySections2 = Object.keys(groupArray(data, "option_choice_name")).map((v, k) => {
+                    return groupArray(data, "option_choice_name")[v];
+                  })
+                  .map((v1, k1) => {
                     return {
-                      building_type: v1[0].building_type,
-                      categories: Object.keys(groupArray(v1, "option_choice_name")).map((v2, k2) => {
-                        return groupArray(v1, "option_choice_name")[v2]
-                      }).map((v3, k3) => {
+                      name: v1[0].option_choice_name, categories: Object.keys(groupArray(v1, v1[0].Siemens)).map((v2, k2) => {
+                        return groupArray(v1, v1[0].Siemens)[v2]
+                      })
+                .map((v3, k3) => {
                         return {
-                          option_choice_name: v3[0].option_choice_name,
-                          buildingCount: v3[0].buildingCount
+                          building_type: v3[0].building_type
                         }
-                      }).map((categories => {
-                          let rObj = {}
-                          rObj[categories.option_choice_name.trim()] = categories.buildingCount
-                          return rObj
-                        })).reduce(((r, c) => Object.assign(r, c)), {})
+                      })
+                .map((categories => {
+                        return categories.building_type
+                      })),
+                    //   data: Object.keys(groupArray(v1, "building_type")).map((v4, k4) => {
+                    //     return groupArray(v1, "building_type")[v4];
+                    //   })
+                // .map((v5, k5) => {
+                //         return {
+                //           option_count: v5[0].option_count,
+                //         };
+                //       })
+                // .map((categories => {
+                //         return categories.option_count
+                //       })),
+                //       y: Object.keys(groupArray(v1, "building_type")).map((v4, k4) => {
+                //         return groupArray(v1, "building_type")[v4];
+                //       })
+                // .map((v5, k5) => {
+                //         return {
+                //           option_count: v5[0].option_count,
+                //         };
+                //       })
+                    //   .map((categories => {
+                    //     return categories.option_count
+                    //   })).reduce(function (accumulator, currentValue, currentIndex, array) {
+                    //     return accumulator + currentValue
+                    //   })
                     }
                   })
-                  const reultedData = surveySections3.reduce((r, c) => {
-                    const R = { ...r }
-                    R[c.building_type] = c.categories
-                    
-                    return R
-                  }, {})
-                return reultedData
+                return surveySections2
             } else return []
         })
         .catch(error => {

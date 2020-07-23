@@ -227,6 +227,29 @@ const graphReportApiUserLevel = (req, res) => {
   reportTotalAnswersService.graphReportUserLevel(userId, startDate, endDate, viewType).then((data) => {
     data(userId, startDate, endDate, viewType).then((data) => {
       // console.log(data)
+
+      let surveySections = Object.keys(groupArray(data[2], "building_type")).map((v, k) => {
+        return groupArray(data[2], "building_type")[v];
+      }).map((v1, k1) => {
+        return {
+          building_type: v1[0].building_type,
+          categories: Object.keys(groupArray(v1, "option_choice_name")).map((v2, k2) => {
+            return groupArray(v1, "option_choice_name")[v2]
+          }).map((v3, k3) => {
+            return {
+              option_choice_name: v3[0].option_choice_name,
+              buildingCount: v3[0].buildingCount
+            }
+          })
+          .map((categories => {
+            let rObj = {}
+            rObj[categories.option_choice_name.trim()] = categories.buildingCount
+            return rObj
+          }),[])
+          .reduce(((r, c) => Object.assign(r, c)), {})
+        }
+      })
+
       let surveySections1 = Object.keys(groupArray(data[0], "option_choice_name")).map((v, k) => {
         return groupArray(data[0], "option_choice_name")[v];
       }).map((v1, k1) => {
@@ -247,31 +270,37 @@ const graphReportApiUserLevel = (req, res) => {
         }
       })
 
-      let surveySections2 = Object.keys(groupArray(data[1], "building_type")).map((v, k) => {
-        return groupArray(data[1], "building_type")[v];
-      }).map((v1, k1) => {
+      let surveySections2 = Object.keys(groupArray(data[1], "option_choice_name")).map((v, k) => {
+        return groupArray(data[1], "option_choice_name")[v];
+      })
+      .map((v1, k1) => {
         return {
-          name: v1[0].building_type, categories: Object.keys(groupArray(v1, "option_choice_name")).map((v2, k2) => {
-            return groupArray(v1, "option_choice_name")[v2]
-          }).map((v3, k3) => {
+          name: v1[0].option_choice_name, categories: Object.keys(groupArray(v1, "building_type")).map((v2, k2) => {
+            return groupArray(v1, "building_type")[v2]
+          })
+    .map((v3, k3) => {
             return {
-              option_choice_name: v3[0].option_choice_name
+              building_type: v3[0].building_type
             }
-          }).map((categories => {
-            return categories.option_choice_name
+          })
+    .map((categories => {
+            return categories.building_type
           })),
-          data: Object.keys(groupArray(v1, "option_choice_name")).map((v4, k4) => {
-            return groupArray(v1, "option_choice_name")[v4];
-          }).map((v5, k5) => {
+          data: Object.keys(groupArray(v1, "building_type")).map((v4, k4) => {
+            return groupArray(v1, "building_type")[v4];
+          })
+    .map((v5, k5) => {
             return {
               option_count: v5[0].option_count,
             };
-          }).map((categories => {
+          })
+    .map((categories => {
             return categories.option_count
           })),
-          y: Object.keys(groupArray(v1, "option_choice_name")).map((v4, k4) => {
-            return groupArray(v1, "option_choice_name")[v4];
-          }).map((v5, k5) => {
+          y: Object.keys(groupArray(v1, "building_type")).map((v4, k4) => {
+            return groupArray(v1, "building_type")[v4];
+          })
+    .map((v5, k5) => {
             return {
               option_count: v5[0].option_count,
             };
@@ -329,7 +358,7 @@ const graphReportApiUserLevel = (req, res) => {
       })
 
 
-      let ans = [data[2], surveySections1, surveySections2, reultedData, surveySections4]
+      let ans = [surveySections, surveySections1, surveySections2, reultedData, surveySections4]
 
 
 

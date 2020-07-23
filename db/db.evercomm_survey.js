@@ -343,16 +343,16 @@ const graphReportApi = (userId, startDate, endDate) => {
    left join evercomm_survey.tbl_option_choices as oc on a.option_choices_id = oc.option_choice_id
    left join evercomm_survey.tbl_buildings as tb on a.building_id = tb.building_id where a.keyValue =345
    and a.answered_date between '${startDate} 00:00:00' and '${endDate} 23:59:59'
-   group by oc.option_choice_name,tb.building_type,oc.option_choice_id order by option_choice_id;
-   select oc.option_choice_id,oc.option_choice_name,tb.building_type,count(tb.building_type) as buildingCount from evercomm_survey.tbl_answers as a  
-   left join evercomm_survey.tbl_option_choices as oc on a.option_choices_id = oc.option_choice_id
-   left join evercomm_survey.tbl_buildings as tb on a.building_id = tb.building_id where a.keyValue = 6
-   and a.answered_date between '${startDate} 00:00:00' and '${endDate} 23:59:59'
-   group by oc.option_choice_name,tb.building_type,oc.option_choice_id order by building_type; 
+   group by oc.option_choice_name,tb.building_type,oc.option_choice_id order by option_choice_id,building_type;   
    SELECT oc.option_choice_name  as optionChoiceName,count(a.option_choices_id) as optionCount,a.option_choices_id FROM evercomm_survey.tbl_answers  as a
   left join tbl_option_choices oc on a.option_choices_id = oc.option_choice_id where a.keyValue = 4
   and a.answered_date between '${startDate} 00:00:00' and '${endDate} 23:59:59'
   group by oc.option_choice_name,a.option_choices_id order by a.option_choices_id;
+  select oc.option_choice_id,oc.option_choice_name,tb.building_type,count(tb.building_type) as buildingCount from evercomm_survey.tbl_answers as a  
+  left join evercomm_survey.tbl_option_choices as oc on a.option_choices_id = oc.option_choice_id
+  left join evercomm_survey.tbl_buildings as tb on a.building_id = tb.building_id where a.keyValue = 6
+  and a.answered_date between '${startDate} 00:00:00' and '${endDate} 23:59:59'
+  group by oc.option_choice_name,tb.building_type,oc.option_choice_id order by building_type;
   SELECT other,option_choice_name,t1.option_choices_id,count(t1.option_choices_id) as optionCount
   FROM 
       (Select left(a.questions_id, length(a.questions_id)-1) as A1questionId,a.option_choices_id,oc.option_choice_name,a.answered_date from evercomm_survey.tbl_answers as a
@@ -370,10 +370,11 @@ const graphReportApi = (userId, startDate, endDate) => {
   select oc.option_choice_id,tb.building_type,oc.option_choice_name,count(a.option_choices_id) option_count from evercomm_survey.tbl_answers as a  
    left join evercomm_survey.tbl_option_choices as oc on a.option_choices_id = oc.option_choice_id
    left join evercomm_survey.tbl_buildings as tb on a.building_id = tb.building_id where a.keyValue =345
-   group by oc.option_choice_name,tb.building_type,oc.option_choice_id order by option_choice_id;
-   SELECT oc.option_choice_name  as optionChoiceName,count(a.option_choices_id) as optionCount,a.option_choices_id FROM evercomm_survey.tbl_answers  as a
-  left join tbl_option_choices oc on a.option_choices_id = oc.option_choice_id where a.keyValue = 4
-  group by oc.option_choice_name,a.option_choices_id order by a.option_choices_id;
+   group by oc.option_choice_name,tb.building_type,oc.option_choice_id order by option_choice_id,building_type;
+   select oc.option_choice_id,oc.option_choice_name,tb.building_type,count(tb.building_type) as buildingCount from evercomm_survey.tbl_answers as a  
+   inner join evercomm_survey.tbl_option_choices as oc on a.option_choices_id = oc.option_choice_id 
+   left join evercomm_survey.tbl_buildings as tb on a.building_id = tb.building_id where a.keyValue = 4 
+   group by oc.option_choice_name,tb.building_type,oc.option_choice_id order by building_type;
   select oc.option_choice_id,oc.option_choice_name,tb.building_type,count(tb.building_type) as buildingCount from evercomm_survey.tbl_answers as a  
    left join evercomm_survey.tbl_option_choices as oc on a.option_choices_id = oc.option_choice_id
    left join evercomm_survey.tbl_buildings as tb on a.building_id = tb.building_id where a.keyValue = 6
@@ -401,7 +402,7 @@ const graphReportApiRole = (userId, startDate, endDate) => {
    left join evercomm_survey.tbl_option_choices as oc on a.option_choices_id = oc.option_choice_id
    left join evercomm_survey.tbl_buildings as tb on a.building_id = tb.building_id where a.keyValue =345 and a.users_id = ${userId}
    and a.answered_date between '${startDate} 00:00:00' and '${endDate} 23:59:59'
-   group by oc.option_choice_name,tb.building_type,oc.option_choice_id,a.users_id order by option_choice_id;
+   group by oc.option_choice_name,tb.building_type,oc.option_choice_id,a.users_id order by option_choice_id,building_type;
    SELECT oc.option_choice_name  as optionChoiceName,count(a.option_choices_id) as optionCount,a.users_id,a.option_choices_id FROM evercomm_survey.tbl_answers  as a
   left join tbl_option_choices oc on a.option_choices_id = oc.option_choice_id where a.keyValue = 4 and a.users_id = ${userId}
   and a.answered_date between '${startDate} 00:00:00' and '${endDate} 23:59:59'
@@ -428,7 +429,7 @@ const graphReportApiRole = (userId, startDate, endDate) => {
   select oc.option_choice_id,tb.building_type,oc.option_choice_name,count(a.option_choices_id) option_count,a.users_id from evercomm_survey.tbl_answers as a  
    left join evercomm_survey.tbl_option_choices as oc on a.option_choices_id = oc.option_choice_id
    left join evercomm_survey.tbl_buildings as tb on a.building_id = tb.building_id where a.keyValue =345 and a.users_id = ${userId}
-   group by oc.option_choice_name,tb.building_type,oc.option_choice_id,a.users_id order by option_choice_id;
+   group by oc.option_choice_name,tb.building_type,oc.option_choice_id,a.users_id order by option_choice_id,building_type;
    SELECT oc.option_choice_name  as optionChoiceName,count(a.option_choices_id) as optionCount,a.users_id,a.option_choices_id FROM evercomm_survey.tbl_answers  as a
   left join tbl_option_choices oc on a.option_choices_id = oc.option_choice_id where a.keyValue = 4 and a.users_id = ${userId}
   group by oc.option_choice_name,a.users_id,a.option_choices_id order by a.option_choices_id;
@@ -450,10 +451,10 @@ const graphReportApiRole = (userId, startDate, endDate) => {
 
 const chiller = () => {
   let query = util.promisify(mypool.query).bind(mypool)
-  return query(`select oc.option_choice_id,oc.option_choice_name,tb.building_type,count(tb.building_type) as buildingCount from evercomm_survey.tbl_answers as a  
+  return query(`select oc.option_choice_id,tb.building_type,oc.option_choice_name,count(a.option_choices_id) option_count from evercomm_survey.tbl_answers as a  
   left join evercomm_survey.tbl_option_choices as oc on a.option_choices_id = oc.option_choice_id
-  left join evercomm_survey.tbl_buildings as tb on a.building_id = tb.building_id where a.keyValue = 6
-  group by oc.option_choice_name,tb.building_type,oc.option_choice_id order by building_type;`)
+  left join evercomm_survey.tbl_buildings as tb on a.building_id = tb.building_id where a.keyValue =345
+  group by oc.option_choice_name,tb.building_type,oc.option_choice_id order by option_choice_id;`)
 }
 
 module.exports = {
