@@ -1,6 +1,7 @@
 const { reportTotalAnswersService } = require("../service");
 const response = require("../model/response");
 var groupArray = require("group-array");
+const { xssFilter } = require("helmet");
 
 const userLevelAnswer = (req, res) => {
   let surveyHeaderId = req.params.surveyHeaderId;
@@ -270,6 +271,12 @@ const graphReportApiUserLevel = (req, res) => {
         }
       })
 
+      const result1 = surveySections1.map(v=>{
+        const values = Object.values(v.categories)
+        const sumValue = values.reduce((r,c) => r+c,0)
+        return ({...v,count:sumValue})
+      })
+
       let surveySections2 = Object.keys(groupArray(data[1], "option_choice_name")).map((v, k) => {
         return groupArray(data[1], "option_choice_name")[v];
       })
@@ -356,9 +363,30 @@ const graphReportApiUserLevel = (req, res) => {
           })).reduce(((r, c) => Object.assign(r, c)), {})
         }
       })
+      // console.log(surveySections4)
 
+      const result = surveySections4.map(v=>{
+        const values = Object.values(v.categories)
+        const sumValue = values.reduce((r,c) => r+c,0)
+        return ({...v,count:sumValue})
+      })
+      // console.log("result",result)
 
-      let ans = [surveySections, surveySections1, surveySections2, reultedData, surveySections4]
+//       const resultedData = data[4].reduce((r,c)=>{
+//        const R = [...r]
+//         const index  = R.findIndex(v=>v.year == c.other)
+//         if(index == -1){
+//           R.push({year:c.other,count:c.optionCount})
+//         }
+//         else{
+//           const count1 =R[index].count 
+//           R[index].count = c.optionCount+count1
+//         }
+//         return R
+//       },[])
+
+// console.log(resultedData,"rrr")
+      let ans = [surveySections, result1, surveySections2, reultedData, result]
 
 
 
