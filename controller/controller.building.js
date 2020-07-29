@@ -5,19 +5,20 @@ const { surveydb } = require('../db')
 const addBuilding = (req, res) => {
     const buildingName = req.body.buildingName
     const companyName = req.body.companyName
+    const building_type = req.body.buildingType
+    const buildingTypeId = req.body.buildingTypeId
     const address = req.body.address
     const postalCode = req.body.postalCode
     const country = req.body.country
     const comment = req.body.comment
     const userId = req.body.userId
-    const chiller=req.body.chiller
-    const condenser=req.body.condenser
-    const evaporator=req.body.evaporator
-    const coolingTower=req.body.coolingTower
-    const surveyHeadersId = req.body.surveyHeaderId
+    const chiller = req.body.chiller
+    const condenser = req.body.condenser
+    const evaporator = req.body.evaporator
+    const coolingTower = req.body.coolingTower
+    const surveyHeadersId = req.body.surveyHeaderId                 
 
-
-    buildingService.addBuilding(buildingName, companyName, address, postalCode, country, comment, userId, surveyHeadersId,chiller,condenser,evaporator,coolingTower)
+    buildingService.addBuilding(buildingName, companyName, building_type, buildingTypeId, address, postalCode, country, comment, userId, surveyHeadersId, chiller, condenser, evaporator, coolingTower)
         .then(data => {
             return res.json(
                 response({
@@ -32,9 +33,16 @@ const addBuilding = (req, res) => {
         });
 }
 
+const getBuildingType = (req, res) => {
+    buildingService.getBuildingType().then((data) => {
+        res.json(response({ success: true, payload: data }))
+    })
+        .catch((err) => res.json(response({ success: false, message: err })));
+};
 
 
 
 
-module.exports = { addBuilding }
+
+module.exports = { addBuilding, getBuildingType }
 
