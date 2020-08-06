@@ -359,7 +359,7 @@ const graphReportApiUserLevel = (req, res) => {
           }).map((categories => {
             let rObj = {}
             rObj[categories.option_choice_name.trim()] = categories.optionCount
-            return rObj
+            return rObj0
           })).reduce(((r, c) => Object.assign(r, c)), {})
         }
       })

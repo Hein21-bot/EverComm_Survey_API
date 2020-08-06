@@ -12,7 +12,7 @@ const getQuestion = (req, res) => {
   let count = 0;
 
 
-  surveyService.getQuestion(admin_id, survey_header_id, buildingId,buildingTypeId).then((data) => {
+  surveyService.getQuestion(admin_id, survey_header_id, buildingId, buildingTypeId).then((data) => {
 
     let surveySections = Object.keys(
       groupArray(data[0], "survey_section_id")
@@ -164,13 +164,13 @@ const surveyMenuApi = (req, res) => {
 
 const addAnswer = (req, res) => {
   let targetCount = req.body.data.length;
-
+  console.log("data is", req.body)
   let count = 0;
   let queryLoop = new Promise((resolve, reject) => {
     surveyService.deleteAnswer(req.body.data[0].userId, req.body.data[0].survey_headers_id, req.body.data[0].building_id);
     req.body.data.map(async data => {
-      let other = data.other;
       let optionChoiceId = data.optionChoiceId;
+      let other = data.other;
       let userId = data.userId;
       let questionId = data.questionId;
       let survey_headers_id = data.survey_headers_id;
