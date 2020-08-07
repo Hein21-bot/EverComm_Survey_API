@@ -43,7 +43,7 @@ const getQuestion = (req, res) => {
           question_count: count,
           answers: data[1],
           amountOfDevice: data[2],
-          BMSInstalled: data[3][0].BMSInstalled
+          
         },
       ];
       res.json(response({ success: true, payload: ans }));
@@ -77,7 +77,6 @@ const getQuestion = (req, res) => {
           question_count: count,
           answers: data[1],
           amountOfDevice: data[2],
-          BMSInstalled: data[3][0].BMSInstalled
         },
       ];
       res.json(response({ success: true, payload: ans }));
