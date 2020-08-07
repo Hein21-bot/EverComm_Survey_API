@@ -79,7 +79,8 @@ const getQuestion = (user_id, survey_header_id, buildingId, buildingTypeId) => {
       on h.survey_header_id = s.survey_headers_id where h.survey_header_id = ${survey_header_id} and h.active = true and device_type in (${buildingTypeId},"") order by survey_section_id,option_choice_id;
           select other,option_choices_id as optionChoiceId,users_id as userId,questions_id as questionId, survey_headers_id,building_id,keyValue from  
             tbl_answers where users_id = ${user_id} and survey_headers_id = ${survey_header_id} and building_id = ${buildingId};
-            select chiller,condenser,evaporator,cooling_tower from tbl_buildings where building_id=${buildingId};`
+            select chiller,condenser,evaporator,cooling_tower from tbl_buildings where building_id=${buildingId};
+            select BMSInstalled from tbl_buildings where building_id=${buildingId};`
   );
 };
 
@@ -240,12 +241,13 @@ const addBuilding = (
   chiller,
   condenser,
   evaporator,
-  coolingTower
+  coolingTower,
+  BMSInstalled
 ) => {
   let query = util.promisify(mypool.query).bind(mypool);
   return query(
     `INSERT INTO tbl_buildings (building_name, company_name,building_type,building_type_id, remark, active, address, postal_code,country,comment,
-      user_id,survey_headers_id,chiller,condenser,evaporator,cooling_tower)  VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)	
+      user_id,survey_headers_id,chiller,condenser,evaporator,cooling_tower,BMSInstalled)  VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)	
     `,
     [
       buildingName,
@@ -264,6 +266,7 @@ const addBuilding = (
       condenser,
       evaporator,
       coolingTower,
+      BMSInstalled
     ]
   );
 };
