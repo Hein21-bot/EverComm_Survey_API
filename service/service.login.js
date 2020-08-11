@@ -20,7 +20,7 @@ const login = (email, password, callbackWhenDone) => {
               token: token,
               login_user_id: result.login_user_id,
               email: result.email,
-              user_level_id: result.user_level_id,
+              user_level_id: result.name ,
             };
             return callbackWhenDone(null, data);
           } else {

@@ -14,77 +14,77 @@ const getQuestion = (req, res) => {
 
   surveyService.getQuestion(admin_id, survey_header_id, buildingId, buildingTypeId).then((data) => {
 
-    if (data[3][0].BMSInstalled == 1) {
-      const surveySections = Object.keys(groupArray(data[0], "survey_section_id")).map((v, k) => {
-        return groupArray(data[0], "survey_section_id")[v];
-      })
-      let ans = [
-        {
-          survey_header_id: surveySections[0][0].survey_header_id, survey_name: surveySections[0][0].survey_name, survey_sections: surveySections.map((section) => {
-            count += Object.keys(groupArray(section, "question_id")).length;
-            return {
-              survey_section_id: section[0].survey_section_id, section_name: section[0].section_name, questions: Object.keys(groupArray(section, "question_id")).map((v, k) => {
-                return groupArray(section, "question_id")[v];
-              }).map((v1, k1) => {
+        if (data[3][0].BMSInstalled == 1) {
+          const surveySections = Object.keys(groupArray(data[0], "survey_section_id")).map((v, k) => {
+            return groupArray(data[0], "survey_section_id")[v];
+          })
+          let ans = [
+            {
+              survey_header_id: surveySections[0][0].survey_header_id, survey_name: surveySections[0][0].survey_name, survey_sections: surveySections.map((section) => {
+                count += Object.keys(groupArray(section, "question_id")).length;
                 return {
-                  question_id: v1[0].question_id, question_name: v1[0].question_name, input_type_id: v1[0].input_types_id, option_group_id: v1[0].option_groups_id,
-                  option_choices: v1.map((c) => {
+                  survey_section_id: section[0].survey_section_id, section_name: section[0].section_name, questions: Object.keys(groupArray(section, "question_id")).map((v, k) => {
+                    return groupArray(section, "question_id")[v];
+                  }).map((v1, k1) => {
                     return {
-                      option_choice_id: c.option_choice_id, option_choice_name: c.option_choice_name,
+                      question_id: v1[0].question_id, question_name: v1[0].question_name, input_type_id: v1[0].input_types_id, option_group_id: v1[0].option_groups_id,
+                      option_choices: v1.map((c) => {
+                        return {
+                          option_choice_id: c.option_choice_id, option_choice_name: c.option_choice_name,
+                        };
+                      }),
                     };
                   }),
+                  section_question_count: Object.keys(groupArray(section, "question_id")).map((v, k) => {
+                    return groupArray(section, "question_id")[v];
+                  }).length,
                 };
               }),
-              section_question_count: Object.keys(groupArray(section, "question_id")).map((v, k) => {
-                return groupArray(section, "question_id")[v];
-              }).length,
-            };
-          }),
-          question_count: count,
-          answers: data[1],
-          amountOfDevice: data[2],
-          
-        },
-      ];
-      res.json(response({ success: true, payload: ans }));
+              question_count: count,
+              answers: data[1],
+              amountOfDevice: data[2],
 
-    } else {
-      const surveySections = Object.keys(groupArray(data[0].filter(v => v.survey_section_id != 6), "survey_section_id")).map((v, k) => {
-        return groupArray(data[0], "survey_section_id")[v];
-      })
-      let ans = [
-        {
-          survey_header_id: surveySections[0][0].survey_header_id, survey_name: surveySections[0][0].survey_name, survey_sections: surveySections.map((section) => {
-            count += Object.keys(groupArray(section, "question_id")).length;
-            return {
-              survey_section_id: section[0].survey_section_id, section_name: section[0].section_name, questions: Object.keys(groupArray(section, "question_id")).map((v, k) => {
-                return groupArray(section, "question_id")[v];
-              }).map((v1, k1) => {
+            },
+          ];
+          res.json(response({ success: true, payload: ans }));
+
+        } else {
+          const surveySections = Object.keys(groupArray(data[0].filter(v => v.survey_section_id != 6), "survey_section_id")).map((v, k) => {
+            return groupArray(data[0], "survey_section_id")[v];
+          })
+          let ans = [
+            {
+              survey_header_id: surveySections[0][0].survey_header_id, survey_name: surveySections[0][0].survey_name, survey_sections: surveySections.map((section) => {
+                count += Object.keys(groupArray(section, "question_id")).length;
                 return {
-                  question_id: v1[0].question_id, question_name: v1[0].question_name, input_type_id: v1[0].input_types_id, option_group_id: v1[0].option_groups_id,
-                  option_choices: v1.map((c) => {
+                  survey_section_id: section[0].survey_section_id, section_name: section[0].section_name, questions: Object.keys(groupArray(section, "question_id")).map((v, k) => {
+                    return groupArray(section, "question_id")[v];
+                  }).map((v1, k1) => {
                     return {
-                      option_choice_id: c.option_choice_id, option_choice_name: c.option_choice_name,
+                      question_id: v1[0].question_id, question_name: v1[0].question_name, input_type_id: v1[0].input_types_id, option_group_id: v1[0].option_groups_id,
+                      option_choices: v1.map((c) => {
+                        return {
+                          option_choice_id: c.option_choice_id, option_choice_name: c.option_choice_name,
+                        };
+                      }),
                     };
                   }),
+                  section_question_count: Object.keys(groupArray(section, "question_id")).map((v, k) => {
+                    return groupArray(section, "question_id")[v];
+                  }).length,
                 };
               }),
-              section_question_count: Object.keys(groupArray(section, "question_id")).map((v, k) => {
-                return groupArray(section, "question_id")[v];
-              }).length,
-            };
-          }),
-          question_count: count,
-          answers: data[1],
-          amountOfDevice: data[2],
-        },
-      ];
-      res.json(response({ success: true, payload: ans }));
+              question_count: count,
+              answers: data[1],
+              amountOfDevice: data[2],
+            },
+          ];
+          res.json(response({ success: true, payload: ans }));
 
-    }
-  })
-    .catch((err) => res.json(response({ success: false, message: err })));
-};
+        }
+      })
+        .catch((err) => res.json(response({ success: false, message: err })));
+    };
 
 // let surveySections = Object.keys(groupArray(data[0], "survey_section_id")).map((v, k) => {
 //   return groupArray(data[0], "survey_section_id")[v];
@@ -126,44 +126,6 @@ const getQuestion = (req, res) => {
 //     BMSInstalled: data[3][0].BMSInstalled
 //   },
 // ];
-
-// let tmparr = ans[0];
-// let test = 0;
-// tmparr.survey_sections.map((v, k) => {
-//     test += v.devicesQuestions[0].questions.length;
-// });
-
-// ans[0].question_count = test;
-
-// res.json(response({ success: true, payload: ans }));
-
-
-// return {
-//     "survey_section_id": section[0].survey_section_id, "section_name": section[0].section_name, "devicesQuestions":
-//         Object.keys(groupArray(section, 'device_type')).map((v, k) => {
-//             return groupArray(section, 'device_type')[v]
-//         }).map((v1, k1) => {
-//             count += Object.keys(groupArray(v1.filter(d => d.input_types_id !== 8), 'question_id')).length
-
-//             return {
-//                 "deviceName": v1[0].device_type, "questions":
-//                     Object.keys(groupArray(v1, 'question_id')).map((v2, k2) => {
-//                         return groupArray(v1, 'question_id')[v2]
-//                     }).map((v3, k3) => {
-//                         return {
-//                             "question_id": v3[0].question_id, "question_name": v3[0].question_name,
-//                             "input_type_id": v3[0].input_types_id, "option_choices": v3.map(c => {
-//                                 return {
-//                                     "option_choice_id": c.option_choice_id, "option_choice_name": c.option_choice_name
-//                                 }
-
-//                             })
-//                         }
-//                     })
-
-//             }
-//         })
-// }
 
 const surveyList = (req, res) => {
   let userId = req.params.user_id;
@@ -217,7 +179,7 @@ const surveyMenuApi = (req, res) => {
 
 const addAnswer = (req, res) => {
   let targetCount = req.body.data.length;
-  console.log("data is", req.body)
+  // console.log("data is", req.body)
   let count = 0;
   let queryLoop = new Promise((resolve, reject) => {
     surveyService.deleteAnswer(req.body.data[0].userId, req.body.data[0].survey_headers_id, req.body.data[0].building_id);

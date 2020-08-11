@@ -23,15 +23,16 @@ const login = (email) => {
 
 // addUser
 
-const addUser = (userName, password, email, companyName) => {
+const addUser = (userName, password, email, active, user_level, companyName, phone_number) => {
   let query = util.promisify(mypool.query).bind(mypool);
-  return query(`CALL addUser(?,?,?,?,?,?);`, [
+  return query(`CALL addUser(?,?,?,?,?,?,?);`, [
     userName,
     password,
     email,
-    1,
-    2,
+    active,
+    user_level,
     companyName,
+    phone_number
   ]);
 };
 
@@ -131,30 +132,30 @@ const deleteAnswer = (userId, survey_headers_id, building_id) => {
 
 // questions
 
-const addQuestion = (
-  questionName,
-  required,
-  isOther,
-  optionGroupId,
-  untiId,
-  surveySectionId,
-  inputTypeId
-) => {
-  let query = util.promisify(mypool.query).bind(mypool);
-  return query(
-    `INSERT INTO tbl_questions(question_name, required, is_other, option_groups_id, units_id, survey_sections_id, input_types_id) 
-  VALUES(?,?,?,?,?,?,?)`,
-    [
-      questionName,
-      required,
-      isOther,
-      optionGroupId,
-      untiId,
-      surveySectionId,
-      inputTypeId,
-    ]
-  );
-};
+// const addQuestion = (
+//   questionName,
+//   required,
+//   isOther,
+//   optionGroupId,
+//   untiId,
+//   surveySectionId,
+//   inputTypeId
+// ) => {
+//   let query = util.promisify(mypool.query).bind(mypool);
+//   return query(
+//     `INSERT INTO tbl_questions(question_name, required, is_other, option_groups_id, units_id, survey_sections_id, input_types_id) 
+//   VALUES(?,?,?,?,?,?,?)`,
+//     [
+//       questionName,
+//       required,
+//       isOther,
+//       optionGroupId,
+//       untiId,
+//       surveySectionId,
+//       inputTypeId,
+//     ]
+//   );
+// };
 
 const deleteQuestion = (question_id) => {
   let query = util.promisify(mypool.query).bind(mypool);
@@ -400,6 +401,26 @@ const chiller = () => {
   group by oc.option_choice_name,tb.building_type,oc.option_choice_id order by option_choice_id;`)
 }
 
+const createQuestion = (question_name, is_other, required, option_groups_id, units_id, survey_sections_id, input_types_id, survey_headers_id, device_type) => {
+  let query = util.promisify(mypool.query).bind(mypool)
+  return query(`INSERT INTO tbl_questions(question_name, is_other,required, option_groups_id, units_id,survey_sections_id,input_types_id,survey_headers_id,device_type) VALUES 
+  ('${question_name}',${is_other}, ${required}, ${option_groups_id}, ${units_id}, ${survey_sections_id}, ${input_types_id}, ${survey_headers_id},${device_type});`)
+}
+
+const createOptionChoice = (option_choice_name, questions_id) => {
+  let query = util.promisify(mypool.query).bind(mypool)
+  return query(`INSERT INTO tbl_option_choices(option_choice_name,questions_id) VALUES 
+  ('${option_choice_name}',${questions_id});`)
+}
+
+const getUser = () => {
+  let query = util.promisify(mypool.query).bind(mypool)
+  return query(`SELECT login_user_id,user_name,email,active,name as role,company_name,phone_number FROM evercomm_survey.tbl_login_users as tlu
+  inner join tbl_user_level tul on tul.user_level_id = tlu.user_level_id ;`)
+}
+
+
+
 module.exports = {
   getQuestion,
   login,
@@ -410,7 +431,6 @@ module.exports = {
   reportDistributorAnswers,
   addAnswer,
   deleteAnswer,
-  addQuestion,
   deleteQuestion,
   updateQuestion,
   reportTotalAnswers,
@@ -431,5 +451,8 @@ module.exports = {
   // age,
   graphReportApi,
   graphReportApiRole,
-  chiller
+  chiller,
+  createQuestion,
+  createOptionChoice,
+  getUser
 };

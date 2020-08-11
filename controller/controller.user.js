@@ -17,7 +17,10 @@ const addUser = (req, res) => {
     const userName = req.body.userName
     const password = req.body.password
     const email = req.body.email
+    const active = req.body.active == true ? 1 : 0
+    const user_level = req.body.user_level
     const companyName = req.body.companyName
+    const phone_number = req.body.phone_number
 
 
     userService.checkDuplicateEmailInsert(email)
@@ -35,7 +38,7 @@ const addUser = (req, res) => {
             } else {
                 bcrypt.hash(password, saltRounds, function (err, hash) {
 
-                    userService.addUser(userName, hash, email, companyName)
+                    userService.addUser(userName, hash, email, active, user_level, companyName, phone_number)
                         .then(data => {
 
                             res.json(
@@ -98,6 +101,12 @@ const updateUser = (req, res) => {
         });
 };
 
+const getUser = (req, res) => {
+    userService.getUser().then(data => {
+        res.json(response({ success: true, payload: data }))
+    }).catch(err => res.json(response({ success: false, message: err })));
+}
 
 
-module.exports = { getAdmin, addUser, updateUser }
+
+module.exports = { getAdmin, addUser, updateUser, getUser }

@@ -8,8 +8,8 @@ const addCompany = (companyName) => {
     return surveydb.addCompany(companyName)
 }
 
-const addUser = (userName, password, email, companyName) => {
-    return surveydb.addUser(userName, password, email, companyName)
+const addUser = (userName, password, email, active, user_level, companyName, phone_number) => {
+    return surveydb.addUser(userName, password, email, active, user_level, companyName, phone_number)
 
 }
 
@@ -27,6 +27,10 @@ const checkDuplicateEmailUpdate = (email, user_id) => {
     return surveydb.checkDuplicateEmailUpdate(email, user_id);
 }
 
+const getUser = () => {
+    return surveydb.getUser()
+}
 
 
-module.exports = { getAdmin, addUser, checkDuplicateEmailInsert, checkDuplicateEmailUpdate, updateUser,  addCompany }
+
+module.exports = { getAdmin, addUser, checkDuplicateEmailInsert, checkDuplicateEmailUpdate, updateUser, addCompany, getUser }

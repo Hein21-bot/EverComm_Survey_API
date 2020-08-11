@@ -47,3 +47,6 @@ const getBuildingType = (req, res) => {
 
 module.exports = { addBuilding, getBuildingType }
 
+
+
+
