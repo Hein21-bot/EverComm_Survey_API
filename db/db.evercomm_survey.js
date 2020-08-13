@@ -25,27 +25,16 @@ const login = (email) => {
 
 const addUser = (userName, password, email, active, user_level, companyName, phone_number) => {
   let query = util.promisify(mypool.query).bind(mypool);
-  return query(`CALL addUser(?,?,?,?,?,?,?);`, [
-    userName,
-    password,
-    email,
-    active,
-    user_level,
-    companyName,
-    phone_number
-  ]);
+  return query(`INSERT INTO tbl_login_users(user_name,password,email,active,user_level_id,company_name,phone_number) VALUES('${userName}', '${password}', '${email}', ${active}, ${user_level}, '${companyName}', ${phone_number});`)
 };
 
-const updateUser = (userId, userName, password, email) => {
+const updateUser = (userId, userName, password, email, active, user_level, companyName, phone_number) => {
   let query = util.promisify(mypool.query).bind(mypool);
   // UPDATE tbl_login_users SET user_name = '${userName}', password = '${password}', email = '${email}' WHERE
   // login_user_id = ${userId}
-  return query(`CALL updateUser(?,?,?,?);`, [
-    userName,
-    password,
-    email,
-    userId,
-  ]);
+  return query(`UPDATE tbl_login_users SET user_name = '${userName}', password = '${password}', email = '${email}' , 
+  active = ${active} , user_level_id = ${user_level} , company_name = '${companyName}' , phone_number = '${phone_number}'
+  WHERE login_user_id = ${userId}`);
 };
 
 //menu
@@ -67,7 +56,7 @@ const checkDuplicateEmailInsert = (email) => {
 
 const checkDuplicateEmailUpdate = (email, user_id) => {
   let query = util.promisify(mypool.query).bind(mypool);
-  return query(`CALL checkDuplicateEmailUpdate(?,?);`, [email, user_id]);
+  return query(`Select Count(*) as DE from tbl_login_users where email ='${email}' and login_user_id != ${user_id} ; `);
 };
 
 //Question
@@ -415,8 +404,21 @@ const createOptionChoice = (option_choice_name, questions_id) => {
 
 const getUser = () => {
   let query = util.promisify(mypool.query).bind(mypool)
-  return query(`SELECT login_user_id,user_name,email,active,name as role,company_name,phone_number FROM evercomm_survey.tbl_login_users as tlu
-  inner join tbl_user_level tul on tul.user_level_id = tlu.user_level_id ;`)
+  return query(`SELECT login_user_id,user_name,email,active,name as role,company_name,phone_number,survey_header_id FROM evercomm_survey.tbl_login_users as tlu
+  inner join tbl_user_level tul on tul.user_level_id = tlu.user_level_id
+  left join tbl_user_survey as tbs on tbs.user_id = tlu.login_user_id ;
+  SELECT * FROM evercomm_survey.tbl_survey_headers where active = 1;`)
+}
+
+const userSurveyPermession = (user_id, survey_header_id) => {
+  let query = util.promisify(mypool.query).bind(mypool)
+  return query(`INSERT INTO tbl_user_survey(user_id,survey_header_id) VALUES 
+  (${user_id},${survey_header_id});`)
+}
+
+const removePermsession = (user_id) => {
+  let query = util.promisify(mypool.query).bind(mypool)
+  return query(`Delete from evercomm_survey.tbl_user_survey where user_id = ${user_id}`)
 }
 
 
@@ -454,5 +456,7 @@ module.exports = {
   chiller,
   createQuestion,
   createOptionChoice,
-  getUser
+  getUser,
+  userSurveyPermession,
+  removePermsession
 };

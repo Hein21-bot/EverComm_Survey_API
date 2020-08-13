@@ -2,6 +2,7 @@ const { surveydb } = require("../db");
 const { produceToken } = require("../security/token");
 const bcrypt = require("bcrypt");
 const response = require("../model/response");
+const saltRounds = 10
 
 const login = (email, password, callbackWhenDone) => {
   return surveydb.login(email, password)
@@ -15,14 +16,18 @@ const login = (email, password, callbackWhenDone) => {
               email: result.email,
               password: result.password,
             };
-            const token = produceToken(payload);
-            const data = {
-              token: token,
-              login_user_id: result.login_user_id,
-              email: result.email,
-              user_level_id: result.name ,
-            };
-            return callbackWhenDone(null, data);
+            bcrypt.hash(result.user_level_id.toString(), saltRounds, function (err, hash) {
+              const token = produceToken(payload);
+              const data = {
+                token: token,
+                login_user_id: result.login_user_id,
+                email: result.email,
+                user_level_id: hash,
+                user_level: result.name
+              }
+
+              return callbackWhenDone(null, data);
+            });
           } else {
             return callbackWhenDone(null, false);
           }

@@ -18,15 +18,13 @@ const addUser = (req, res) => {
     const password = req.body.password
     const email = req.body.email
     const active = req.body.active == true ? 1 : 0
-    const user_level = req.body.user_level
+    const user_level = req.body.user_level || 2
     const companyName = req.body.companyName
     const phone_number = req.body.phone_number
 
-
-    userService.checkDuplicateEmailInsert(email)
+    return userService.checkDuplicateEmailInsert(email)
         .then(data => {
-
-            const DuplicateRows = data[0].DE;
+            const DuplicateRows = data[0][0].DE;
             if (DuplicateRows > 0) {
                 res.json(
                     response({
@@ -40,14 +38,20 @@ const addUser = (req, res) => {
 
                     userService.addUser(userName, hash, email, active, user_level, companyName, phone_number)
                         .then(data => {
-
                             res.json(
                                 response({
                                     success: true,
                                     message: "Inserted!",
                                     payload: data
                                 })
-                            );
+                            )
+                            if (req.body.surveyHeaderId == undefined) {
+                                return data
+                            } else if (req.body.surveyHeaderId.length > 0) {
+                                console.log(req.body.surveyHeaderId)
+                                userService.userSurveyPermession(data.insertId, req.body.surveyHeaderId).then(data1 => {
+                                }).catch(err1 => { throw err1 })
+                            }
                         }).catch(err => {
                             res.json(response({ success: false, message: err }));
                         });
@@ -66,9 +70,14 @@ const updateUser = (req, res) => {
     const userName = req.body.userName
     const password = req.body.password
     const email = req.body.email
+    const active = req.body.active == true ? 1 : 0
+    const user_level = req.body.user_level
+    const companyName = req.body.companyName
+    const phone_number = req.body.phone_number
 
     userService.checkDuplicateEmailUpdate(email, userId)
         .then(data => {
+            console.log("email duplicate", data)
             const DuplicateRows = data[0].DE;
             if (DuplicateRows > 0) {
                 res.json(
@@ -80,9 +89,9 @@ const updateUser = (req, res) => {
                 );
             } else {
                 bcrypt.hash(password, saltRounds, function (err, hash) {
-
-                    userService.updateUser(userId, userName, hash, email)
+                    userService.updateUser(userId, userName, hash, email, active, user_level, companyName, phone_number)
                         .then(data => {
+                            console.log("data is", data)
                             res.json(
                                 response({
                                     success: true,
@@ -90,7 +99,16 @@ const updateUser = (req, res) => {
                                     payload: data
                                 })
                             );
-                        }).catch(err => {
+                            if (req.body.surveyHeaderId.length > 0) {
+                                console.log(req.body.surveyHeaderId)
+                                userService.removePermsession(userId);
+                                userService.userSurveyPermession(userId, req.body.surveyHeaderId).then(data1 => {
+                                }).catch(err1 => { throw err1 })
+                            } else {
+                                return data
+                            }
+                        })
+                        .catch(err => {
                             res.json(response({ success: false, message: err }));
                         });
                 })
@@ -107,6 +125,25 @@ const getUser = (req, res) => {
     }).catch(err => res.json(response({ success: false, message: err })));
 }
 
+const userSurveyPermession = (req, res, uId) => {
+    const user_id = req.body.user_id || uId
+    const data = req.body.surveyHeaderId
+    console.log("data is", req.body)
+    userService.removePermsession(uId || req.body.data[0].user_id);
+    return userService.userSurveyPermession(user_id, data)
+        .then(result => {
+            res.json(response({
+                success: true,
+                payload: result
+            }))
+        })
+        .catch(error => {
+            res.json(response({
+                success: false,
+                error: error
+            }))
+        })
+}
 
 
-module.exports = { getAdmin, addUser, updateUser, getUser }
+module.exports = { getAdmin, addUser, updateUser, getUser, userSurveyPermession }
