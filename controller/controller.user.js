@@ -48,7 +48,6 @@ const addUser = (req, res) => {
                             if (req.body.surveyHeaderId == undefined) {
                                 return data
                             } else if (req.body.surveyHeaderId.length > 0) {
-                                console.log(req.body.surveyHeaderId)
                                 userService.userSurveyPermession(data.insertId, req.body.surveyHeaderId).then(data1 => {
                                 }).catch(err1 => { throw err1 })
                             }
@@ -77,7 +76,7 @@ const updateUser = (req, res) => {
 
     userService.checkDuplicateEmailUpdate(email, userId)
         .then(data => {
-            console.log("email duplicate", data)
+
             const DuplicateRows = data[0].DE;
             if (DuplicateRows > 0) {
                 res.json(
@@ -88,10 +87,10 @@ const updateUser = (req, res) => {
                     })
                 );
             } else {
+                
                 bcrypt.hash(password, saltRounds, function (err, hash) {
                     userService.updateUser(userId, userName, hash, email, active, user_level, companyName, phone_number)
                         .then(data => {
-                            console.log("data is", data)
                             res.json(
                                 response({
                                     success: true,
@@ -99,23 +98,21 @@ const updateUser = (req, res) => {
                                     payload: data
                                 })
                             );
-                            if (req.body.surveyHeaderId.length > 0) {
-                                console.log(req.body.surveyHeaderId)
-                                userService.removePermsession(userId);
+                            if (req.body.surveyHeaderId == undefined) {
+                                return data
+                            } else if (req.body.surveyHeaderId.length > 0) {
                                 userService.userSurveyPermession(userId, req.body.surveyHeaderId).then(data1 => {
                                 }).catch(err1 => { throw err1 })
-                            } else {
-                                return data
                             }
                         })
                         .catch(err => {
-                            res.json(response({ success: false, message: err }));
+                            res.json(response({ success: false, error: err, message: "Fail!" }));
                         });
                 })
             }
         })
         .catch(err => {
-            res.json(response({ success: false, message: err }));
+            res.json(response({ success: false, error: err, message: "Fail!" }));
         });
 };
 
@@ -128,7 +125,6 @@ const getUser = (req, res) => {
 const userSurveyPermession = (req, res, uId) => {
     const user_id = req.body.user_id || uId
     const data = req.body.surveyHeaderId
-    console.log("data is", req.body)
     userService.removePermsession(uId || req.body.data[0].user_id);
     return userService.userSurveyPermession(user_id, data)
         .then(result => {
