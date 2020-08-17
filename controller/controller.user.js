@@ -1,4 +1,4 @@
-const { userService } = require('../service')
+const { userService, companyService } = require('../service')
 const response = require('../model/response')
 const { surveydb } = require('../db')
 const bcrypt = require("bcrypt")
@@ -67,7 +67,6 @@ const addUser = (req, res) => {
 const updateUser = (req, res) => {
     const userId = req.params.user_id
     const userName = req.body.userName
-    const password = req.body.password
     const email = req.body.email
     const active = req.body.active == true ? 1 : 0
     const user_level = req.body.user_level
@@ -87,28 +86,25 @@ const updateUser = (req, res) => {
                     })
                 );
             } else {
-                
-                bcrypt.hash(password, saltRounds, function (err, hash) {
-                    userService.updateUser(userId, userName, hash, email, active, user_level, companyName, phone_number)
-                        .then(data => {
-                            res.json(
-                                response({
-                                    success: true,
-                                    message: "Inserted!",
-                                    payload: data
-                                })
-                            );
-                            if (req.body.surveyHeaderId == undefined) {
-                                return data
-                            } else if (req.body.surveyHeaderId.length > 0) {
-                                userService.userSurveyPermession(userId, req.body.surveyHeaderId).then(data1 => {
-                                }).catch(err1 => { throw err1 })
-                            }
-                        })
-                        .catch(err => {
-                            res.json(response({ success: false, error: err, message: "Fail!" }));
-                        });
-                })
+
+                userService.updateUser(userId, userName, email, active, user_level, companyName, phone_number)
+                    .then(data => {
+                        res.json(
+                            response({
+                                success: true,
+                                message: "Inserted!",
+                                payload: data
+                            })
+                        );
+                        if (req.body.surveyHeaderId == undefined) {
+                            return data
+                        } else if (req.body.surveyHeaderId.length >= 0) {
+                            userService.removePermsession(userId);
+                            userService.userSurveyPermession(userId, req.body.surveyHeaderId).then(data1 => {
+
+                            }).catch(err1 => { throw err1 })
+                        }
+                    })
             }
         })
         .catch(err => {
@@ -117,15 +113,16 @@ const updateUser = (req, res) => {
 };
 
 const getUser = (req, res) => {
-    userService.getUser().then(data => {
+    const user_id = req.params.user_id
+    userService.getUser(user_id).then(data => {
         res.json(response({ success: true, payload: data }))
     }).catch(err => res.json(response({ success: false, message: err })));
 }
 
 const userSurveyPermession = (req, res, uId) => {
-    const user_id = req.body.user_id || uId
+    const user_id = req.params.user_id || uId
     const data = req.body.surveyHeaderId
-    userService.removePermsession(uId || req.body.data[0].user_id);
+
     return userService.userSurveyPermession(user_id, data)
         .then(result => {
             res.json(response({
@@ -141,5 +138,54 @@ const userSurveyPermession = (req, res, uId) => {
         })
 }
 
+const getOneUserInfo = (req, res) => {
+    const user_id = req.params.user_id
 
-module.exports = { getAdmin, addUser, updateUser, getUser, userSurveyPermession }
+    return userService.getOneUserInfo(user_id)
+        .then(data => {
+            res.json(response({
+                success: true,
+                payload: data
+            }))
+        })
+        .catch(error => {
+            res.json(response({
+                success: false,
+                error: error
+            }))
+        })
+}
+
+const userEdit = (req, res) => {
+    const user_id = req.params.user_id
+    const password = req.body.password
+    const editPassword = req.body.editPassword
+
+
+   return  bcrypt.hash(editPassword, saltRounds, function (err, hash) {
+        return userService.userEdit(user_id, password, hash).then(data => {
+            console.log(data,"data is")
+            if (err) {
+                res.json(response({ success: false, message: err, payload: null }))
+            } else {
+
+                if (data === false) {
+                    res.json(response({ success: false, message: "Password Incorrect!", payload: null }))
+                } else {
+                    res.json(
+                        response({
+                            success: true,
+                            message: "Password Edit Successful!",
+                            payload: data
+                        })
+                    )
+                }
+            }
+        })
+    })
+
+
+}
+
+
+module.exports = { getAdmin, addUser, updateUser, getUser, userSurveyPermession, getOneUserInfo, userEdit }

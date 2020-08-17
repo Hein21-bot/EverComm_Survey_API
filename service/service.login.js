@@ -16,18 +16,16 @@ const login = (email, password, callbackWhenDone) => {
               email: result.email,
               password: result.password,
             };
-            bcrypt.hash(result.user_level_id.toString(), saltRounds, function (err, hash) {
-              const token = produceToken(payload);
-              const data = {
-                token: token,
-                login_user_id: result.login_user_id,
-                email: result.email,
-                user_level_id: hash,
-                user_level: result.name
-              }
+            const token = produceToken(payload);
+            const data = {
+              token: token,
+              login_user_id: result.login_user_id,
+              email: result.email,
+              user_level_id: result.user_level_id,
+              user_level: result.name
+            }
 
-              return callbackWhenDone(null, data);
-            });
+            return callbackWhenDone(null, data);
           } else {
             return callbackWhenDone(null, false);
           }

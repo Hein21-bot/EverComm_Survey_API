@@ -28,13 +28,14 @@ const addUser = (userName, password, email, active, user_level, companyName, pho
   return query(`INSERT INTO tbl_login_users(user_name,password,email,active,user_level_id,company_name,phone_number) VALUES('${userName}', '${password}', '${email}', ${active}, ${user_level}, '${companyName}', ${phone_number});`)
 };
 
-const updateUser = (userId, userName, password, email, active, user_level, companyName, phone_number) => {
+const updateUser = (userId, userName, email, active, user_level, companyName, phone_number) => {
   let query = util.promisify(mypool.query).bind(mypool);
   // UPDATE tbl_login_users SET user_name = '${userName}', password = '${password}', email = '${email}' WHERE
   // login_user_id = ${userId}
-  return query(`UPDATE tbl_login_users SET user_name = '${userName}', password = '${password}', email = '${email}' , 
+  return query(`UPDATE tbl_login_users SET user_name = '${userName}',  email = '${email}' , 
   active = ${active} , user_level_id = ${user_level} , company_name = '${companyName}' , phone_number = '${phone_number}'
-  WHERE login_user_id = ${userId}`);
+  WHERE login_user_id = ${userId};`);
+
 };
 
 //menu
@@ -421,6 +422,26 @@ const removePermsession = (user_id) => {
   return query(`Delete from evercomm_survey.tbl_user_survey where user_id = ${user_id}`)
 }
 
+const getOneUserInfo = (user_id) => {
+  let query = util.promisify(mypool.query).bind(mypool)
+  return query(`Select * from tbl_login_users where login_user_id = ${user_id}`)
+}
+
+const getAdmin = (user_id) => {
+  let query = util.promisify(mypool.query).bind(mypool)
+  return query(`SELECT * FROM evercomm_survey.tbl_login_users where user_level_id = 1 and login_user_id = ${user_id};`)
+}
+
+const userEdit = (user_id) => {
+  let query = util.promisify(mypool.query).bind(mypool)
+  return query(`SELECT * FROM evercomm_survey.tbl_login_users where login_user_id = ${user_id};`)
+}
+
+const userPasswordEdit = (user_id, editPassword) => {
+  let query = util.promisify(mypool.query).bind(mypool)
+  return query(`UPDATE tbl_login_users SET password = '${editPassword}' WHERE login_user_id = ${user_id};`)
+}
+
 
 
 module.exports = {
@@ -458,5 +479,6 @@ module.exports = {
   createOptionChoice,
   getUser,
   userSurveyPermession,
-  removePermsession
+  removePermsession,
+  getOneUserInfo, getAdmin, userEdit, userPasswordEdit
 };
