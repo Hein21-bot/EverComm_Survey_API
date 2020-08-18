@@ -406,8 +406,8 @@ const createOptionChoice = (option_choice_name, questions_id) => {
 const getUser = () => {
   let query = util.promisify(mypool.query).bind(mypool)
   return query(`SELECT login_user_id,user_name,email,active,name as role,company_name,phone_number,survey_header_id FROM evercomm_survey.tbl_login_users as tlu
-  inner join tbl_user_level tul on tul.user_level_id = tlu.user_level_id
-  left join tbl_user_survey as tbs on tbs.user_id = tlu.login_user_id ;
+  inner join evercomm_survey.tbl_user_level tul on tul.user_level_id = tlu.user_level_id
+  left join evercomm_survey.tbl_user_survey as tbs on tbs.user_id = tlu.login_user_id ;
   SELECT * FROM evercomm_survey.tbl_survey_headers where active = 1;`)
 }
 

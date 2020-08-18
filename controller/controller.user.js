@@ -52,13 +52,13 @@ const addUser = (req, res) => {
                                 }).catch(err1 => { throw err1 })
                             }
                         }).catch(err => {
-                            res.json(response({ success: false, message: err }));
+                            res.json(response({ success: false, message: err.code,error:err }));
                         });
                 })
             }
         })
         .catch(err => {
-            res.json(response({ success: false, message: err }));
+            res.json(response({ success: false, message: err.code,error:err }));
         });
 };
 
