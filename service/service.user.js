@@ -91,28 +91,24 @@ const getOneUserInfo = (user_id) => {
 
 const userEdit = (user_id, password, editPassword) => {
     return surveydb.userEdit(user_id).then(res => {
-        //(results.length && bcrypt.compareSync(password, results[0].password))
         const result = res[0]
+
         if (res.length > 0) {
-            const hash = result.password.toString()
-            return bcrypt.compare(password, hash, function (err, response) {
-                if (response == true) {
-                    console.log("enter this response",response)
-                   return  surveydb.userPasswordEdit(user_id, editPassword).then(resultedData=>{
-                       console.log("enter this",resultedData)
+            return bcrypt.compare(password, result.password).then(function (result) {
+                if (result == true) {
+                    return surveydb.userPasswordEdit(user_id, editPassword).then(resultedData => {
                         return resultedData
 
-                    }).catch(error=>{
+                    }).catch(error => {
                         throw error
                     })
 
                 } else {
-                    console.log("enter response false")
-                    return []
+                    return false
                 }
             })
         } else {
-            return []
+            return false
         }
     }).catch(error => {
         throw error

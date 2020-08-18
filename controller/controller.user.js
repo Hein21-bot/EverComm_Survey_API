@@ -161,10 +161,8 @@ const userEdit = (req, res) => {
     const password = req.body.password
     const editPassword = req.body.editPassword
 
-
-   return  bcrypt.hash(editPassword, saltRounds, function (err, hash) {
+    return bcrypt.hash(editPassword, saltRounds, function (err, hash) {
         return userService.userEdit(user_id, password, hash).then(data => {
-            console.log(data,"data is")
             if (err) {
                 res.json(response({ success: false, message: err, payload: null }))
             } else {
