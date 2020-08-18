@@ -17,7 +17,7 @@ const addUser = (req, res) => {
     const userName = req.body.userName
     const password = req.body.password
     const email = req.body.email
-    const active = req.body.active == true ? 1 : 0
+    const active = 1
     const user_level = req.body.user_level || 2
     const companyName = req.body.companyName
     const phone_number = req.body.phone_number
