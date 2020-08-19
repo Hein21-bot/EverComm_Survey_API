@@ -3,6 +3,7 @@ const loginRouter = require('./route.login')
 const surveyRouter = require('./route.survey')
 
 const buildingRouter = require('./route.building')
+const adminCreateRouter = require('./route.adminCreate')
 
 const reportTotalAnswersRouter = require('./route.reportTotalAnswers')
 const questionRouter = require('./route.question')
@@ -20,6 +21,8 @@ router.use('/report', reportTotalAnswersRouter)
 router.use('/question', questionRouter)
 
 router.use('/building', buildingRouter)
+
+router.use('/createSurvey', adminCreateRouter)
 
 
 module.exports = router

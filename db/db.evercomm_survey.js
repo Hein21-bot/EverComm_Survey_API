@@ -67,7 +67,7 @@ const getQuestion = (user_id, survey_header_id, buildingId, buildingTypeId) => {
   return query(
     `select * from tbl_questions as q left join tbl_option_choices as o  on q.question_id = o.questions_id
     left join tbl_survey_sections as s on s.survey_section_id = q.survey_sections_id left join tbl_survey_headers as h
-      on h.survey_header_id = s.survey_headers_id where h.survey_header_id = ${survey_header_id} and h.active = true and device_type in (${buildingTypeId},"") order by survey_section_id,option_choice_id;
+      on h.survey_header_id = s.survey_headers_id where h.survey_header_id = ${survey_header_id} and h.active = true and device_type in (${buildingTypeId},0) order by survey_section_id,option_choice_id;
           select other,option_choices_id as optionChoiceId,users_id as userId,questions_id as questionId, survey_headers_id,building_id,keyValue from  
             tbl_answers where users_id = ${user_id} and survey_headers_id = ${survey_header_id} and building_id = ${buildingId};
             select chiller,condenser,evaporator,cooling_tower from tbl_buildings where building_id=${buildingId};
@@ -424,7 +424,7 @@ const removePermsession = (user_id) => {
 
 const getOneUserInfo = (user_id) => {
   let query = util.promisify(mypool.query).bind(mypool)
-  return query(`Select * from tbl_login_users where login_user_id = ${user_id}`)
+  return query(`Select login_user_id,user_name,email,active,user_level_id,company_name,phone_number from tbl_login_users where login_user_id = ${user_id}`)
 }
 
 const getAdmin = (user_id) => {
@@ -440,6 +440,18 @@ const userEdit = (user_id) => {
 const userPasswordEdit = (user_id, editPassword) => {
   let query = util.promisify(mypool.query).bind(mypool)
   return query(`UPDATE tbl_login_users SET password = '${editPassword}' WHERE login_user_id = ${user_id};`)
+}
+
+const surveyHeader = (survey_name, remark, active, user_id) => {
+  let query = util.promisify(mypool.query).bind(mypool)
+  return query(`INSERT INTO evercomm_survey.tbl_survey_headers (survey_name,remark,active,login_users_id)
+  VALUES ('${survey_name}','ok',1,${user_id});`)
+}
+
+const surveySection = ({ section_name, page_no, active, survey_header_id }) => {
+  let query = util.promisify(mypool.query).bind(mypool)
+  return query(`INSERT INTO evercomm_survey.tbl_survey_sections (section_name,page_no,active,survey_headers_id)
+  VALUES ('${section_name}',${page_no},${active},${survey_header_id});`)
 }
 
 
@@ -480,5 +492,7 @@ module.exports = {
   getUser,
   userSurveyPermession,
   removePermsession,
-  getOneUserInfo, getAdmin, userEdit, userPasswordEdit
+  getOneUserInfo, getAdmin, userEdit, userPasswordEdit,
+  surveyHeader, surveySection
+
 };

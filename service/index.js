@@ -6,8 +6,9 @@ const reportTotalAnswersService = require('./service.reportTotalAnswers')
 const companyService = require('./service.company')
 const buildingService = require('./service.building')
 const questionService = require('./service.question')
+const adminCreateService = require('./service.adminCreate')
 
 module.exports = {
      userService, surveyService, questionService,
-     loginService, reportTotalAnswersService, companyService, buildingService
+     loginService, reportTotalAnswersService, companyService, buildingService, adminCreateService
 }
