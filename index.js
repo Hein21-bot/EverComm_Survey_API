@@ -25,8 +25,12 @@ app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Credentials", true);
   next();
 });
-app.use("/api/v1", appRouter);
 
+
+// const cronTask = require("./service/service.cronTask")
+
+
+app.use("/api/v1", appRouter);
 
 app.listen(port, () => {
   console.log(`App is listening on port ${port}`)

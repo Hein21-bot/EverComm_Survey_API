@@ -31,30 +31,30 @@ const checkDuplicateEmailUpdate = (email, user_id) => {
 const getUser = (user_id) => {
     return surveydb.getAdmin(user_id).then(data => {
         if (data.length > 0) {
-            return surveydb.getUser()
-                .then(data => {
-                    if (data.length > 0) {
-                        const result = data[0].reduce((r, c) => {
-                            const R = [...r]
-                            const index = R.findIndex(v => v.id == c.login_user_id)
-                            if (index === -1) {
-                                R.push({
-                                    id: c.login_user_id, name: c.user_name, email: c.email, active: c.active, role: c.role, companyName: c.company_name, phone_number: c.phone_number,
-                                    survey_header_id: c.survey_header_id == null ? null : [c.survey_header_id]
-                                })
-                            }
-                            else {
-                                R[index].survey_header_id.push(c.survey_header_id)
-                            }
-                            return R
-                        }, [])
-                        return [result, data[1]]
-                    } else return []
-                })
+            return surveydb.getUser().then(data => {
+                if (data.length > 0) {
+                    const result = data[0].reduce((r, c) => {
+                        const R = [...r]
+                        const index = R.findIndex(v => v.id == c.login_user_id)
+                        if (index === -1) {
+                            R.push({
+                                id: c.login_user_id, name: c.user_name, email: c.email, active: c.active, role: c.role, companyName: c.company_name, phone_number: c.phone_number,
+                                survey_header_id: c.survey_header_id == null ? null : [c.survey_header_id]
+                            })
+                        }
+                        else {
+                            R[index].survey_header_id.push(c.survey_header_id)
+                        }
+                        return R
+                    }, [])
+                    return [result, data[1]]
+                } else return []
+            })
                 .catch(error => {
                     throw error
                 })
-        } else {
+        }
+        else {
             return []
         }
     }).catch(error => {

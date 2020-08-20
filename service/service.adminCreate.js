@@ -1,21 +1,30 @@
 const { surveydb } = require('../db')
 
 
-const surveyHeader = (survey_name, remark, active, user_id) => {
-    return surveydb.surveyHeader(survey_name, remark, active, user_id)
+const surveyHeader = (surveyName, remark, active, user_id) => {
+    return surveydb.getAdmin(user_id).then(data => {
+        if (data.length > 0) {
+            return surveydb.surveyHeader(surveyName, remark, active, user_id)
+        }
+        else {
+            return []
+        }
 
+    }).catch(error => {
+        throw error
+    })
 }
 
-const surveySection = async ({ data, survey_header_id }) => {
+const surveySection = async ({ sectionData, surveyHeaderId }) => {
     const resultArr = []
     try {
-        for (let i = 0; i < data.length; i++) {
-            const d = data[i]
-            const page_no = i + 1
+        for (let i = 0; i < sectionData.length; i++) {
+            const d = sectionData[i]
+            const pageNo = i + 1
             const active = d.active
-            const section_name = d.section_name
+            const sectionName = d.sectionName
 
-            const saveResult = await surveydb.surveySection({ page_no, active, survey_header_id, section_name })
+            const saveResult = await surveydb.surveySection({ pageNo, active, surveyHeaderId, sectionName })
             resultArr.push(saveResult)
         }
         return resultArr
@@ -27,4 +36,22 @@ const surveySection = async ({ data, survey_header_id }) => {
 
 }
 
-module.exports = { surveyHeader, surveySection }
+const surveyHeaderEdit = (surveyHeaderId, surveyName, remark, active, user_id) => {
+    return surveydb.getAdmin(user_id).then(data => {
+        if (data.length > 0) {
+            return surveydb.surveyHeaderEdit(surveyHeaderId, surveyName, remark, active, user_id)
+        }
+        else {
+            return []
+        }
+
+    }).catch(error => {
+        throw error
+    })
+}
+
+const surveySectionRemove = (user_id) => {
+    return surveydb.surveySectionRemove(user_id)
+}
+
+module.exports = { surveyHeader, surveySection, surveyHeaderEdit, surveySectionRemove }

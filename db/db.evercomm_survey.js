@@ -64,7 +64,7 @@ const checkDuplicateEmailUpdate = (email, user_id) => {
 
 const getQuestion = (user_id, survey_header_id, buildingId, buildingTypeId) => {
   let query = util.promisify(mypool.query).bind(mypool)
-  return query(
+  return survey_header_id == 1 ? query(
     `select * from tbl_questions as q left join tbl_option_choices as o  on q.question_id = o.questions_id
     left join tbl_survey_sections as s on s.survey_section_id = q.survey_sections_id left join tbl_survey_headers as h
       on h.survey_header_id = s.survey_headers_id where h.survey_header_id = ${survey_header_id} and h.active = true and device_type in (${buildingTypeId},0) order by survey_section_id,option_choice_id;
@@ -72,8 +72,17 @@ const getQuestion = (user_id, survey_header_id, buildingId, buildingTypeId) => {
             tbl_answers where users_id = ${user_id} and survey_headers_id = ${survey_header_id} and building_id = ${buildingId};
             select chiller,condenser,evaporator,cooling_tower from tbl_buildings where building_id=${buildingId};
             select BMSInstalled from tbl_buildings where building_id=${buildingId};`
-  );
+  ) : query(`select * from tbl_questions as q left join tbl_option_choices as o  on q.question_id = o.questions_id
+  left join tbl_survey_sections as s on s.survey_section_id = q.survey_sections_id left join tbl_survey_headers as h
+    on h.survey_header_id = s.survey_headers_id where  h.active = true and device_type in (${buildingTypeId},0) order by survey_section_id,option_choice_id;
+        select other,option_choices_id as optionChoiceId,users_id as userId,questions_id as questionId, survey_headers_id,building_id,keyValue from  
+          tbl_answers where users_id = ${user_id} and survey_headers_id = ${survey_header_id} and building_id = ${buildingId};
+          select chiller,condenser,evaporator,cooling_tower from tbl_buildings where building_id=${buildingId};
+          select BMSInstalled from tbl_buildings where building_id=${buildingId};`)
 };
+
+// condition for survey_header_id
+// h.survey_header_id = ${survey_header_id} and
 
 // `Call getQuestions( ${survey_header_id}, ${user_id},${buildingId});`
 
@@ -442,16 +451,26 @@ const userPasswordEdit = (user_id, editPassword) => {
   return query(`UPDATE tbl_login_users SET password = '${editPassword}' WHERE login_user_id = ${user_id};`)
 }
 
-const surveyHeader = (survey_name, remark, active, user_id) => {
+const surveyHeader = (surveyName, remark, active, user_id) => {
   let query = util.promisify(mypool.query).bind(mypool)
   return query(`INSERT INTO evercomm_survey.tbl_survey_headers (survey_name,remark,active,login_users_id)
-  VALUES ('${survey_name}','ok',1,${user_id});`)
+  VALUES ('${surveyName}','ok',1,${user_id});`)
 }
 
-const surveySection = ({ section_name, page_no, active, survey_header_id }) => {
+const surveySection = ({ sectionName, pageNo, active, surveyHeaderId }) => {
   let query = util.promisify(mypool.query).bind(mypool)
   return query(`INSERT INTO evercomm_survey.tbl_survey_sections (section_name,page_no,active,survey_headers_id)
-  VALUES ('${section_name}',${page_no},${active},${survey_header_id});`)
+  VALUES ('${sectionName}',${pageNo},${active},${surveyHeaderId});`)
+}
+
+const surveyHeaderEdit = (surveyHeaderId, survey_name, remark, active, user_id) => {
+  let query = util.promisify(mypool.query).bind(mypool)
+  return query(`UPDATE evercomm_survey.tbl_survey_headers SET survey_name = '${survey_name}' , remark = '${remark}' ,active = ${active} , login_users_id=${user_id} WHERE survey_header_id = ${surveyHeaderId};`)
+}
+
+const surveySectionRemove = (surveyHeaderId) => {
+  let query = util.promisify(mypool.query).bind(mypool)
+  return query(`Delete from evercomm_survey.tbl_survey_sections where survey_headers_id = ${surveyHeaderId}`)
 }
 
 
@@ -493,6 +512,6 @@ module.exports = {
   userSurveyPermession,
   removePermsession,
   getOneUserInfo, getAdmin, userEdit, userPasswordEdit,
-  surveyHeader, surveySection
+  surveyHeader, surveySection, surveyHeaderEdit, surveySectionRemove
 
 };
