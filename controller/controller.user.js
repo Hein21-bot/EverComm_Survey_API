@@ -116,7 +116,7 @@ const getUser = (req, res) => {
     const user_id = req.params.user_id
     userService.getUser(user_id).then(data => {
         res.json(response({ success: true, payload: data }))
-    }).catch(err => res.json(response({ success: false, message: err })));
+    }).catch(err => res.json(response({ success: false, message: err.toString() })));
 }
 
 const userSurveyPermession = (req, res, uId) => {

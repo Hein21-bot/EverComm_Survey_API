@@ -412,18 +412,18 @@ const createOptionChoice = (option_choice_name, questions_id) => {
   ('${option_choice_name}',${questions_id});`)
 }
 
-const getUser = () => {
+const getUser = (user_id) => {
   let query = util.promisify(mypool.query).bind(mypool)
-  return query(`SELECT login_user_id,user_name,email,active,name as role,company_name,phone_number,survey_header_id FROM evercomm_survey.tbl_login_users as tlu
+  return query(`SELECT login_user_id,user_name,email,active,name as role,company_name,phone_number,survey_header_id,created_date FROM evercomm_survey.tbl_login_users as tlu
   inner join evercomm_survey.tbl_user_level tul on tul.user_level_id = tlu.user_level_id
-  left join evercomm_survey.tbl_user_survey as tbs on tbs.user_id = tlu.login_user_id ;
-  SELECT * FROM evercomm_survey.tbl_survey_headers where active = 1;`)
+  left join evercomm_survey.tbl_user_survey as tbs on tbs.user_id = tlu.login_user_id order by created_date desc;
+  SELECT * FROM evercomm_survey.tbl_survey_headers as ts 
+left join evercomm_survey.tbl_user_survey tus on ts.survey_header_id =tus.survey_header_id where user_id = ${user_id} and active = 1;`)
 }
 
-const userSurveyPermession = (user_id, survey_header_id) => {
+const userSurveyPermession = ({ user_id, surveyHeaderId }) => {
   let query = util.promisify(mypool.query).bind(mypool)
-  return query(`INSERT INTO tbl_user_survey(user_id,survey_header_id) VALUES 
-  (${user_id},${survey_header_id});`)
+  return query(`INSERT INTO tbl_user_survey(user_id,survey_header_id) VALUES  (${user_id},${surveyHeaderId});`)
 }
 
 const removePermsession = (user_id) => {
@@ -438,7 +438,7 @@ const getOneUserInfo = (user_id) => {
 
 const getAdmin = (user_id) => {
   let query = util.promisify(mypool.query).bind(mypool)
-  return query(`SELECT * FROM evercomm_survey.tbl_login_users where user_level_id = 1 and login_user_id = ${user_id};`)
+  return query(`SELECT * FROM evercomm_survey.tbl_login_users where user_level_id in (1,3) and login_user_id = ${user_id};`)
 }
 
 const userEdit = (user_id) => {
@@ -472,6 +472,13 @@ const surveySectionRemove = (surveyHeaderId) => {
   let query = util.promisify(mypool.query).bind(mypool)
   return query(`Delete from evercomm_survey.tbl_survey_sections where survey_headers_id = ${surveyHeaderId}`)
 }
+
+const getAdminId = () => {
+  let query = util.promisify(mypool.query).bind(mypool)
+  return query(`select login_user_id from tbl_login_users where user_level_id = 1`)
+}
+
+
 
 
 
@@ -512,6 +519,7 @@ module.exports = {
   userSurveyPermession,
   removePermsession,
   getOneUserInfo, getAdmin, userEdit, userPasswordEdit,
-  surveyHeader, surveySection, surveyHeaderEdit, surveySectionRemove
+  surveyHeader, surveySection, surveyHeaderEdit, surveySectionRemove,
+  getAdminId
 
 };

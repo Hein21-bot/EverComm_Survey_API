@@ -18,13 +18,17 @@ const surveyHeader = (req, res) => {
                 if (sectionData.length >= 0) {
                     const surveyHeaderId = dataResulted.insertId
                     return adminCreateService.surveySection({ sectionData, surveyHeaderId }).then(data1 => {
-                        res.json(
-                            response({
-                                success: true,
-                                message: "New survey created!",
-                                payload: data1
+                        return adminCreateService.getAdminId().then(data => {
+                            return adminCreateService.userSurveyPermession({ data, surveyHeaderId }).then(data => {
+                                res.json(
+                                    response({
+                                        success: true,
+                                        message: "New survey created!",
+                                        payload: dataResulted
+                                    })
+                                )
                             })
-                        )
+                        })
                     }).catch(err1 => { throw err1 })
                 } else {
                     return dataResulted

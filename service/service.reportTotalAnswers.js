@@ -139,46 +139,46 @@ const chiller = () => {
             if (data.length > 0) {
                 let surveySections2 = Object.keys(groupArray(data, "option_choice_name")).map((v, k) => {
                     return groupArray(data, "option_choice_name")[v];
-                  })
-                  .map((v1, k1) => {
-                    return {
-                      name: v1[0].option_choice_name, categories: Object.keys(groupArray(v1, v1[0].Siemens)).map((v2, k2) => {
-                        return groupArray(v1, v1[0].Siemens)[v2]
-                      })
-                .map((v3, k3) => {
+                })
+                    .map((v1, k1) => {
                         return {
-                          building_type: v3[0].building_type
+                            name: v1[0].option_choice_name, categories: Object.keys(groupArray(v1, v1[0].Siemens)).map((v2, k2) => {
+                                return groupArray(v1, v1[0].Siemens)[v2]
+                            })
+                                .map((v3, k3) => {
+                                    return {
+                                        building_type: v3[0].building_type
+                                    }
+                                })
+                                .map((categories => {
+                                    return categories.building_type
+                                })),
+                            //   data: Object.keys(groupArray(v1, "building_type")).map((v4, k4) => {
+                            //     return groupArray(v1, "building_type")[v4];
+                            //   })
+                            // .map((v5, k5) => {
+                            //         return {
+                            //           option_count: v5[0].option_count,
+                            //         };
+                            //       })
+                            // .map((categories => {
+                            //         return categories.option_count
+                            //       })),
+                            //       y: Object.keys(groupArray(v1, "building_type")).map((v4, k4) => {
+                            //         return groupArray(v1, "building_type")[v4];
+                            //       })
+                            // .map((v5, k5) => {
+                            //         return {
+                            //           option_count: v5[0].option_count,
+                            //         };
+                            //       })
+                            //   .map((categories => {
+                            //     return categories.option_count
+                            //   })).reduce(function (accumulator, currentValue, currentIndex, array) {
+                            //     return accumulator + currentValue
+                            //   })
                         }
-                      })
-                .map((categories => {
-                        return categories.building_type
-                      })),
-                    //   data: Object.keys(groupArray(v1, "building_type")).map((v4, k4) => {
-                    //     return groupArray(v1, "building_type")[v4];
-                    //   })
-                // .map((v5, k5) => {
-                //         return {
-                //           option_count: v5[0].option_count,
-                //         };
-                //       })
-                // .map((categories => {
-                //         return categories.option_count
-                //       })),
-                //       y: Object.keys(groupArray(v1, "building_type")).map((v4, k4) => {
-                //         return groupArray(v1, "building_type")[v4];
-                //       })
-                // .map((v5, k5) => {
-                //         return {
-                //           option_count: v5[0].option_count,
-                //         };
-                //       })
-                    //   .map((categories => {
-                    //     return categories.option_count
-                    //   })).reduce(function (accumulator, currentValue, currentIndex, array) {
-                    //     return accumulator + currentValue
-                    //   })
-                    }
-                  })
+                    })
                 return surveySections2
             } else return []
         })
@@ -188,6 +188,9 @@ const chiller = () => {
 
 }
 
+const report = () => {
+    return surveydb.report()
+}
 
 
-module.exports = { userLevelAnswer, userLevelMenuAnswer, graphReportUserLevel, chiller }
+module.exports = { userLevelAnswer, userLevelMenuAnswer, graphReportUserLevel, chiller, report }

@@ -1,5 +1,6 @@
 const { surveydb } = require('../db')
 const bcrypt = require('bcrypt')
+const dateFns = require('date-fns')
 
 const getAdmin = (user_id) => {
     return surveydb.getAdmin(user_id);
@@ -31,15 +32,14 @@ const checkDuplicateEmailUpdate = (email, user_id) => {
 const getUser = (user_id) => {
     return surveydb.getAdmin(user_id).then(data => {
         if (data.length > 0) {
-            return surveydb.getUser().then(data => {
+            return surveydb.getUser(user_id).then(data => {
                 if (data.length > 0) {
                     const result = data[0].reduce((r, c) => {
                         const R = [...r]
                         const index = R.findIndex(v => v.id == c.login_user_id)
                         if (index === -1) {
                             R.push({
-                                id: c.login_user_id, name: c.user_name, email: c.email, active: c.active, role: c.role, companyName: c.company_name, phone_number: c.phone_number,
-                                survey_header_id: c.survey_header_id == null ? null : [c.survey_header_id]
+                                id: c.login_user_id, name: c.user_name, email: c.email, active: c.active, role: c.role, companyName: c.company_name, phone_number: c.phone_number, created_date: dateFns.format(new Date(c.created_date), 'dd-MM-yyyy'), survey_header_id: c.survey_header_id == null ? null : [c.survey_header_id]
                             })
                         }
                         else {
@@ -58,17 +58,17 @@ const getUser = (user_id) => {
             return []
         }
     }).catch(error => {
-        throw error
+        throw error.toString()
     })
 }
 
 
-const userSurveyPermession = async (uId, data) => {
+const userSurveyPermession = async (user_id, data) => {
     const resultArr = []
     try {
         for (let i = 0; i < data.length; i++) {
-            const d = data[i]
-            const saveResult = await surveydb.userSurveyPermession(uId, d)
+            const surveyHeaderId = data[i]
+            const saveResult = await surveydb.userSurveyPermession({ user_id, surveyHeaderId })
             resultArr.push(saveResult)
         }
         return resultArr

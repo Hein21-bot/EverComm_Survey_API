@@ -54,4 +54,28 @@ const surveySectionRemove = (user_id) => {
     return surveydb.surveySectionRemove(user_id)
 }
 
-module.exports = { surveyHeader, surveySection, surveyHeaderEdit, surveySectionRemove }
+const getAdminId = () => {
+    return surveydb.getAdminId()
+}
+
+const userSurveyPermession = async ({ data, surveyHeaderId }) => {
+
+    const resultArr = []
+    try {
+        for (let i = 0; i < data.length; i++) {
+            const user_id = data[i].login_user_id
+            const saveResult = await surveydb.userSurveyPermession({ user_id, surveyHeaderId })
+            resultArr.push(saveResult)
+        }
+        return resultArr
+
+    }
+    catch (error) {
+        throw error
+    }
+
+}
+
+
+
+module.exports = { surveyHeader, surveySection, surveyHeaderEdit, surveySectionRemove, getAdminId, userSurveyPermession }
