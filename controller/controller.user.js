@@ -45,20 +45,27 @@ const addUser = (req, res) => {
                                     payload: data
                                 })
                             )
-                            if (req.body.surveyHeaderId == undefined) {
+                            if (req.body.surveyHeaderId == undefined || req.body.surveyHeaderId.length == 0) {
                                 return data
                             } else if (req.body.surveyHeaderId.length > 0) {
                                 userService.userSurveyPermession(data.insertId, req.body.surveyHeaderId).then(data1 => {
+                                    res.json(
+                                        response({
+                                            success: true,
+                                            message: "Inserted!",
+                                            payload: data1
+                                        })
+                                    )
                                 }).catch(err1 => { throw err1 })
                             }
                         }).catch(err => {
-                            res.json(response({ success: false, message: err.code,error:err }));
+                            res.json(response({ success: false, message: err.code, error: err }));
                         });
                 })
             }
         })
         .catch(err => {
-            res.json(response({ success: false, message: err.code,error:err }));
+            res.json(response({ success: false, message: err.code, error: err }));
         });
 };
 
@@ -92,13 +99,13 @@ const updateUser = (req, res) => {
                         res.json(
                             response({
                                 success: true,
-                                message: "Inserted!",
+                                message: "Insert!",
                                 payload: data
-                            })
-                        );
-                        if (req.body.surveyHeaderId == undefined) {
+                            }),
+                        )
+                        if (req.body.surveyHeaderId == undefined || req.body.surveyHeaderId.length == 0) {
                             return data
-                        } else if (req.body.surveyHeaderId.length >= 0) {
+                        } else if (req.body.surveyHeaderId.length > 0) {
                             userService.removePermsession(userId);
                             userService.userSurveyPermession(userId, req.body.surveyHeaderId).then(data1 => {
 
@@ -127,6 +134,7 @@ const userSurveyPermession = (req, res, uId) => {
         .then(result => {
             res.json(response({
                 success: true,
+                message: "Success",
                 payload: result
             }))
         })
@@ -145,6 +153,7 @@ const getOneUserInfo = (req, res) => {
         .then(data => {
             res.json(response({
                 success: true,
+                message: "success",
                 payload: data
             }))
         })
