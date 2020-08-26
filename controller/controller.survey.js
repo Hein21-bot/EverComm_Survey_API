@@ -3,6 +3,7 @@ const response = require("../model/response");
 const { surveydb } = require("../db");
 var groupArray = require("group-array");
 const moment = require("moment");
+const dateFns = require('date-fns')
 
 const getQuestion = (req, res) => {
   const admin_id = req.params.admin_id;
@@ -153,7 +154,7 @@ const surveyMenuApi = (req, res) => {
             survey_header_id: v1[0].survey_header_id,
             survey_name: v1[0].survey_name,
             amount_of_survey: v1[0].amount_of_survey,
-            created_date: v1[0].created_date.toString(),
+            created_date: dateFns.format(new Date(v1[0].created_date), 'dd/MM/yyyy'),
             survey_section: Object.keys(groupArray(v1, "survey_section_id"))
               .map((v2, k2) => {
                 return groupArray(v1, "survey_section_id")[v2];

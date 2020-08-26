@@ -1,6 +1,7 @@
 const { reportTotalAnswersService } = require("../service");
 const response = require("../model/response");
 var groupArray = require("group-array");
+const dateFns = require('date-fns')
 const { xssFilter } = require("helmet");
 
 const userLevelAnswer = (req, res) => {
@@ -64,7 +65,7 @@ const userLevelMenuAnswer = (req, res) => {
           return groupArray(data[0], "survey_header_id")[v];
         }).map((v1, k1) => {
           return {
-            survey_header_id: v1[0].survey_header_id, survey_name: v1[0].survey_name, survey_created_date: v1[0].created_date.toString(),
+            survey_header_id: v1[0].survey_header_id, survey_name: v1[0].survey_name, survey_created_date: dateFns.format(new Date(v1[0].created_date), 'dd/MM/yyyy'),
             amount_of_survey: Object.keys(groupArray(v1, "buildings_id")).map((v2, k2) => {
               return groupArray(v1, "buildings_id")[v2];
             }).map((v3, k3) => {
@@ -242,12 +243,12 @@ const graphReportApiUserLevel = (req, res) => {
               buildingCount: v3[0].buildingCount
             }
           })
-          .map((categories => {
-            let rObj = {}
-            rObj[categories.option_choice_name.trim()] = categories.buildingCount
-            return rObj
-          }),[])
-          .reduce(((r, c) => Object.assign(r, c)), {})
+            .map((categories => {
+              let rObj = {}
+              rObj[categories.option_choice_name.trim()] = categories.buildingCount
+              return rObj
+            }), [])
+            .reduce(((r, c) => Object.assign(r, c)), {})
         }
       })
 
@@ -271,53 +272,53 @@ const graphReportApiUserLevel = (req, res) => {
         }
       })
 
-      const result1 = surveySections1.map(v=>{
+      const result1 = surveySections1.map(v => {
         const values = Object.values(v.categories)
-        const sumValue = values.reduce((r,c) => r+c,0)
-        return ({...v,count:sumValue})
+        const sumValue = values.reduce((r, c) => r + c, 0)
+        return ({ ...v, count: sumValue })
       })
 
       let surveySections2 = Object.keys(groupArray(data[1], "option_choice_name")).map((v, k) => {
         return groupArray(data[1], "option_choice_name")[v];
       })
-      .map((v1, k1) => {
-        return {
-          name: v1[0].option_choice_name, categories: Object.keys(groupArray(v1, "building_type")).map((v2, k2) => {
-            return groupArray(v1, "building_type")[v2]
-          })
-    .map((v3, k3) => {
-            return {
-              building_type: v3[0].building_type
-            }
-          })
-    .map((categories => {
-            return categories.building_type
-          })),
-          data: Object.keys(groupArray(v1, "building_type")).map((v4, k4) => {
-            return groupArray(v1, "building_type")[v4];
-          })
-    .map((v5, k5) => {
-            return {
-              option_count: v5[0].option_count,
-            };
-          })
-    .map((categories => {
-            return categories.option_count
-          })),
-          y: Object.keys(groupArray(v1, "building_type")).map((v4, k4) => {
-            return groupArray(v1, "building_type")[v4];
-          })
-    .map((v5, k5) => {
-            return {
-              option_count: v5[0].option_count,
-            };
-          }).map((categories => {
-            return categories.option_count
-          })).reduce(function (accumulator, currentValue, currentIndex, array) {
-            return accumulator + currentValue
-          })
-        }
-      })
+        .map((v1, k1) => {
+          return {
+            name: v1[0].option_choice_name, categories: Object.keys(groupArray(v1, "building_type")).map((v2, k2) => {
+              return groupArray(v1, "building_type")[v2]
+            })
+              .map((v3, k3) => {
+                return {
+                  building_type: v3[0].building_type
+                }
+              })
+              .map((categories => {
+                return categories.building_type
+              })),
+            data: Object.keys(groupArray(v1, "building_type")).map((v4, k4) => {
+              return groupArray(v1, "building_type")[v4];
+            })
+              .map((v5, k5) => {
+                return {
+                  option_count: v5[0].option_count,
+                };
+              })
+              .map((categories => {
+                return categories.option_count
+              })),
+            y: Object.keys(groupArray(v1, "building_type")).map((v4, k4) => {
+              return groupArray(v1, "building_type")[v4];
+            })
+              .map((v5, k5) => {
+                return {
+                  option_count: v5[0].option_count,
+                };
+              }).map((categories => {
+                return categories.option_count
+              })).reduce(function (accumulator, currentValue, currentIndex, array) {
+                return accumulator + currentValue
+              })
+          }
+        })
 
       let surveySections3 = Object.keys(groupArray(data[3], "building_type")).map((v, k) => {
         return groupArray(data[3], "building_type")[v];
@@ -365,27 +366,27 @@ const graphReportApiUserLevel = (req, res) => {
       })
       // console.log(surveySections4)
 
-      const result = surveySections4.map(v=>{
+      const result = surveySections4.map(v => {
         const values = Object.values(v.categories)
-        const sumValue = values.reduce((r,c) => r+c,0)
-        return ({...v,count:sumValue})
+        const sumValue = values.reduce((r, c) => r + c, 0)
+        return ({ ...v, count: sumValue })
       })
       // console.log("result",result)
 
-//       const resultedData = data[4].reduce((r,c)=>{
-//        const R = [...r]
-//         const index  = R.findIndex(v=>v.year == c.other)
-//         if(index == -1){
-//           R.push({year:c.other,count:c.optionCount})
-//         }
-//         else{
-//           const count1 =R[index].count 
-//           R[index].count = c.optionCount+count1
-//         }
-//         return R
-//       },[])
+      //       const resultedData = data[4].reduce((r,c)=>{
+      //        const R = [...r]
+      //         const index  = R.findIndex(v=>v.year == c.other)
+      //         if(index == -1){
+      //           R.push({year:c.other,count:c.optionCount})
+      //         }
+      //         else{
+      //           const count1 =R[index].count 
+      //           R[index].count = c.optionCount+count1
+      //         }
+      //         return R
+      //       },[])
 
-// console.log(resultedData,"rrr")
+      // console.log(resultedData,"rrr")
       let ans = [surveySections, result1, surveySections2, reultedData, result]
 
 

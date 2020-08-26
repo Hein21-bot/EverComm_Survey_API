@@ -182,39 +182,25 @@ const updateQuestion = (
 // @HeinMinHtet
 // AnswerCount
 
-const reportTotalAnswers = (userId, surveyHeaderId, startDate, endDate) => {
+const reportTotalAnswers = (userId, surveyHeaderId) => {
   let query = util.promisify(mypool.query).bind(mypool);
-  return startDate != null
-    ? query(
-      `Call reportTotalAnswerDate(${surveyHeaderId},'${startDate}','${endDate}')`
-    )
-    : query(`Call reportTotalAnswer(${surveyHeaderId})`);
+  return query(`Call reportTotalAnswer(${surveyHeaderId})`);
 };
 
 const reportDistributorAnswers = (
   userId,
-  surveyHeaderId,
-  startDate,
-  endDate
+  surveyHeaderId
 ) => {
   let query = util.promisify(mypool.query).bind(mypool);
-  return startDate != null
-    ? query(
-      `Call reportDistributorAnswersDate(${surveyHeaderId},${userId},'${startDate}','${endDate}')`
-    )
-    : query(`Call reportDistributorAnswers(${surveyHeaderId},${userId})`);
+  return query(`Call reportDistributorAnswers(${surveyHeaderId},${userId})`);
 };
 
-const reportUserAnswer = (userId, surveyHeaderId, startDate, endDate) => {
+const reportUserAnswer = (userId, surveyHeaderId) => {
   let query = util.promisify(mypool.query).bind(mypool);
-  return startDate != null
-    ? query(
-      `Call reportUserAnswerDate(${surveyHeaderId},${userId},'${startDate}','${endDate}')`
-    )
-    : query(`Call reportUserAnswer(${surveyHeaderId},${userId})`);
+  return query(`Call reportUserAnswer(${surveyHeaderId},${userId})`);
 };
 
-const userLevelAnswer = (userId, surveyHeaderId, startDate, endDate) => {
+const userLevelAnswer = (userId, surveyHeaderId) => {
   let query = util.promisify(mypool.query).bind(mypool);
   return query(`CALL userLevelAnswers(?)`, [userId]);
 };
