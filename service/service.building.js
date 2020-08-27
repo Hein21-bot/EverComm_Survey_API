@@ -2,8 +2,8 @@ const { surveydb } = require('../db')
 
 
 
-const addBuilding = (buildingName, companyName, buildingType, buildingTypeId, address, postalCode, country, comment, userId, surveyHeadersId, chiller, condenser, evaporator, coolingTower, BMSInstalled) => {
-    return surveydb.addBuilding(buildingName, companyName, buildingType, buildingTypeId, address, postalCode, country, comment, userId, surveyHeadersId, chiller, condenser, evaporator, coolingTower, BMSInstalled);
+const addBuilding = (buildingName, companyName, buildingType, buildingTypeId, created_date, address, postalCode, country, comment, userId, surveyHeadersId, chiller, condenser, evaporator, coolingTower, BMSInstalled) => {
+    return surveydb.addBuilding(buildingName, companyName, buildingType, buildingTypeId, created_date, address, postalCode, country, comment, userId, surveyHeadersId, chiller, condenser, evaporator, coolingTower, BMSInstalled);
 }
 
 const getBuildingType = () => {

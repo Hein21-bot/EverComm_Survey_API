@@ -1,6 +1,6 @@
 const { adminCreateService } = require("../service");
 const response = require("../model/response");
-
+const moment = require("moment");
 
 
 const surveyHeader = (req, res) => {
@@ -9,10 +9,11 @@ const surveyHeader = (req, res) => {
     const remark = req.body.remark
     const active = req.body.active == true ? 1 : 0
     const sectionData = req.body.sectionData
+    const created_date = moment(new Date()).format("YYYY-MM-DD HH:mm:ss")
 
 
 
-    return adminCreateService.surveyHeader(surveyName, remark, active, user_id)
+    return adminCreateService.surveyHeader(surveyName, remark, active, user_id, created_date)
         .then(dataResulted => {
             if (dataResulted.length != 0) {
                 if (sectionData.length >= 0) {

@@ -218,6 +218,7 @@ const addBuilding = (
   companyName,
   buildingType,
   buildingTypeId,
+  created_date,
   address,
   postalCode,
   country,
@@ -232,8 +233,8 @@ const addBuilding = (
 ) => {
   let query = util.promisify(mypool.query).bind(mypool);
   return query(
-    `INSERT INTO tbl_buildings (building_name, company_name,building_type,building_type_id, remark, active, address, postal_code,country,comment,
-      user_id,survey_headers_id,chiller,condenser,evaporator,cooling_tower,BMSInstalled)  VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)	
+    `INSERT INTO tbl_buildings (building_name, company_name,building_type,building_type_id, remark, active,created_date, address, postal_code,country,comment,
+      user_id,survey_headers_id,chiller,condenser,evaporator,cooling_tower,BMSInstalled)  VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)	
     `,
     [
       buildingName,
@@ -242,6 +243,7 @@ const addBuilding = (
       buildingTypeId,
       "ok",
       1,
+      created_date,
       address,
       postalCode,
       country,
@@ -437,10 +439,10 @@ const userPasswordEdit = (user_id, editPassword) => {
   return query(`UPDATE tbl_login_users SET password = '${editPassword}' WHERE login_user_id = ${user_id};`)
 }
 
-const surveyHeader = (surveyName, remark, active, user_id) => {
+const surveyHeader = (surveyName, remark, active, user_id, created_date) => {
   let query = util.promisify(mypool.query).bind(mypool)
-  return query(`INSERT INTO evercomm_survey.tbl_survey_headers (survey_name,remark,active,login_users_id)
-  VALUES ('${surveyName}','ok',1,${user_id});`)
+  return query(`INSERT INTO evercomm_survey.tbl_survey_headers (survey_name,remark,active,login_users_id,created_date)
+  VALUES ('${surveyName}','ok',1,${user_id},${created_date});`)
 }
 
 const surveySection = ({ sectionName, pageNo, active, surveyHeaderId }) => {

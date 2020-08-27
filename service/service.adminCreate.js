@@ -1,10 +1,10 @@
 const { surveydb } = require('../db')
 
 
-const surveyHeader = (surveyName, remark, active, user_id) => {
+const surveyHeader = (surveyName, remark, active, user_id, created_date) => {
     return surveydb.getAdmin(user_id).then(data => {
         if (data.length > 0) {
-            return surveydb.surveyHeader(surveyName, remark, active, user_id)
+            return surveydb.surveyHeader(surveyName, remark, active, user_id, created_date)
         }
         else {
             return []

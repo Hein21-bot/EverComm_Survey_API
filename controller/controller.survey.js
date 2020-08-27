@@ -29,7 +29,7 @@ const getQuestion = (req, res) => {
               }).map((v1, k1) => {
                 return {
                   question_id: v1[0].question_id, question_name: v1[0].question_name, input_type_id: v1[0].input_types_id, option_group_id: v1[0].option_groups_id,
-                  option_choices:v1.map((c) => {
+                  option_choices: v1.map((c) => {
                     return {
                       option_choice_id: c.option_choice_id != null ? c.option_choice_id : null, option_choice_name: c.option_choice_name,
                     };
@@ -63,7 +63,7 @@ const getQuestion = (req, res) => {
               }).map((v1, k1) => {
                 return {
                   question_id: v1[0].question_id, question_name: v1[0].question_name, input_type_id: v1[0].input_types_id, option_group_id: v1[0].option_groups_id,
-                  option_choices:  v1.map((c) => {
+                  option_choices: v1.map((c) => {
                     return {
                       option_choice_id: c.option_choice_id, option_choice_name: c.option_choice_name,
                     };
@@ -132,12 +132,12 @@ const surveyList = (req, res) => {
   let userId = req.params.user_id;
   let survey_header_id = req.params.survey_header_id;
   surveyService.surveyList(userId, survey_header_id).then((data) => {
-      let surveyList = {
-        survey_list: data[0], //pending and completed for questions
-        new_survey_list: data[1], //for building
-      };
-      res.json(response({ success: true, payload: surveyList }));
-    })
+    let surveyList = {
+      survey_list: data[0], //pending and completed for questions
+      new_survey_list: data[1], //for building
+    };
+    res.json(response({ success: true, payload: surveyList }));
+  })
     .catch((err) => res.json(response({ success: false, message: err })));
 };
 
@@ -155,6 +155,8 @@ const surveyMenuApi = (req, res) => {
             survey_name: v1[0].survey_name,
             amount_of_survey: v1[0].amount_of_survey,
             created_date: dateFns.format(new Date(v1[0].created_date), 'dd/MM/yyyy'),
+            modified_date: dateFns.format(new Date(v1[0].modified_date), 'dd/MM/yyyy'),
+            building_count: v1[0].buildingCount,
             survey_section: Object.keys(groupArray(v1, "survey_section_id"))
               .map((v2, k2) => {
                 return groupArray(v1, "survey_section_id")[v2];
