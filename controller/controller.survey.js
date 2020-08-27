@@ -154,8 +154,8 @@ const surveyMenuApi = (req, res) => {
             survey_header_id: v1[0].survey_header_id,
             survey_name: v1[0].survey_name,
             amount_of_survey: v1[0].amount_of_survey,
-            created_date: dateFns.format(new Date(v1[0].created_date), 'dd/MM/yyyy'),
-            modified_date: dateFns.format(new Date(v1[0].modified_date), 'dd/MM/yyyy'),
+            created_date: moment(v1[0].created_date).format('DD/MM/YYYY'),
+            modified_date: moment(v1[0].modified_date).format('DD/MM/YYYY'),
             building_count: v1[0].buildingCount,
             survey_section: Object.keys(groupArray(v1, "survey_section_id"))
               .map((v2, k2) => {
