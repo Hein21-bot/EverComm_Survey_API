@@ -14,7 +14,7 @@ const getQuestion = (req, res) => {
 
 
   surveyService.getQuestion(admin_id, survey_header_id, buildingId, buildingTypeId).then((data) => {
-
+    
     if (data[3][0].BMSInstalled == 1) {
       const surveySections = Object.keys(groupArray(data[0], "survey_section_id")).map((v, k) => {
         return groupArray(data[0], "survey_section_id")[v];
@@ -157,6 +157,7 @@ const surveyMenuApi = (req, res) => {
             created_date: moment(v1[0].created_date).format('DD/MM/YYYY'),
             modified_date: moment(v1[0].modified_date).format('DD/MM/YYYY'),
             building_count: v1[0].buildingCount,
+            active: v1[0].active,            
             survey_section: Object.keys(groupArray(v1, "survey_section_id"))
               .map((v2, k2) => {
                 return groupArray(v1, "survey_section_id")[v2];

@@ -31,10 +31,33 @@ const checkDuplicateEmailUpdate = (email, user_id) => {
 
 const getUser = (user_id) => {
     return surveydb.getAdmin(user_id).then(data => {
-        if (data.length > 0) {
+        if (data[0].user_level_id == 1) {
             return surveydb.getUser(user_id).then(data => {
                 if (data.length > 0) {
                     const result = data[0].reduce((r, c) => {
+                        const R = [...r]
+                        const index = R.findIndex(v => v.id == c.login_user_id)
+                        if (index === -1) {
+                            R.push({
+                                id: c.login_user_id, name: c.user_name, email: c.email, active: c.active, role: c.role, companyName: c.company_name, phone_number: c.phone_number, created_date: dateFns.format(new Date(c.created_date), 'dd-MM-yyyy'), survey_header_id: c.survey_header_id == null ? null : [c.survey_header_id]
+                            })
+                        }
+                        else {
+                            R[index].survey_header_id.push(c.survey_header_id)
+                        }
+                        return R
+                    }, [])
+                    return [result, data[1]]
+                } else return []
+            })
+                .catch(error => {
+                    throw error
+                })
+        }
+        else if (data[0].user_level_id == 3) {
+            return surveydb.getUser(user_id).then(data => {
+                if (data.length > 0) {
+                    const result = data[0].filter(data => data.role != 'admin').reduce((r, c) => {
                         const R = [...r]
                         const index = R.findIndex(v => v.id == c.login_user_id)
                         if (index === -1) {

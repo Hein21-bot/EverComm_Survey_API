@@ -67,14 +67,14 @@ const getQuestion = (user_id, survey_header_id, buildingId, buildingTypeId) => {
   return survey_header_id == 1 ? query(
     `select * from tbl_questions as q left join tbl_option_choices as o  on q.question_id = o.questions_id
     left join tbl_survey_sections as s on s.survey_section_id = q.survey_sections_id left join tbl_survey_headers as h
-      on h.survey_header_id = s.survey_headers_id where h.survey_header_id = ${survey_header_id} and h.active = true and device_type in (${buildingTypeId},0) order by survey_section_id,option_choice_id;
+      on h.survey_header_id = s.survey_headers_id where h.survey_header_id = ${survey_header_id}  and device_type in (${buildingTypeId},0) order by survey_section_id,option_choice_id;
           select other,option_choices_id as optionChoiceId,users_id as userId,questions_id as questionId, survey_headers_id,building_id,keyValue from  
             tbl_answers where users_id = ${user_id} and survey_headers_id = ${survey_header_id} and building_id = ${buildingId};
             select chiller,condenser,evaporator,cooling_tower from tbl_buildings where building_id=${buildingId};
             select BMSInstalled from tbl_buildings where building_id=${buildingId};`
   ) : query(`select * from tbl_questions as q left join tbl_option_choices as o  on q.question_id = o.questions_id
   left join tbl_survey_sections as s on s.survey_section_id = q.survey_sections_id left join tbl_survey_headers as h
-    on h.survey_header_id = s.survey_headers_id where  h.active = true and device_type in (${buildingTypeId},0) order by survey_section_id,option_choice_id;
+    on h.survey_header_id = s.survey_headers_id where  device_type in (${buildingTypeId},0) order by survey_section_id,option_choice_id;
         select other,option_choices_id as optionChoiceId,users_id as userId,questions_id as questionId, survey_headers_id,building_id,keyValue from  
           tbl_answers where users_id = ${user_id} and survey_headers_id = ${survey_header_id} and building_id = ${buildingId};
           select chiller,condenser,evaporator,cooling_tower from tbl_buildings where building_id=${buildingId};
@@ -466,6 +466,10 @@ const getAdminId = () => {
   return query(`select login_user_id from tbl_login_users where user_level_id = 1`)
 }
 
+const removeSurveyHeader = (surveyHeaderId) => {
+  let query = util.promisify(mypool.query).bind(mypool)
+  return query(`UPDATE tbl_survey_headers SET active = 0 WHERE survey_header_id=${surveyHeaderId};`)
+}
 
 
 
@@ -508,6 +512,6 @@ module.exports = {
   removePermsession,
   getOneUserInfo, getAdmin, userEdit, userPasswordEdit,
   surveyHeader, surveySection, surveyHeaderEdit, surveySectionRemove,
-  getAdminId
+  getAdminId, removeSurveyHeader
 
 };

@@ -95,6 +95,22 @@ const surveyHeaderEdit = (req, res) => {
 
 };
 
+const removeSurveyHeader = (req, res) => {
+    const surveyHeaderId = req.params.surveyHeaderId
+
+    return adminCreateService.removeSurveyHeader(surveyHeaderId).then(data => {
+        res.json(
+            response({
+                success: true,
+                message: "Survey Successfully Removed!",
+                payload: null
+            })
+        ).catch(err => {
+            res.json(response({ success: false, message: err.code, error: err }));
+        });
+    })
+}
+
 // const surveySection = (req, res, sId) => {
 //     const survey_header_id = req.body.survey_header_id || sId
 //     const section_name = req.body.section_name
@@ -116,4 +132,4 @@ const surveyHeaderEdit = (req, res) => {
 
 
 
-module.exports = { surveyHeader, surveyHeaderEdit }
+module.exports = { surveyHeader, surveyHeaderEdit, removeSurveyHeader }

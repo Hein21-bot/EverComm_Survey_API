@@ -76,6 +76,8 @@ const userSurveyPermession = async ({ data, surveyHeaderId }) => {
 
 }
 
+const removeSurveyHeader = (surveyHeaderId) => {
+    return surveydb.removeSurveyHeader(surveyHeaderId)
+}
 
-
-module.exports = { surveyHeader, surveySection, surveyHeaderEdit, surveySectionRemove, getAdminId, userSurveyPermession }
+module.exports = { surveyHeader, surveySection, surveyHeaderEdit, surveySectionRemove, getAdminId, userSurveyPermession, removeSurveyHeader }
