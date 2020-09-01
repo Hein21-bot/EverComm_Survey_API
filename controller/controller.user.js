@@ -2,6 +2,7 @@ const { userService, companyService } = require('../service')
 const response = require('../model/response')
 const { surveydb } = require('../db')
 const bcrypt = require("bcrypt")
+const moment = require("moment");
 const saltRounds = 10
 
 
@@ -18,6 +19,7 @@ const addUser = (req, res) => {
     const password = req.body.password
     const email = req.body.email
     const active = 1
+    const created_date = moment.utc(new Date()).local().format('YYYY-MM-DD HH:mm:ss');
     const user_level = req.body.user_level || 2
     const companyName = req.body.companyName
     const phone_number = req.body.phone_number
@@ -36,7 +38,7 @@ const addUser = (req, res) => {
             } else {
                 bcrypt.hash(password, saltRounds, function (err, hash) {
 
-                    userService.addUser(userName, hash, email, active, user_level, companyName, phone_number)
+                    userService.addUser(userName, hash, email, active, created_date, user_level, companyName, phone_number)
                         .then(data => {
                             res.json(
                                 response({

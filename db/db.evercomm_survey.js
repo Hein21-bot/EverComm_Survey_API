@@ -23,9 +23,10 @@ const login = (email) => {
 
 // addUser
 
-const addUser = (userName, password, email, active, user_level, companyName, phone_number) => {
+const addUser = (userName, password, email, active, created_date, user_level, companyName, phone_number) => {
   let query = util.promisify(mypool.query).bind(mypool);
-  return query(`INSERT INTO tbl_login_users(user_name,password,email,active,user_level_id,company_name,phone_number) VALUES('${userName}', '${password}', '${email}', ${active}, ${user_level}, '${companyName}', ${phone_number});`)
+  return query(`INSERT INTO tbl_login_users(user_name,password,email,active,created_date,user_level_id,company_name,phone_number) VALUES('${userName}', '${password}', '${email}', ${active},'${created_date}', ${user_level}, 
+  '${companyName}', ${phone_number});`)
 };
 
 const updateUser = (userId, userName, email, active, user_level, companyName, phone_number) => {
@@ -388,16 +389,16 @@ const chiller = () => {
   group by oc.option_choice_name,tb.building_type,oc.option_choice_id order by option_choice_id;`)
 }
 
-const createQuestion = (question_name, is_other, required, option_groups_id, units_id, survey_sections_id, input_types_id, survey_headers_id, device_type) => {
+const createQuestion = ({ questionName, isOther, required, optionGroupId, unitsId, surveySectionId, inputTypeId, surveyHeaderId, buildingType }) => {
   let query = util.promisify(mypool.query).bind(mypool)
   return query(`INSERT INTO tbl_questions(question_name, is_other,required, option_groups_id, units_id,survey_sections_id,input_types_id,survey_headers_id,device_type) VALUES 
-  ('${question_name}',${is_other}, ${required}, ${option_groups_id}, ${units_id}, ${survey_sections_id}, ${input_types_id}, ${survey_headers_id},${device_type});`)
+  ('${questionName}',${isOther}, ${required}, ${optionGroupId}, ${unitsId}, ${surveySectionId}, ${inputTypeId}, ${surveyHeaderId},${buildingType});`)
 }
 
-const createOptionChoice = (option_choice_name, questions_id) => {
+const createOptionChoice = ({ optionChoiceName, questionId }) => {
   let query = util.promisify(mypool.query).bind(mypool)
   return query(`INSERT INTO tbl_option_choices(option_choice_name,questions_id) VALUES 
-  ('${option_choice_name}',${questions_id});`)
+  ('${optionChoiceName}',${questionId});`)
 }
 
 const getUser = (user_id) => {
@@ -439,16 +440,16 @@ const userPasswordEdit = (user_id, editPassword) => {
   return query(`UPDATE tbl_login_users SET password = '${editPassword}' WHERE login_user_id = ${user_id};`)
 }
 
-const surveyHeader = (surveyName, remark, active, user_id, created_date) => {
+const surveyHeader = (surveyName, remark, active, user_id, created_date, modified_date) => {
   let query = util.promisify(mypool.query).bind(mypool)
-  return query(`INSERT INTO evercomm_survey.tbl_survey_headers (survey_name,remark,active,login_users_id,created_date)
-  VALUES ('${surveyName}','ok',1,${user_id},${created_date});`)
+  return query(`INSERT INTO evercomm_survey.tbl_survey_headers (survey_name,remark,active,login_users_id,created_date,modified_date)
+  VALUES ('${surveyName}','ok',1,${user_id},'${created_date}','${modified_date}');`)
 }
 
-const surveySection = ({ sectionName, pageNo, active, surveyHeaderId }) => {
+const surveySection = ({ sectionName, pageNo, active, surveyHeaderId, createdDate }) => {
   let query = util.promisify(mypool.query).bind(mypool)
-  return query(`INSERT INTO evercomm_survey.tbl_survey_sections (section_name,page_no,active,survey_headers_id)
-  VALUES ('${sectionName}',${pageNo},${active},${surveyHeaderId});`)
+  return query(`INSERT INTO evercomm_survey.tbl_survey_sections (section_name,page_no,active,survey_headers_id,created_date)
+  VALUES ('${sectionName}',${pageNo},${active},${surveyHeaderId},'${createdDate}')`)
 }
 
 const surveyHeaderEdit = (surveyHeaderId, survey_name, remark, active, user_id) => {

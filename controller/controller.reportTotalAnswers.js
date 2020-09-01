@@ -1,7 +1,7 @@
 const { reportTotalAnswersService } = require("../service");
 const response = require("../model/response");
 var groupArray = require("group-array");
-const dateFns = require('date-fns')
+const moment = require('moment')
 const { xssFilter } = require("helmet");
 
 const userLevelAnswer = (req, res) => {
@@ -65,7 +65,7 @@ const userLevelMenuAnswer = (req, res) => {
           return groupArray(data[0], "survey_header_id")[v];
         }).map((v1, k1) => {
           return {
-            survey_header_id: v1[0].survey_header_id, survey_name: v1[0].survey_name, survey_created_date: dateFns.format(new Date(v1[0].created_date), 'dd/MM/yyyy'),
+            survey_header_id: v1[0].survey_header_id, survey_name: v1[0].survey_name, survey_created_date: moment(v1[0].created_date).format('DD/MM/YYYY'),
             amount_of_survey: Object.keys(groupArray(v1, "buildings_id")).map((v2, k2) => {
               return groupArray(v1, "buildings_id")[v2];
             }).map((v3, k3) => {

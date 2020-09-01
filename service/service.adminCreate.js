@@ -1,17 +1,18 @@
 const { surveydb } = require('../db')
+const moment = require('moment')
 
 
-const surveyHeader = (surveyName, remark, active, user_id, created_date) => {
+const surveyHeader = (surveyName, remark, active, user_id, created_date, modified_date) => {
     return surveydb.getAdmin(user_id).then(data => {
         if (data.length > 0) {
-            return surveydb.surveyHeader(surveyName, remark, active, user_id, created_date)
+            return surveydb.surveyHeader(surveyName, remark, active, user_id, created_date, modified_date)
         }
         else {
             return []
         }
 
     }).catch(error => {
-        throw error
+        throw error.toString()
     })
 }
 
@@ -23,15 +24,16 @@ const surveySection = async ({ sectionData, surveyHeaderId }) => {
             const pageNo = i + 1
             const active = d.active
             const sectionName = d.sectionName
+            const createdDate = moment.utc(new Date()).local().format('YYYY-MM-DD HH:mm:ss')
 
-            const saveResult = await surveydb.surveySection({ pageNo, active, surveyHeaderId, sectionName })
+            const saveResult = await surveydb.surveySection({ pageNo, active, surveyHeaderId, sectionName, createdDate })
             resultArr.push(saveResult)
         }
         return resultArr
 
     }
     catch (error) {
-        throw error
+        throw error.toString()
     }
 
 }

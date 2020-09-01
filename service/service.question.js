@@ -1,16 +1,43 @@
 const { surveydb } = require('../db')
 const response = require('../model/response')
 
-const createQuestion = (question_name, is_other, required, option_groups_id, units_id, survey_sections_id, input_types_id, survey_headers_id, device_type) => {
-    return surveydb.createQuestion(question_name, is_other, required, option_groups_id, units_id, survey_sections_id, input_types_id, survey_headers_id, device_type);
+const createQuestion = async ({ data }) => {
+    const resultArr = []
+    try {
+        for (let i = 0; i < data.length; i++) {
+            const d = data[i]
+            const questionName = d.questionName
+            const isOther = d.isOther
+            const required = d.required
+            const optionGroupId = d.optionGroupId
+            const unitsId = d.unitsId
+            const surveySectionId = d.surveySectionId
+            const inputTypeId = d.inputTypeId
+            const surveyHeaderId = d.surveyHeaderId
+            const buildingType = d.buildingType
+            const saveResult = await surveydb.createQuestion({ questionName, isOther, required, optionGroupId, unitsId, surveySectionId, inputTypeId, surveyHeaderId, buildingType })
+            const optionChoiceArr = d.optionChoices
+            for (let j = 0; j < optionChoiceArr.length; j++) {
+                const d = optionChoiceArr[j]
+                const optionChoiceName = d.optionChoices
+                const questionId = saveResult.insertId
+                const saveOptionChoiceResult = await surveydb.createOptionChoice({ optionChoiceName, questionId })
+                resultArr.push(saveOptionChoiceResult)
+                console.log(resultArr)
+            }
+        }
+        return resultArr
+
+    }
+    catch (error) {
+        throw error
+    }
 }
 
-const createOptionChoice = (option_choice_name, questions_id) => {
-    return surveydb.createOptionChoice(option_choice_name, questions_id);
-}
 
 
-module.exports = { createQuestion, createOptionChoice }
+
+module.exports = { createQuestion }
 
 
 // @ add with array req.body

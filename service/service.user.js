@@ -1,6 +1,6 @@
 const { surveydb } = require('../db')
 const bcrypt = require('bcrypt')
-const dateFns = require('date-fns')
+const moment = require('moment')
 
 const getAdmin = (user_id) => {
     return surveydb.getAdmin(user_id);
@@ -10,8 +10,8 @@ const addCompany = (companyName) => {
     return surveydb.addCompany(companyName)
 }
 
-const addUser = (userName, password, email, active, user_level, companyName, phone_number) => {
-    return surveydb.addUser(userName, password, email, active, user_level, companyName, phone_number)
+const addUser = (userName, password, email, active, created_date, user_level, companyName, phone_number) => {
+    return surveydb.addUser(userName, password, email, active, created_date, user_level, companyName, phone_number)
 
 }
 
@@ -39,7 +39,8 @@ const getUser = (user_id) => {
                         const index = R.findIndex(v => v.id == c.login_user_id)
                         if (index === -1) {
                             R.push({
-                                id: c.login_user_id, name: c.user_name, email: c.email, active: c.active, role: c.role, companyName: c.company_name, phone_number: c.phone_number, created_date: dateFns.format(new Date(c.created_date), 'dd-MM-yyyy'), survey_header_id: c.survey_header_id == null ? null : [c.survey_header_id]
+                                id: c.login_user_id, name: c.user_name, email: c.email, active: c.active, role: c.role, companyName: c.company_name, phone_number: c.phone_number,
+                                created_date: moment(c.created_date).format('YYYY - MM - DD'), survey_header_id: c.survey_header_id == null ? null : [c.survey_header_id]
                             })
                         }
                         else {
@@ -62,7 +63,8 @@ const getUser = (user_id) => {
                         const index = R.findIndex(v => v.id == c.login_user_id)
                         if (index === -1) {
                             R.push({
-                                id: c.login_user_id, name: c.user_name, email: c.email, active: c.active, role: c.role, companyName: c.company_name, phone_number: c.phone_number, created_date: dateFns.format(new Date(c.created_date), 'dd-MM-yyyy'), survey_header_id: c.survey_header_id == null ? null : [c.survey_header_id]
+                                id: c.login_user_id, name: c.user_name, email: c.email, active: c.active, role: c.role, companyName: c.company_name, phone_number: c.phone_number,
+                                created_date: moment(c.created_date).format('YYYY - MM - DD'), survey_header_id: c.survey_header_id == null ? null : [c.survey_header_id]
                             })
                         }
                         else {

@@ -8,7 +8,7 @@ const addBuilding = (req, res) => {
     const companyName = req.body.companyName
     const building_type = req.body.buildingType
     const buildingTypeId = req.body.buildingTypeId
-    const created_date = moment(new Date()).format("YYYY-MM-DD HH:mm:ss")
+    const created_date = moment.utc(new Date()).local().format('YYYY-MM-DD HH:mm:ss')
     const address = req.body.address
     const postalCode = req.body.postalCode
     const country = req.body.country
@@ -21,7 +21,7 @@ const addBuilding = (req, res) => {
     const surveyHeadersId = req.body.surveyHeaderId
     const BMSInstalled = req.body.BMSInstalled
 
-    buildingService.addBuilding(buildingName, companyName, building_type, buildingTypeId,created_date, address, postalCode, country, comment, userId, surveyHeadersId, chiller, condenser, evaporator, coolingTower, BMSInstalled)
+    buildingService.addBuilding(buildingName, companyName, building_type, buildingTypeId, created_date, address, postalCode, country, comment, userId, surveyHeadersId, chiller, condenser, evaporator, coolingTower, BMSInstalled)
         .then(data => {
             return res.json(
                 response({

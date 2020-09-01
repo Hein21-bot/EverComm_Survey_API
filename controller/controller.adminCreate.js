@@ -9,11 +9,10 @@ const surveyHeader = (req, res) => {
     const remark = req.body.remark
     const active = req.body.active == true ? 1 : 0
     const sectionData = req.body.sectionData
-    const created_date = moment(new Date()).format("YYYY-MM-DD HH:mm:ss")
+    const created_date = moment.utc(new Date()).local().format('YYYY-MM-DD HH:mm:ss')
+    const modified_date = moment.utc(new Date()).local().format('YYYY-MM-DD HH:mm:ss')
 
-
-
-    return adminCreateService.surveyHeader(surveyName, remark, active, user_id, created_date)
+    return adminCreateService.surveyHeader(surveyName, remark, active, user_id, created_date, modified_date)
         .then(dataResulted => {
             if (dataResulted.length != 0) {
                 if (sectionData.length >= 0) {
@@ -30,7 +29,7 @@ const surveyHeader = (req, res) => {
                                 )
                             })
                         })
-                    }).catch(err1 => { throw err1 })
+                    }).catch(err1 => { throw err1.toString() })
                 } else {
                     return dataResulted
                 }
@@ -59,10 +58,11 @@ const surveyHeaderEdit = (req, res) => {
     const remark = req.body.remark
     const active = req.body.active == true ? 1 : 0
     const sectionData = req.body.data
+    const modified_date = moment.utc(new Date()).local().format('YYYY-MM-DD HH:mm:ss')
 
 
 
-    return adminCreateService.surveyHeaderEdit(surveyHeaderId, surveyName, remark, active, user_id)
+    return adminCreateService.surveyHeaderEdit(surveyHeaderId, surveyName, remark, active, user_id, modified_date)
         .then(dataResulted => {
             if (dataResulted.length != 0) {
                 if (sectionData.length >= 0) {

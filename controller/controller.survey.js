@@ -3,7 +3,6 @@ const response = require("../model/response");
 const { surveydb } = require("../db");
 var groupArray = require("group-array");
 const moment = require("moment");
-const dateFns = require('date-fns')
 
 const getQuestion = (req, res) => {
   const admin_id = req.params.admin_id;
@@ -154,8 +153,8 @@ const surveyMenuApi = (req, res) => {
             survey_header_id: v1[0].survey_header_id,
             survey_name: v1[0].survey_name,
             amount_of_survey: v1[0].amount_of_survey,
-            created_date: moment(v1[0].created_date).format('DD/MM/YYYY'),
-            modified_date: moment(v1[0].modified_date).format('DD/MM/YYYY'),
+            created_date: moment(v1[0].created_date).format('YYYY/MM/DD'),
+            modified_date: moment(v1[0].modified_date).format('YYYY/MM/DD'),
             building_count: v1[0].buildingCount,
             active: v1[0].active,            
             survey_section: Object.keys(groupArray(v1, "survey_section_id"))
@@ -193,7 +192,7 @@ const addAnswer = (req, res) => {
       let survey_headers_id = data.survey_headers_id;
       let building_id = data.building_id;
       let keyValue = data.keyValue
-      let answeredDate = moment(new Date()).format("YYYY-MM-DD HH:mm:ss")
+      let answeredDate = moment.utc(new Date()).local().format('YYYY-MM-DD HH:mm:ss');
       let totalQuestionCount = req.body.total
       let buildingType = req.body.buildingType
       try {
