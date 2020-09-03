@@ -472,8 +472,22 @@ const removeSurveyHeader = (surveyHeaderId) => {
   return query(`UPDATE tbl_survey_headers SET active = 0 WHERE survey_header_id=${surveyHeaderId};`)
 }
 
+const addCountry = (country, organization, surveyHeaderId) => {
+  let query = util.promisify(mypool.query).bind(mypool)
+  return query(`INSERT INTO evercomm_survey.tbl_country (country,organization,survey_header_id)
+  VALUES ('${country}','${organization}',${surveyHeaderId})`)
+}
 
+const getCountry = (surveyHeaderId) => {
+  let query = util.promisify(mypool.query).bind(mypool)
+  return query(`SELECT * FROM evercomm_survey.tbl_country where survey_header_id = ${surveyHeaderId};`)
+}
 
+const getCountrySurvey = (surveyHeaderId) => {
+  let query = util.promisify(mypool.query).bind(mypool)
+  return query(`SELECT * FROM evercomm_survey.tbl_country as tc 
+  left join tbl_survey_sections as tss on tc.survey_header_id = tss.survey_headers_id where tc.survey_header_id = ${surveyHeaderId}; `)
+}
 
 module.exports = {
   getQuestion,
@@ -513,6 +527,8 @@ module.exports = {
   removePermsession,
   getOneUserInfo, getAdmin, userEdit, userPasswordEdit,
   surveyHeader, surveySection, surveyHeaderEdit, surveySectionRemove,
-  getAdminId, removeSurveyHeader
+  getAdminId, removeSurveyHeader,
+  addCountry, getCountry,
+  getCountrySurvey
 
 };

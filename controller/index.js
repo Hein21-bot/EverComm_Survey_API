@@ -7,11 +7,13 @@ const buildingController = require('./controller.building')
 const companyController = require('./controller.company')
 const questionController = require('./controller.question')
 const adminCreateController = require('./controller.adminCreate')
+const countryController = require('./controller.country')
 
 
 module.exports = {
     userController, surveyController,
     loginController, reportTotalAnswersController,
     buildingController, companyController,
-    questionController, adminCreateController
+    questionController, adminCreateController,
+    countryController
 }
