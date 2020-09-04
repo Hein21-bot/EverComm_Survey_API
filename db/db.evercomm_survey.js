@@ -75,7 +75,7 @@ const getQuestion = (user_id, survey_header_id, buildingId, buildingTypeId) => {
             select chiller,condenser,evaporator,cooling_tower from tbl_buildings where building_id=${buildingId};
             select BMSInstalled from tbl_buildings where building_id=${buildingId};`
   ) : query(`select t1.survey_header_id,t1.survey_name,t1.survey_section_id,t1.section_name,t1.question_id as primary_question,t1.question_name,t1.input_types_id,t1.option_groups_id,t1.question_key,
-  t1.option_choice_id,t1.option_choice_name,sq.question_id,sq.sub_question_name,sq.question_id,sq.input_type_id,o.option_choice_name,o.sub_question_id,o.option_choice_id as oc from
+  t1.option_choice_id as choices_id,t1.option_choice_name as choices,sq.question_id,sq.sub_question_name,sq.question_id,sq.input_type_id,o.option_choice_name,o.sub_question_id,o.option_choice_id as oc from
   (select h.survey_header_id,h.survey_name,s.survey_section_id,s.section_name,q.question_id,q.question_name,q.input_types_id,q.option_groups_id,q.question_key,
   o.option_choice_id,o.option_choice_name from tbl_questions as q 
   left join tbl_option_choices as o  on q.question_id = o.questions_id  

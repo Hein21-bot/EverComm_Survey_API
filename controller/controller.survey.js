@@ -116,7 +116,7 @@ const getQuestion = (req, res) => {
                     question_id: v1[0].primary_question, question_name: v1[0].question_name, input_type_id: v1[0].input_types_id, option_group_id: v1[0].option_groups_id, key: v1[0].question_key,
                     option_choices: v1.map((c) => {
                       return {
-                        option_choice_id: c.option_choice_id, option_choice_name: c.option_choice_name,
+                        option_choice_id: c.choices_id, option_choice_name: c.choices,
                       };
                     }),
                   };
