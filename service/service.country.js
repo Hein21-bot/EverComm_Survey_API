@@ -1,8 +1,8 @@
 const { surveydb } = require('../db')
 
 
-const addCountry = (country, organization, surveyHeaderId) => {
-    return surveydb.addCountry(country, organization, surveyHeaderId)
+const addCountry = (country, organization, surveyHeaderId, userId) => {
+    return surveydb.addCountry(country, organization, surveyHeaderId, userId)
 }
 
 const getCountry = (surveyHeaderId) => {

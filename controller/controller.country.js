@@ -5,8 +5,9 @@ const addCountry = (req, res) => {
     const country = req.body.country
     const organization = req.body.organization
     const surveyHeaderId = req.body.surveyHeaderId
+    const userId = req.body.userId
 
-    return countryService.addCountry(country, organization, surveyHeaderId).then(dataResult => {
+    return countryService.addCountry(country, organization, surveyHeaderId, userId).then(dataResult => {
         return res.json(
             response({
                 success: true,
