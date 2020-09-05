@@ -27,7 +27,6 @@ const getQuestion = (req, res) => {
                 survey_section_id: section[0].survey_section_id, section_name: section[0].section_name, questions: Object.keys(groupArray(section, "question_id")).map((v, k) => {
                   return groupArray(section, "question_id")[v];
                 }).map((v1, k1) => {
-                  console.log(v1)
                   return {
                     question_id: v1[0].question_id, question_name: v1[0].question_name, input_type_id: v1[0].input_types_id, option_group_id: v1[0].option_groups_id, key: v1[0].question_key,
                     option_choices: v1.map((c) => {
@@ -247,8 +246,9 @@ const addAnswer = (req, res) => {
       let answeredDate = moment.utc(new Date()).local().format('YYYY-MM-DD HH:mm:ss');
       let totalQuestionCount = req.body.total
       let buildingType = req.body.buildingType
+      let countryId = req.body.countryId
       try {
-        let addData = await surveyService.addAnswer(other, optionChoiceId, userId, questionId, survey_headers_id, building_id, keyValue, totalQuestionCount, answeredDate, buildingType)
+        let addData = await surveyService.addAnswer(other, optionChoiceId, userId, questionId, survey_headers_id, building_id, keyValue, totalQuestionCount, answeredDate, buildingType, countryId)
         count++;
         if (count == targetCount) resolve({ answeredCount: count });
       }

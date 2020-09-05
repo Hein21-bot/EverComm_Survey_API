@@ -1,6 +1,7 @@
 const mysql = require("mysql");
 const util = require("util");
 const { query } = require("express");
+const { count } = require("console");
 
 require("dotenv").config();
 
@@ -111,14 +112,15 @@ const addAnswer = (
   keyValue,
   totalQuestionCount,
   answeredDate,
-  buildingType
+  buildingType,
+  countryId
 ) => {
   let query = util.promisify(mypool.query).bind(mypool);
   // console.log(answeredDate,keyValue);
 
   return query(
-    `INSERT INTO tbl_answers(other, option_choices_id, users_id, questions_id,survey_headers_id,building_id,answered_date,keyValue) VALUES 
-    ('${other}', ${optionChoiceId}, ${userId}, '${questionId}', ${survey_headers_id}, ${building_id}, '${answeredDate}',${keyValue});
+    `INSERT INTO tbl_answers(other, option_choices_id, users_id, questions_id,survey_headers_id,building_id,answered_date,keyValue,country_id) VALUES 
+    ('${other}', ${optionChoiceId}, ${userId}, '${questionId}', ${survey_headers_id}, ${building_id}, '${answeredDate}',${keyValue},${countryId});
     UPDATE tbl_buildings SET total_questions = ${totalQuestionCount},building_type = '${buildingType}' WHERE building_id = ${building_id};`
   )
 };
@@ -501,6 +503,11 @@ const getCountrySurvey = (surveyHeaderId) => {
   inner. join tbl_survey_sections as tss on tc.survey_header_id = tss.survey_headers_id where tc.survey_header_id = ${surveyHeaderId}; `)
 }
 
+const checkDuplicateCountry = (country, organization) => {
+  let query = util.promisify(mypool.query).bind(mypool)
+  return query(`SELECT * FROM evercomm_survey.tbl_country where country = '${country}' and organization = '${organization}'; `)
+}
+
 module.exports = {
   getQuestion,
   login,
@@ -541,6 +548,6 @@ module.exports = {
   surveyHeader, surveySection, surveyHeaderEdit, surveySectionRemove,
   getAdminId, removeSurveyHeader,
   addCountry, getCountry,
-  getCountrySurvey
+  getCountrySurvey, checkDuplicateCountry
 
 };
