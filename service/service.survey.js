@@ -68,6 +68,7 @@ const getQuestion = (admin_id, surey_header_id, buildingId, buildingTypeId) => {
 // }
 
 const addAnswer = (other, optionChoiceId, userId, questionId, surey_headers_id, building_id, keyValue, totalQuestionCount, answeredDate, buildingType, countryId) => {
+    console.log(other, optionChoiceId, userId, questionId, surey_headers_id, building_id, keyValue, totalQuestionCount, answeredDate, buildingType, countryId)
     return surveydb.addAnswer(other, optionChoiceId, userId, questionId, surey_headers_id, building_id, keyValue, totalQuestionCount, answeredDate, buildingType, countryId)
 }
 

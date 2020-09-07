@@ -112,7 +112,7 @@ const getQuestion = (req, res) => {
                   }
                 } else {
                   return {
-                    question_id: v1[0].primary_question, question_name: v1[0].question_name, input_type_id: v1[0].input_types_id, option_group_id: v1[0].option_groups_id, key: v1[0].question_key,
+                    question_id: v1[0].primary_question, question_name: v1[0].question_name, input_type_id: v1[0].input_types_id, option_group_id: v1[0].option_groups_id, sub_question_id: v1[0].sub_question_id, key: v1[0].question_key,
                     option_choices: v1.map((c) => {
                       return {
                         option_choice_id: c.choices_id, option_choice_name: c.choices,
@@ -246,7 +246,7 @@ const addAnswer = (req, res) => {
       let answeredDate = moment.utc(new Date()).local().format('YYYY-MM-DD HH:mm:ss');
       let totalQuestionCount = req.body.total
       let buildingType = req.body.buildingType
-      let countryId = req.body.countryId
+      let countryId = data.countryId
       try {
         let addData = await surveyService.addAnswer(other, optionChoiceId, userId, questionId, survey_headers_id, building_id, keyValue, totalQuestionCount, answeredDate, buildingType, countryId)
         count++;
