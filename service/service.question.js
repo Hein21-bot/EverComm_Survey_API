@@ -23,7 +23,6 @@ const createQuestion = async ({ data }) => {
                 const questionId = saveResult.insertId
                 const saveOptionChoiceResult = await surveydb.createOptionChoice({ optionChoiceName, questionId })
                 resultArr.push(saveOptionChoiceResult)
-                console.log(resultArr)
             }
         }
         return resultArr
