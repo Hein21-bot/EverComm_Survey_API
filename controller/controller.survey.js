@@ -96,34 +96,19 @@ const getQuestion = (req, res) => {
                 return groupArray(section, "primary_question")[v];
               }).map((v1, k1) => {
                 if (v1[0].sub_question_id == null) {
-                  // if (v1[0].sub_question_id !== null) {
-                  //   return {
-                  //     question_id: v1[0].primary_question, question_name: v1[0].question_name, input_type_id: v1[0].input_types_id, option_group_id: v1[0].option_groups_id, group_question: v1[0].question_key,
-                  //     sub_questions: Object.keys(groupArray(section, "sub_question_id")).map((v2, k2) => {
-                  //       return groupArray(v1, "sub_question_id")[v2]
-                  //     }).map((v3, k3) => {
-                  //       return {
-                  //         sub_question_id: v3[0].sub_question_id, sub_question_name: v3[0].sub_question_name, input_type_id: v3[0].input_type_id, option_group_id: v3[0].option_group_id, option_choices: v3.map((c) => {
-                  //           return {
-                  //             option_choice_id: c.oc, option_choice_name: c.option_choice_name
-                  //           };
-                  //         }),
-                  //       }
-                  //     })
-                  //   }
-                  // } else {
-                  return {
-                    question_id: v1[0].primary_question, question_name: v1[0].question_name, input_type_id: v1[0].input_types_id, option_group_id: v1[0].option_groups_id, key: v1[0].question_key,
-                    option_choices: v1.map((c) => {
-                      return {
-                        option_choice_id: c.choices_id, option_choice_name: c.choices,
-                      }
-                    })
-                  }
+                return {
+                  question_id: v1[0].primary_question, question_name: v1[0].question_name, input_type_id: v1[0].input_types_id, option_group_id: v1[0].option_groups_id, key: v1[0].question_key,
+                  option_choices: v1.map((c) => {
+                    return {
+                      option_choice_id: c.choices_id, option_choice_name: c.choices,
+                    }
+                  })
                 }
-                else {
+                }
+                else if (v1[0].choices_id == null) {
                   return {
                     question_id: v1[0].primary_question, question_name: v1[0].question_name, input_type_id: v1[0].input_types_id, option_group_id: v1[0].option_groups_id, key: v1[0].question_key,
+
                     sub_questions: Object.keys(groupArray(v1, "sub_question_id")).map((v2, k2) => {
                       return groupArray(v1, "sub_question_id")[v2]
                     }).map((v3, k3) => {
@@ -138,6 +123,32 @@ const getQuestion = (req, res) => {
                     })
                   }
                 }
+                else {
+                  return {
+                    question_id: v1[0].primary_question, question_name: v1[0].question_name, input_type_id: v1[0].input_types_id, option_group_id: v1[0].option_groups_id, key: v1[0].question_key,
+                    option_choices: v1.map((c) => {
+                      return {
+                        option_choice_id: c.choices_id, option_choice_name: c.choices,
+                      }
+                    }),
+
+                    sub_questions: Object.keys(groupArray(v1, "sub_question_id")).map((v2, k2) => {
+                      return groupArray(v1, "sub_question_id")[v2]
+                    }).map((v3, k3) => {
+                      return {
+                        sub_question_id: v3[0].sub_question_id, sub_question_name: v3[0].sub_question_name, input_type_id: v3[0].input_type_id, option_group_id: v3[0].option_group_id,
+                        option_choices: v3.map((c) => {
+                          return {
+                            option_choice_id: c.oc, option_choice_name: c.option_choice_name
+                          };
+                        }),
+                      }
+                    })
+                  }
+
+
+                }
+
 
               }),
 
@@ -266,8 +277,9 @@ const addAnswer = (req, res) => {
       let totalQuestionCount = req.body.total
       let buildingType = req.body.buildingType
       let countryId = data.countryId
+      let subQuestionId = data.subQuestionId
       try {
-        let addData = await surveyService.addAnswer(other, optionChoiceId, userId, questionId, survey_headers_id, building_id, keyValue, totalQuestionCount, answeredDate, buildingType, countryId)
+        let addData = await surveyService.addAnswer(other, optionChoiceId, userId, questionId, survey_headers_id, building_id, keyValue, totalQuestionCount, answeredDate, buildingType, countryId, subQuestionId)
         count++;
         if (count == targetCount) resolve({ answeredCount: count });
       }
