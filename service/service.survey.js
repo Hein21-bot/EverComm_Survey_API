@@ -104,6 +104,9 @@ const surveyList = (userId, survey_header_id) => {
     return surveydb.surveyList(userId, survey_header_id);
 }
 
+const sectionList = (surveyHeaderId, countryId) => {
+    return surveydb.sectionList(surveyHeaderId, countryId)
+}
 
 const surveyMenuApi = (userId, surveyHeaderId, startDate, endDate, viewType) => {
     return surveydb.userLevelAnswer(userId, surveyHeaderId, viewType).then(res => {
@@ -133,4 +136,4 @@ const dateTimeMenuApi = (userId, startDate, endDate) => {
 
 
 
-module.exports = { getQuestion, addAnswer, deleteAnswer, getMenu, surveyList, surveyMenuApi, dateTimeMenuApi };
+module.exports = { getQuestion, addAnswer, deleteAnswer, getMenu, surveyList, surveyMenuApi, dateTimeMenuApi, sectionList };

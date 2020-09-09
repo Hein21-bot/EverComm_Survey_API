@@ -230,6 +230,13 @@ const surveyList = (userId, survey_header_id) => {
   return query(`CALL surveyList(?,?)`, [userId, survey_header_id]);
 };
 
+const sectionList = (surveyHeaderId, countryId) => {
+  let query = util.promisify(mypool.query).bind(mypool)
+  return query(`SELECT * FROM evercomm_survey.tbl_survey_sections as tss
+  left join tbl_country as tc on tc.survey_header_id = tss.survey_headers_id where survey_headers_id = ${surveyHeaderId}
+  and country_id = ${countryId};`)
+}
+
 // @hmh
 // buildings
 
@@ -553,6 +560,7 @@ module.exports = {
   surveyHeader, surveySection, surveyHeaderEdit, surveySectionRemove,
   getAdminId, removeSurveyHeader,
   addCountry, getCountry,
-  getCountrySurvey, checkDuplicateCountry
+  getCountrySurvey, checkDuplicateCountry,
+  sectionList
 
 };

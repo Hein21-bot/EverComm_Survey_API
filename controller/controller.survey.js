@@ -96,12 +96,14 @@ const getQuestion = (req, res) => {
               survey_section_id: section[0].survey_section_id, section_name: section[0].section_name, questions: Object.keys(groupArray(section, "primary_question")).map((v, k) => {
                 return groupArray(section, "primary_question")[v];
               }).map((v1, k1) => {
+
                 if (v1[0].sub_question_id == null) {
-                console.log(v1.filter((item, index) => console.log(v1)))
 
                 return {
                   question_id: v1[0].primary_question, question_name: v1[0].question_name, input_type_id: v1[0].input_types_id, option_group_id: v1[0].option_groups_id, key: v1[0].question_key,
                   option_choices: v1.map((c) => {
+                    // const data = v1.filter(v => v.choices_id === 387)
+                    // console.log(c)
                     return {
                       option_choice_id: c.choices_id, option_choice_name: c.choices,
                     }
@@ -223,6 +225,22 @@ const surveyList = (req, res) => {
   })
     .catch((err) => res.json(response({ success: false, message: err })));
 };
+
+const sectionList = (req, res) => {
+  let surveyHeaderId = req.params.surveyHeaderId
+  let countryId = req.params.countryId
+  surveyService.sectionList(surveyHeaderId, countryId).then(data => {
+    return res.json(
+      response({
+        success: true,
+        message: "Success!",
+        payload: data
+      })
+    )
+  }).catch(err => {
+    res.json(response({ success: false, message: err }));
+  });
+}
 
 const surveyMenuApi = (req, res) => {
   let userId = req.params.userId;
@@ -388,4 +406,5 @@ module.exports = {
   surveyList,
   surveyMenuApi,
   dateTimeMenuApi,
+  sectionList
 };
