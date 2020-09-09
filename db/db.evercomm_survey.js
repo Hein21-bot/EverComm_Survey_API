@@ -64,14 +64,15 @@ const checkDuplicateEmailUpdate = (email, user_id) => {
 
 //Question
 
-const getQuestion = (user_id, survey_header_id, buildingId, buildingTypeId) => {
+const getQuestion = (user_id, survey_header_id, buildingId, buildingTypeId, surveySectionId) => {
   let query = util.promisify(mypool.query).bind(mypool)
   return survey_header_id == 1 ? query(
     `select h.survey_header_id,h.survey_name,s.survey_section_id,s.section_name,q.question_id,q.question_name,q.input_types_id,q.option_groups_id,q.question_key,
     o.option_choice_id,o.option_choice_name from tbl_questions as q left join tbl_option_choices as o  on q.question_id = o.questions_id
         left join tbl_survey_sections as s on s.survey_section_id = q.survey_sections_id left join tbl_survey_headers as h
           on h.survey_header_id = s.survey_headers_id where h.survey_header_id = ${survey_header_id}  and device_type in (${buildingTypeId},0) order by survey_section_id,option_choice_id;
-              select other,option_choices_id as optionChoiceId,users_id as userId,questions_id as questionId, survey_headers_id,building_id,keyValue,country_id as countryId,
+
+              select other,option_choices_id as optionChoiceId,users_id as userId,questions_id as questionId, survey_headers_id,building_id,keyValue,country_id as countryId,survey_section_id as surveySectionId,
               sub_question_id as subQuestionId from tbl_answers where users_id = ${user_id} and survey_headers_id = ${survey_header_id} and building_id = ${buildingId};
             select chiller,condenser,evaporator,cooling_tower from tbl_buildings where building_id=${buildingId};
             select BMSInstalled from tbl_buildings where building_id=${buildingId};`
@@ -89,8 +90,10 @@ const getQuestion = (user_id, survey_header_id, buildingId, buildingTypeId) => {
     
     
     
-    select other,option_choices_id as optionChoiceId,users_id as userId,questions_id as questionId, survey_headers_id,building_id,keyValue,country_id as countryId,
-    sub_question_id as subQuestionId from tbl_answers where users_id = ${user_id} and survey_headers_id = ${survey_header_id} and building_id = ${buildingId};
+    select other,option_choices_id as optionChoiceId,users_id as userId,questions_id as questionId,
+ survey_headers_id,building_id,keyValue,country_id as countryId,
+ sub_question_id as subQuestionId ,survey_section_id as surveySectionId
+ from tbl_answers where users_id = ${userId} and survey_headers_id = ${survey_header_id} and survey_section_id = ${surveySectionId};
           select chiller,condenser,evaporator,cooling_tower from tbl_buildings where building_id=${buildingId};
           select BMSInstalled from tbl_buildings where building_id=${buildingId};`)
 };
@@ -114,14 +117,15 @@ const addAnswer = (
   answeredDate,
   buildingType,
   countryId,
-  subQuestionId
+  subQuestionId,
+  surveySectionId
 ) => {
   let query = util.promisify(mypool.query).bind(mypool);
   // console.log(answeredDate,keyValue);
 
   return query(
-    `INSERT INTO tbl_answers(other, option_choices_id, users_id, questions_id,survey_headers_id,building_id,answered_date,keyValue,country_id,sub_question_id) VALUES 
-    ('${other}', ${optionChoiceId}, ${userId}, '${questionId}', ${survey_headers_id}, ${building_id}, '${answeredDate}',${keyValue},${countryId},${subQuestionId});
+    `INSERT INTO tbl_answers(other, option_choices_id, users_id, questions_id,survey_headers_id,building_id,answered_date,keyValue,country_id,sub_question_id,survey_section_id) VALUES 
+    ('${other}', ${optionChoiceId}, ${userId}, '${questionId}', ${survey_headers_id}, ${building_id}, '${answeredDate}',${keyValue},${countryId},${subQuestionId},${surveySectionId});
     UPDATE tbl_buildings SET total_questions = ${totalQuestionCount},building_type = '${buildingType}' WHERE building_id = ${building_id};`
   )
 };

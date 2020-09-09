@@ -1,8 +1,8 @@
 const { surveydb } = require('../db')
 const response = require('../model/response')
 
-const getQuestion = (admin_id, surey_header_id, buildingId, buildingTypeId) => {
-    return surveydb.getQuestion(admin_id, surey_header_id, buildingId, buildingTypeId)
+const getQuestion = (admin_id, surey_header_id, buildingId, buildingTypeId, surveySectionId) => {
+    return surveydb.getQuestion(admin_id, surey_header_id, buildingId, buildingTypeId, surveySectionId)
     // .then(data=>{
     //     if(data[0].length>0){
     //         const result = data[0].reduce((r,c)=>{
@@ -67,8 +67,8 @@ const getQuestion = (admin_id, surey_header_id, buildingId, buildingTypeId) => {
 //     return surveydb.addAnswer(other, optionChoiceId, userId, questionId, surey_headers_id, building_id, device_type)
 // }
 
-const addAnswer = (other, optionChoiceId, userId, questionId, surey_headers_id, building_id, keyValue, totalQuestionCount, answeredDate, buildingType, countryId, subQuestionId) => {
-    return surveydb.addAnswer(other, optionChoiceId, userId, questionId, surey_headers_id, building_id, keyValue, totalQuestionCount, answeredDate, buildingType, countryId, subQuestionId)
+const addAnswer = (other, optionChoiceId, userId, questionId, surey_headers_id, building_id, keyValue, totalQuestionCount, answeredDate, buildingType, countryId, subQuestionId, surveySectionId) => {
+    return surveydb.addAnswer(other, optionChoiceId, userId, questionId, surey_headers_id, building_id, keyValue, totalQuestionCount, answeredDate, buildingType, countryId, subQuestionId, surveySectionId)
 }
 
 // const deleteAnswer = (userId, survey_headers_id, building_id, device_type) => {
