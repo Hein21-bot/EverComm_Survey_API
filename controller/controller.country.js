@@ -16,7 +16,7 @@ const addCountry = (req, res) => {
                     payload: dataResult
                 })
             )
-        }else{
+        } else {
             return res.json(
                 response({
                     success: false,
@@ -31,8 +31,9 @@ const addCountry = (req, res) => {
 
 const getCountry = (req, res) => {
     const surveyHeaderId = req.params.surveyHeaderId
+    const countryId = req.params.countryId
 
-    return countryService.getCountry(surveyHeaderId).then(dataResult => {
+    return countryService.getCountry(surveyHeaderId, countryId).then(dataResult => {
         return res.json(
             response({
                 success: true,

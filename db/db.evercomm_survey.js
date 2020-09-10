@@ -504,9 +504,10 @@ const addCountry = (country, organization, surveyHeaderId, userId) => {
   VALUES ('${country}','${organization}',${surveyHeaderId},${userId})`)
 }
 
-const getCountry = (surveyHeaderId) => {
+const getCountry = (surveyHeaderId, countryId) => {
   let query = util.promisify(mypool.query).bind(mypool)
-  return query(`SELECT * FROM evercomm_survey.tbl_country where survey_header_id = ${surveyHeaderId};`)
+  return query(`SELECT * FROM evercomm_survey.tbl_country where survey_header_id = ${surveyHeaderId};
+  SELECT count(distinct survey_section_id) FROM evercomm_survey.tbl_answers where survey_headers_id = ${surveyHeaderId} and country_id = ${countryId};`)
 }
 
 const getCountrySurvey = (surveyHeaderId) => {
