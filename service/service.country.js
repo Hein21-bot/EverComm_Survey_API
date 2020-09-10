@@ -5,7 +5,7 @@ const addCountry = (country, organization, surveyHeaderId, userId) => {
 
     return surveydb.checkDuplicateCountry(country, organization).then(data => {
         if (data.length > 0) {
-            return []
+            return null
         }
         else {
             return surveydb.addCountry(country, organization, surveyHeaderId, userId)

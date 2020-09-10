@@ -8,7 +8,7 @@ const addCountry = (req, res) => {
     const userId = req.body.userId
 
     return countryService.addCountry(country, organization, surveyHeaderId, userId).then(dataResult => {
-        if (dataResult.length > 0) {
+        if (dataResult) {
             return res.json(
                 response({
                     success: true,

@@ -77,16 +77,16 @@ const getQuestion = (user_id, survey_header_id, buildingId, buildingTypeId, surv
             select chiller,condenser,evaporator,cooling_tower from tbl_buildings where building_id=${buildingId};
             select BMSInstalled from tbl_buildings where building_id=${buildingId};`
   ) : query(`
-    select distinct o.option_choice_id as oc,t1.survey_header_id,t1.survey_name,t1.survey_section_id,t1.section_name,t1.question_id as primary_question,t1.question_name,t1.input_types_id,t1.option_groups_id,t1.question_key,
-    t1.option_choice_id as choices_id,t1.option_choice_name as choices,sq.question_id,sq.sub_question_name,sq.question_id as sub_question_id,sq.input_type_id,o.option_choice_name,sq.sub_question_id from
-    (select h.survey_header_id,h.survey_name,s.survey_section_id,s.section_name,q.question_id,q.question_name,q.input_types_id,q.option_groups_id,q.question_key,
-    o.option_choice_id,o.option_choice_name from tbl_questions as q 
-    left join tbl_option_choices as o  on q.question_id = o.questions_id  
-      left join tbl_survey_sections as s on s.survey_section_id = q.survey_sections_id 
-      left join tbl_survey_headers as h on h.survey_header_id = s.survey_headers_id 
-      where h.survey_header_id = ${survey_header_id} order by survey_section_id,option_choice_id) as t1
-      left join tbl_sub_questions sq on sq.question_id = t1.question_id
-      left join tbl_option_choices o on  sq.sub_question_id = o.sub_question_id ;
+  select distinct o.option_choice_id as oc,t1.survey_header_id,t1.survey_name,t1.survey_section_id,t1.section_name,t1.question_id as primary_question,t1.question_name,t1.input_types_id,t1.option_groups_id,t1.question_key,
+  t1.option_choice_id as choices_id,t1.option_choice_name as choices,sq.question_id,sq.sub_question_name,sq.question_id as sub_question_id,sq.input_type_id,o.option_choice_name,sq.sub_question_id from
+  (select h.survey_header_id,h.survey_name,s.survey_section_id,s.section_name,q.question_id,q.question_name,q.input_types_id,q.option_groups_id,q.question_key,
+  o.option_choice_id,o.option_choice_name from tbl_questions as q 
+  left join tbl_option_choices as o  on q.question_id = o.questions_id  
+    left join tbl_survey_sections as s on s.survey_section_id = q.survey_sections_id 
+    left join tbl_survey_headers as h on h.survey_header_id = s.survey_headers_id 
+    where h.survey_header_id = ${survey_header_id} and q.survey_sections_id = ${surveySectionId} order by survey_section_id,option_choice_id) as t1
+    left join tbl_sub_questions sq on sq.question_id = t1.question_id
+    left join tbl_option_choices o on  sq.sub_question_id = o.sub_question_id ;
     
     
     
@@ -121,7 +121,10 @@ const addAnswer = (
   surveySectionId
 ) => {
   let query = util.promisify(mypool.query).bind(mypool);
-  // console.log(answeredDate,keyValue);
+  console.log("key value", keyValue);
+  console.log("questionId", questionId)
+  console.log("subQues", subQuestionId)
+  console.log("suveySection", surveySectionId)
 
   return query(
     `INSERT INTO tbl_answers(other, option_choices_id, users_id, questions_id,survey_headers_id,building_id,answered_date,keyValue,country_id,sub_question_id,survey_section_id) VALUES 
@@ -136,17 +139,10 @@ const addAnswer = (
 // '" AND building_id="' + building_id + '" AND device_type = "' + device_type + '"')
 // }
 
-const deleteAnswer = (userId, survey_headers_id, building_id) => {
+const deleteAnswer = (userId, survey_headers_id, building_id, surveySectionId, countryId) => {
   let query = util.promisify(mypool.query).bind(mypool);
-  return query(
-    'DELETE FROM tbl_answers WHERE users_id = "' +
-    userId +
-    '"  AND survey_headers_id= "' +
-    survey_headers_id +
-    '" AND building_id="' +
-    building_id +
-    '"'
-  );
+  return building_id !== null ? query('DELETE FROM tbl_answers WHERE users_id = "' + userId + '"  AND survey_headers_id= "' + survey_headers_id + '" AND building_id="' + building_id + '"')
+    : query(`DELETE FROM evercomm_survey.tbl_answers WHERE users_id = 1 and survey_headers_id = ${survey_headers_id} and survey_section_id = ${surveySectionId} and country_id = ${countryId};`)
 };
 
 // questions
@@ -507,8 +503,9 @@ const addCountry = (country, organization, surveyHeaderId, userId) => {
 const getCountry = (surveyHeaderId, countryId) => {
   let query = util.promisify(mypool.query).bind(mypool)
   return query(`SELECT * FROM evercomm_survey.tbl_country where survey_header_id = ${surveyHeaderId};
-  SELECT count(distinct survey_section_id) FROM evercomm_survey.tbl_answers where survey_headers_id = ${surveyHeaderId} and country_id = ${countryId};`)
+  `)
 }
+// SELECT count(distinct survey_section_id) FROM evercomm_survey.tbl_answers where survey_headers_id = ${surveyHeaderId} and country_id = ${countryId};
 
 const getCountrySurvey = (surveyHeaderId) => {
   let query = util.promisify(mypool.query).bind(mypool)

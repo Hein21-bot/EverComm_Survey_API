@@ -99,16 +99,17 @@ const getQuestion = (req, res) => {
 
                 if (v1[0].sub_question_id == null) {
 
-                return {
-                  question_id: v1[0].primary_question, question_name: v1[0].question_name, input_type_id: v1[0].input_types_id, option_group_id: v1[0].option_groups_id, key: v1[0].question_key,
-                  option_choices: v1.map((c) => {
-                    // const data = v1.filter(v => v.choices_id === 387)
-                    // console.log(c)
-                    return {
-                      option_choice_id: c.choices_id, option_choice_name: c.choices,
-                    }
-                  })
-                }
+                  return {
+                    question_id: v1[0].primary_question, question_name: v1[0].question_name, input_type_id: v1[0].input_types_id, option_group_id: v1[0].option_groups_id, key: v1[0].question_key,
+                    option_choices: v1.map((c) => {
+                      //console.log(c ,"c is ")
+                      // const data = v1.filter(v => v.choices_id === 387)
+                      // console.log(c)
+                      return {
+                        option_choice_id: c.choices_id, option_choice_name: c.choices,
+                      }
+                    })
+                  }
                 }
                 else if (v1[0].choices_id == null) {
                   return {
@@ -129,12 +130,18 @@ const getQuestion = (req, res) => {
                   }
                 }
                 else {
+                  const dataResult =[]
                   return {
                     question_id: v1[0].primary_question, question_name: v1[0].question_name, input_type_id: v1[0].input_types_id, option_group_id: v1[0].option_groups_id, key: v1[0].question_key,
                     option_choices: v1.map((c) => {
-                      return {
-                        option_choice_id: c.choices_id, option_choice_name: c.choices,
-                      }
+                     const index = dataResult.find(v=> c.choices_id != null && v.option_choice_id == c.choices_id)
+                     if(index == null || index == undefined){
+                     
+                     }
+                     else{
+                      dataResult.push({option_choice_id: c.choices_id, option_choice_name: c.choices})
+                     }
+                     return dataResult
                     }),
 
                     sub_questions: Object.keys(groupArray(v1, "sub_question_id")).map((v2, k2) => {
@@ -285,7 +292,7 @@ const addAnswer = (req, res) => {
   // console.log("data is", req.body)
   let count = 0;
   let queryLoop = new Promise((resolve, reject) => {
-    surveyService.deleteAnswer(req.body.data[0].userId, req.body.data[0].survey_headers_id, req.body.data[0].building_id);
+    surveyService.deleteAnswer(req.body.data[0].userId, req.body.data[0].survey_headers_id, req.body.data[0].building_id, req.body.data[0].countryId, req.body.data[0].surveySectionId)
     req.body.data.map(async data => {
       let optionChoiceId = data.optionChoiceId;
       let other = data.other;
