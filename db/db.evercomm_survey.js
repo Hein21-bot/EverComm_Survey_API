@@ -239,9 +239,16 @@ const surveyList = (userId, survey_header_id) => {
 
 const sectionList = (surveyHeaderId, countryId) => {
   let query = util.promisify(mypool.query).bind(mypool)
-  return query(`SELECT * FROM evercomm_survey.tbl_survey_sections as tss
-  left join tbl_country as tc on tc.survey_header_id = tss.survey_headers_id where survey_headers_id = ${surveyHeaderId}
-  and country_id = ${countryId};`)
+  return query(`select section_name,survey_headers_id,organization,user_id,ans_count,question_count,survey_sections_id from(SELECT * FROM evercomm_survey.tbl_survey_sections as tss
+    left join tbl_country as tc on tc.survey_header_id = tss.survey_headers_id where survey_headers_id = ${surveyHeaderId}
+    and country_id = ${countryId}) as t1
+  left join
+  (SELECT count(distinct survey_section_id) as ans_count,country_id ,survey_section_id
+  FROM evercomm_survey.tbl_answers where survey_headers_id = ${surveyHeaderId}  and country_id = ${countryId}
+  group by country_id,survey_section_id) as t2 on t1.survey_section_id = t2.survey_section_id
+  left join (SELECT count(survey_sections_id) as question_count,survey_sections_id FROM evercomm_survey.tbl_questions where survey_headers_id = ${surveyHeaderId} group by survey_sections_id)
+  as t3 on t1.survey_section_id = t3.survey_sections_id
+  `)
 }
 
 // @hmh
