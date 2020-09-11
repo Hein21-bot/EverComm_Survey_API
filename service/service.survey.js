@@ -1,8 +1,8 @@
 const { surveydb } = require('../db')
 const response = require('../model/response')
 
-const getQuestion = (admin_id, surey_header_id, buildingId, buildingTypeId, surveySectionId) => {
-    return surveydb.getQuestion(admin_id, surey_header_id, buildingId, buildingTypeId, surveySectionId)
+const getQuestion = (admin_id, surey_header_id, buildingId, buildingTypeId, surveySectionId, countryId) => {
+    return surveydb.getQuestion(admin_id, surey_header_id, buildingId, buildingTypeId, surveySectionId, countryId)
     // .then(data=>{
     //     if(data[0].length>0){
     //         const result = data[0].reduce((r,c)=>{

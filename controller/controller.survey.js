@@ -10,10 +10,11 @@ const getQuestion = (req, res) => {
   const buildingId = req.params.buildingId;
   const buildingTypeId = req.params.buildingTypeId;
   const surveySectionId = req.params.surveySectionId
+  const countryId = req.params.countryId
   let count = 0;
 
 
-  surveyService.getQuestion(admin_id, survey_header_id, buildingId, buildingTypeId, surveySectionId).then((data) => {
+  surveyService.getQuestion(admin_id, survey_header_id, buildingId, buildingTypeId, surveySectionId, countryId).then((data) => {
     if (survey_header_id == 1) {
 
       if (data[3][0].BMSInstalled == 1) {
@@ -131,15 +132,24 @@ const getQuestion = (req, res) => {
                 }
                 else {
                   const dataResult = []
+                  const dataResult1 = []
+
                   v1.map((c) => {
                     const index = dataResult.find(v => v.option_choice_id == c.choices_id)
                     if (index == null || index == undefined) {
                       dataResult.push({ option_choice_id: c.choices_id, option_choice_name: c.choices })
                     }
-                  })
+                  }),
+                    v1.map((c) => {
+                      const index = dataResult1.find(v => v.option_choice_id == c.choices_id)
+                      if (index == null || index == undefined) {
+                        dataResult1.push({ option_choice_id: c.choices_id, categories: c.categories, })
+                      }
+                    })
                   return {
                     question_id: v1[0].primary_question, question_name: v1[0].question_name, input_type_id: v1[0].input_types_id, option_group_id: v1[0].option_groups_id, key: v1[0].question_key,
-                    option_choices: dataResult,
+                    categories: dataResult1.filter(c => c.categories != null),
+                    option_choices: dataResult.filter(c => c.option_choice_name != null),
                     sub_questions: Object.keys(groupArray(v1, "sub_question_id")).map((v2, k2) => {
                       return groupArray(v1, "sub_question_id")[v2]
                     }).map((v3, k3) => {
@@ -152,7 +162,7 @@ const getQuestion = (req, res) => {
                       })
                       return {
                         sub_question_id: v3[0].sub_question_id, sub_question_name: v3[0].sub_question_name, input_type_id: v3[0].input_type_id, option_group_id: v3[0].option_group_id,
-                        option_choices: dataResult.filter(c => c.option_choice_id != null)
+                        option_choices: dataResult.filter(c => c.option_choice_name != null)
                       }
                     })
                   }
