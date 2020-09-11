@@ -121,17 +121,28 @@ const addAnswer = (
   surveySectionId
 ) => {
   let query = util.promisify(mypool.query).bind(mypool);
-  console.log("key value", keyValue);
-  console.log("questionId", questionId)
-  console.log("subQues", subQuestionId)
-  console.log("suveySection", surveySectionId)
 
-  return query(
+  return survey_headers_id === 1 ? query(
     `INSERT INTO tbl_answers(other, option_choices_id, users_id, questions_id,survey_headers_id,building_id,answered_date,keyValue,country_id,sub_question_id,survey_section_id) VALUES 
     ('${other}', ${optionChoiceId}, ${userId}, '${questionId}', ${survey_headers_id}, ${building_id}, '${answeredDate}',${keyValue},${countryId},${subQuestionId},${surveySectionId});
     UPDATE tbl_buildings SET total_questions = ${totalQuestionCount},building_type = '${buildingType}' WHERE building_id = ${building_id};`
-  )
+  ) : query(`INSERT INTO tbl_answers (other, option_choices_id, users_id, questions_id,survey_headers_id,building_id,answered_date,keyValue,country_id,sub_question_id,survey_section_id)  VALUES(?,?,?,?,?,?,?,?,?,?,?)`,
+    [
+      other,
+      optionChoiceId,
+      userId,
+      questionId,
+      survey_headers_id,
+      building_id,
+      answeredDate,
+      keyValue,
+      countryId,
+      subQuestionId,
+      surveySectionId
+    ])
 };
+
+// other, option_choices_id, users_id, questions_id,survey_headers_id,building_id,answered_date,keyValue,country_id,sub_question_id,survey_section_id
 
 // const deleteAnswer = (userId, survey_headers_id, building_id, device_type) => {
 //   query = util.promisify(mypool.query).bind(mypool)
@@ -139,12 +150,12 @@ const addAnswer = (
 // '" AND building_id="' + building_id + '" AND device_type = "' + device_type + '"')
 // }
 
-const deleteAnswer = (userId, survey_headers_id, building_id, surveySectionId, countryId) => {
+const deleteAnswer = (userId, survey_headers_id, building_id, countryId, surveySectionId) => {
   let query = util.promisify(mypool.query).bind(mypool);
-  return building_id !== null ? query('DELETE FROM tbl_answers WHERE users_id = "' + userId + '"  AND survey_headers_id= "' + survey_headers_id + '" AND building_id="' + building_id + '"')
-    : query(`DELETE FROM evercomm_survey.tbl_answers WHERE users_id = 1 and survey_headers_id = ${survey_headers_id} and survey_section_id = ${surveySectionId} and country_id = ${countryId};`)
+  let sql = building_id !== null ? 'DELETE FROM tbl_answers WHERE users_id = "' + userId + '"  AND survey_headers_id= "' + survey_headers_id + '" AND building_id="' + building_id + '"'
+    : `DELETE FROM evercomm_survey.tbl_answers WHERE users_id = ${parseInt(userId)} and survey_section_id = ${parseInt(surveySectionId)} and country_id = ${parseInt(countryId)}`
+  return query(sql);
 };
-
 // questions
 
 // const addQuestion = (

@@ -152,7 +152,7 @@ const getQuestion = (req, res) => {
                       })
                       return {
                         sub_question_id: v3[0].sub_question_id, sub_question_name: v3[0].sub_question_name, input_type_id: v3[0].input_type_id, option_group_id: v3[0].option_group_id,
-                        option_choices: dataResult
+                        option_choices: dataResult.filter(c => c.option_choice_id != null)
                       }
                     })
                   }

@@ -75,8 +75,8 @@ const addAnswer = (other, optionChoiceId, userId, questionId, surey_headers_id, 
 //     return surveydb.deleteAnswer(userId, survey_headers_id, building_id, device_type);
 // }
 
-const deleteAnswer = (userId, survey_headers_id, building_id) => {
-    return surveydb.deleteAnswer(userId, survey_headers_id, building_id);
+const deleteAnswer = (userId, survey_headers_id, building_id, countryId, surveySectionId) => {
+    return surveydb.deleteAnswer(userId, survey_headers_id, building_id, countryId, surveySectionId);
 }
 
 const getMenu = (userId, surveyHeaderId, startDate, endDate, viewType) => {
