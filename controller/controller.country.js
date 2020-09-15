@@ -20,7 +20,7 @@ const addCountry = (req, res) => {
             return res.json(
                 response({
                     success: false,
-                    message: "Country and Organization already have"
+                    message: "Country and Organization already exists"
                 })
             )
         }
