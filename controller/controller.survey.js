@@ -118,14 +118,13 @@ const getQuestion = (req, res) => {
                   v1.map((c) => {
                     const index = dataResult1.find(v => v.option_choice_id == c.oc)
                     if (index == null || index == undefined) {
-                      // console.log(c.categories)
                       dataResult1.push({ option_choice_id: c.oc, categories: c.cat })
                     }
                   })
                   return {
 
                     question_id: v1[0].primary_question, question_name: v1[0].question_name, input_type_id: v1[0].input_types_id, option_group_id: v1[0].option_groups_id, key: v1[0].question_key,
-                    categories: dataResult1.filter(c => c.categories != null),
+                    categories: dataResult1.filter(v => v.option_choice_name != null) == "" ? null : dataResult1.filter(v => v.option_choice_name != null),
                     sub_questions: Object.keys(groupArray(v1, "sub_question_id")).map((v2, k2) => {
                       return groupArray(v1, "sub_question_id")[v2]
                     }).map((v3, k3) => {
