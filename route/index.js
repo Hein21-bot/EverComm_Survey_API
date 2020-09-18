@@ -14,7 +14,7 @@ const router = express.Router()
 
 router.use('/login', loginRouter)
 router.use('/user', userRouter)
-// router.use(routeMiddleware)
+router.use(routeMiddleware)
 
 router.use('/survey', surveyRouter)
 router.use('/report', reportTotalAnswersRouter)
