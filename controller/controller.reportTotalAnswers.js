@@ -21,7 +21,7 @@ const userLevelAnswer = (req, res) => {
 
       let ans = [{
         "survey_header_id": surveySections[0][0].survey_header_id, "survey_name": surveySections[0][0].survey_name,
-        "Number_of_buildings": surveySections[0][0].Number_of_buildings, "survey_sections":
+         "survey_sections":
           surveySections.map(section => {
             return {
               "survey_section_id": section[0].survey_section_id, "section_name": section[0].section_name, "questions":
@@ -49,6 +49,7 @@ const userLevelAnswer = (req, res) => {
       );
   });
 };
+
 
 const userLevelMenuAnswer = (req, res) => {
   let surveyHeaderId = req.params.surveyHeaderId;
