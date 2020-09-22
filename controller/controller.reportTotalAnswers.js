@@ -57,8 +57,7 @@ const userLevelMenuAnswer = (req, res) => {
   const endDate = req.body.endDate;
   const viewType = req.body.viewType;
 
-  reportTotalAnswersService
-    .userLevelMenuAnswer(userId, surveyHeaderId, startDate, endDate, viewType)
+  reportTotalAnswersService.userLevelMenuAnswer(userId, surveyHeaderId, startDate, endDate, viewType)
     .then((data) => {
       data(userId, startDate, endDate).then((data) => {
         let surveySections = Object.keys(groupArray(data[0], "survey_header_id")).map((v, k) => {
@@ -74,6 +73,14 @@ const userLevelMenuAnswer = (req, res) => {
                 building_name: v3[0].building_name,
               };
             }),
+            amount_of_country: Object.keys(groupArray(v1, "country_id")).map((v2, k2) => {
+              return groupArray(v1, "country_id")[v2];
+            }).map((v3, k3) => {
+              return {
+                country_id: v3[0].country_id,
+                country_name: v3[0].country_name,
+              };
+            }),
             survey_section: Object.keys(groupArray(v1, "survey_section_id")).map((v4, k4) => {
               return groupArray(v1, "survey_section_id")[v4];
             }).map((v5, k5) => {
@@ -86,9 +93,11 @@ const userLevelMenuAnswer = (req, res) => {
         });
         res.json(response({ success: true, payload: surveySections }));
       })
+
         .catch((err) =>
           res.json(response({ success: false, message: err.toString() }))
         );
+
     });
 };
 
