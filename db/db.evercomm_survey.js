@@ -24,30 +24,13 @@ const login = (email) => {
 
 // addUser
 
-const addUser = (
-  userName,
-  password,
-  email,
-  active,
-  created_date,
-  user_level,
-  companyName,
-  phone_number
-) => {
+const addUser = (userName, password, email, active, created_date, user_level, companyName, phone_number) => {
   let query = util.promisify(mypool.query).bind(mypool);
   return query(`INSERT INTO tbl_login_users(user_name,password,email,active,created_date,user_level_id,company_name,phone_number) VALUES('${userName}', '${password}', '${email}', ${active},'${created_date}', ${user_level}, 
   '${companyName}', ${phone_number});`);
 };
 
-const updateUser = (
-  userId,
-  userName,
-  email,
-  active,
-  user_level,
-  companyName,
-  phone_number
-) => {
+const updateUser = (userId, userName, email, active, user_level, companyName, phone_number) => {
   let query = util.promisify(mypool.query).bind(mypool);
   // UPDATE tbl_login_users SET user_name = '${userName}', password = '${password}', email = '${email}' WHERE
   // login_user_id = ${userId}
@@ -82,18 +65,11 @@ const checkDuplicateEmailUpdate = (email, user_id) => {
 
 //Question
 
-const getQuestion = (
-  user_id,
-  survey_header_id,
-  buildingId,
-  buildingTypeId,
-  surveySectionId,
-  countryId
-) => {
+const getQuestion = (user_id, survey_header_id, buildingId, buildingTypeId, surveySectionId, countryId) => {
   let query = util.promisify(mypool.query).bind(mypool);
   return survey_header_id == 1
     ? query(
-        `select h.survey_header_id,h.survey_name,s.survey_section_id,s.section_name,q.question_id,q.question_name,q.input_types_id,q.option_groups_id,q.question_key,
+      `select h.survey_header_id,h.survey_name,s.survey_section_id,s.section_name,q.question_id,q.question_name,q.input_types_id,q.option_groups_id,q.question_key,
     o.option_choice_id,o.option_choice_name from tbl_questions as q left join tbl_option_choices as o  on q.question_id = o.questions_id
         left join tbl_survey_sections as s on s.survey_section_id = q.survey_sections_id left join tbl_survey_headers as h
           on h.survey_header_id = s.survey_headers_id where h.survey_header_id = ${survey_header_id}  and device_type in (${buildingTypeId},0) order by survey_section_id,option_choice_id;
@@ -102,7 +78,7 @@ const getQuestion = (
               sub_question_id as subQuestionId from tbl_answers where users_id = ${user_id} and survey_headers_id = ${survey_header_id} and building_id = ${buildingId};
             select chiller,condenser,evaporator,cooling_tower from tbl_buildings where building_id=${buildingId};
             select BMSInstalled from tbl_buildings where building_id=${buildingId};`
-      )
+    )
     : query(`
   select distinct o.option_choice_id as oc,t1.survey_header_id,t1.survey_name,t1.survey_section_id,t1.section_name,t1.question_id as primary_question,t1.question_name,t1.input_types_id,t1.option_groups_id,t1.question_key,
   t1.option_choice_id as choices_id,t1.option_choice_name as choices,t1.categories as categories,sq.question_id,sq.sub_question_name,sq.question_id as sub_question_id,sq.input_type_id,o.option_choice_name,sq.sub_question_id,o.categories as cat from
@@ -132,45 +108,31 @@ const getQuestion = (
 
 // answers
 
-const addAnswer = (
-  other,
-  optionChoiceId,
-  userId,
-  questionId,
-  survey_headers_id,
-  building_id,
-  keyValue,
-  totalQuestionCount,
-  answeredDate,
-  buildingType,
-  countryId,
-  subQuestionId,
-  surveySectionId
-) => {
+const addAnswer = (other, optionChoiceId, userId, questionId, survey_headers_id, building_id, keyValue, totalQuestionCount, answeredDate, buildingType, countryId, subQuestionId, surveySectionId) => {
   let query = util.promisify(mypool.query).bind(mypool);
 
   return survey_headers_id === 1
     ? query(
-        `INSERT INTO tbl_answers(other, option_choices_id, users_id, questions_id,survey_headers_id,building_id,answered_date,keyValue,country_id,sub_question_id,survey_section_id) VALUES 
+      `INSERT INTO tbl_answers(other, option_choices_id, users_id, questions_id,survey_headers_id,building_id,answered_date,keyValue,country_id,sub_question_id,survey_section_id) VALUES 
     ('${other}', ${optionChoiceId}, ${userId}, '${questionId}', ${survey_headers_id}, ${building_id}, '${answeredDate}',${keyValue},${countryId},${subQuestionId},${surveySectionId});
     UPDATE tbl_buildings SET total_questions = ${totalQuestionCount},building_type = '${buildingType}' WHERE building_id = ${building_id};`
-      )
+    )
     : query(
-        `INSERT INTO tbl_answers (other, option_choices_id, users_id, questions_id,survey_headers_id,building_id,answered_date,keyValue,country_id,sub_question_id,survey_section_id)  VALUES(?,?,?,?,?,?,?,?,?,?,?)`,
-        [
-          other,
-          optionChoiceId,
-          userId,
-          questionId,
-          survey_headers_id,
-          building_id,
-          answeredDate,
-          keyValue,
-          countryId,
-          subQuestionId,
-          surveySectionId,
-        ]
-      );
+      `INSERT INTO tbl_answers (other, option_choices_id, users_id, questions_id,survey_headers_id,building_id,answered_date,keyValue,country_id,sub_question_id,survey_section_id)  VALUES(?,?,?,?,?,?,?,?,?,?,?)`,
+      [
+        other,
+        optionChoiceId,
+        userId,
+        questionId,
+        survey_headers_id,
+        building_id,
+        answeredDate,
+        keyValue,
+        countryId,
+        subQuestionId,
+        surveySectionId,
+      ]
+    );
 };
 
 // other, option_choices_id, users_id, questions_id,survey_headers_id,building_id,answered_date,keyValue,country_id,sub_question_id,survey_section_id
@@ -181,28 +143,22 @@ const addAnswer = (
 // '" AND building_id="' + building_id + '" AND device_type = "' + device_type + '"')
 // }
 
-const deleteAnswer = (
-  userId,
-  survey_headers_id,
-  building_id,
-  countryId,
-  surveySectionId
-) => {
+const deleteAnswer = (userId, survey_headers_id, building_id, countryId, surveySectionId) => {
   let query = util.promisify(mypool.query).bind(mypool);
   let sql =
     building_id !== null
       ? 'DELETE FROM tbl_answers WHERE users_id = "' +
-        userId +
-        '"  AND survey_headers_id= "' +
-        survey_headers_id +
-        '" AND building_id="' +
-        building_id +
-        '"'
+      userId +
+      '"  AND survey_headers_id= "' +
+      survey_headers_id +
+      '" AND building_id="' +
+      building_id +
+      '"'
       : `DELETE FROM evercomm_survey.tbl_answers WHERE users_id = ${parseInt(
-          userId
-        )} and survey_section_id = ${parseInt(
-          surveySectionId
-        )} and country_id = ${parseInt(countryId)}`;
+        userId
+      )} and survey_section_id = ${parseInt(
+        surveySectionId
+      )} and country_id = ${parseInt(countryId)}`;
   return query(sql);
 };
 // questions
@@ -239,16 +195,7 @@ const deleteQuestion = (question_id) => {
   );
 };
 
-const updateQuestion = (
-  question_id,
-  questionName,
-  required,
-  isOther,
-  optionGroupId,
-  untiId,
-  surveySectionId,
-  inputTypeId
-) => {
+const updateQuestion = (question_id, questionName, required, isOther, optionGroupId, untiId, surveySectionId, inputTypeId) => {
   let query = util.promisify(mypool.query).bind(mypool);
   return query(`UPDATE tbl_questions SET question_name = '${questionName}', required = ${required}, is_other = ${isOther} , 
   option_groups_id = ${optionGroupId} , units_id = ${untiId} , survey_sections_id = ${surveySectionId} , input_types_id = ${inputTypeId} 
@@ -269,13 +216,7 @@ const reportDistributorAnswers = (userId, surveyHeaderId) => {
   return query(`Call reportDistributorAnswers(${surveyHeaderId},${userId})`);
 };
 
-const reportUserAnswer = (
-  userId,
-  surveyHeaderId,
-  startDate,
-  endDate,
-  countryId
-) => {
+const reportUserAnswer = (userId, surveyHeaderId, startDate, endDate, countryId) => {
   // console.log("db", userId, surveyHeaderId, startDate, endDate, countryId)
   let query = util.promisify(mypool.query).bind(mypool);
   return surveyHeaderId == 1
@@ -320,31 +261,15 @@ const sectionList = (surveyHeaderId, countryId) => {
   FROM evercomm_survey.tbl_answers where survey_headers_id = ${surveyHeaderId}  and country_id = ${countryId}
   group by country_id,survey_section_id) as t2 on t1.survey_section_id = t2.survey_section_id
   left join (SELECT count(survey_sections_id) as question_count,survey_sections_id FROM evercomm_survey.tbl_questions where survey_headers_id = ${surveyHeaderId} group by survey_sections_id)
-  as t3 on t1.survey_section_id = t3.survey_sections_id
+  as t3 on t1.survey_section_id = t3.survey_sections_id;
+  SELECT survey_title FROM evercomm_survey.tbl_survey_title;
   `);
 };
 
 // @hmh
 // buildings
 
-const addBuilding = (
-  buildingName,
-  companyName,
-  buildingType,
-  buildingTypeId,
-  created_date,
-  address,
-  postalCode,
-  country,
-  comment,
-  userId,
-  surveyHeadersId,
-  chiller,
-  condenser,
-  evaporator,
-  coolingTower,
-  BMSInstalled
-) => {
+const addBuilding = (buildingName, companyName, buildingType, buildingTypeId, created_date, address, postalCode, country, comment, userId, surveyHeadersId, chiller, condenser, evaporator, coolingTower, BMSInstalled) => {
   let query = util.promisify(mypool.query).bind(mypool);
   return query(
     `INSERT INTO tbl_buildings (building_name, company_name,building_type,building_type_id, remark, active,created_date, address, postal_code,country,comment,
@@ -501,20 +426,15 @@ const chiller = () => {
   group by oc.option_choice_name,tb.building_type,oc.option_choice_id order by option_choice_id;`);
 };
 
-const createQuestion = ({
-  questionName,
-  isOther,
-  required,
-  optionGroupId,
-  unitsId,
-  surveySectionId,
-  inputTypeId,
-  surveyHeaderId,
-  buildingType,
-}) => {
+const createQuestion = ({ questionName, isOther, required, optionGroupId, unitsId, surveySectionId, inputTypeId, surveyHeaderId, buildingType }) => {
+  console.log("buildingType", questionName, isOther, required, optionGroupId, unitsId, surveySectionId, inputTypeId, surveyHeaderId, buildingType) 
   let query = util.promisify(mypool.query).bind(mypool);
-  return query(`INSERT INTO tbl_questions(question_name, is_other,required, option_groups_id, units_id,survey_sections_id,input_types_id,survey_headers_id,device_type) VALUES 
-  ('${questionName}',${isOther}, ${required}, ${optionGroupId}, ${unitsId}, ${surveySectionId}, ${inputTypeId}, ${surveyHeaderId},${buildingType});`);
+  return buildingType == null ?
+    query(`INSERT INTO tbl_questions(question_name, is_other,required, option_groups_id, units_id,survey_sections_id,input_types_id,survey_headers_id) VALUES 
+  ('${questionName}',${isOther}, ${required}, ${optionGroupId}, ${unitsId}, ${surveySectionId}, ${inputTypeId}, ${surveyHeaderId})`)
+    :
+    query(`INSERT INTO tbl_questions(question_name, is_other,required, option_groups_id, units_id,survey_sections_id,input_types_id,survey_headers_id,device_type) VALUES 
+  ('${questionName}',${isOther}, ${required}, ${optionGroupId}, ${unitsId}, ${surveySectionId}, ${inputTypeId}, ${surveyHeaderId},${buildingType});`)
 };
 
 const createOptionChoice = ({ optionChoiceName, questionId }) => {
@@ -574,38 +494,19 @@ const userPasswordEdit = (user_id, editPassword) => {
   );
 };
 
-const surveyHeader = (
-  surveyName,
-  remark,
-  active,
-  user_id,
-  created_date,
-  modified_date
-) => {
+const surveyHeader = (surveyName, remark, active, user_id, created_date, modified_date) => {
   let query = util.promisify(mypool.query).bind(mypool);
   return query(`INSERT INTO evercomm_survey.tbl_survey_headers (survey_name,remark,active,login_users_id,created_date,modified_date)
   VALUES ('${surveyName}','ok',1,${user_id},'${created_date}','${modified_date}');`);
 };
 
-const surveySection = ({
-  sectionName,
-  pageNo,
-  active,
-  surveyHeaderId,
-  createdDate,
-}) => {
+const surveySection = ({ sectionName, pageNo, active, surveyHeaderId, createdDate, }) => {
   let query = util.promisify(mypool.query).bind(mypool);
   return query(`INSERT INTO evercomm_survey.tbl_survey_sections (section_name,page_no,active,survey_headers_id,created_date)
   VALUES ('${sectionName}',${pageNo},${active},${surveyHeaderId},'${createdDate}')`);
 };
 
-const surveyHeaderEdit = (
-  surveyHeaderId,
-  survey_name,
-  remark,
-  active,
-  user_id
-) => {
+const surveyHeaderEdit = (surveyHeaderId, survey_name, remark, active, user_id) => {
   let query = util.promisify(mypool.query).bind(mypool);
   return query(
     `UPDATE evercomm_survey.tbl_survey_headers SET survey_name = '${survey_name}' , remark = '${remark}' ,active = ${active} , login_users_id=${user_id} WHERE survey_header_id = ${surveyHeaderId};`

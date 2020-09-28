@@ -12,248 +12,151 @@ const userLevelAnswer = (req, res) => {
   const endDate = req.body.endDate;
   const countryId = req.body.countryId;
 
-  reportTotalAnswersService
-    .userLevelAnswer(
-      userId,
-      surveyHeaderId,
-      startDate,
-      endDate,
-      viewType,
-      countryId
-    )
-    .then((data) => {
-      data(userId, surveyHeaderId, startDate, endDate, countryId)
-        .then((data) => {
-          if (surveyHeaderId == 1) {
-            let surveySections = Object.keys(
-              groupArray(data[0], "survey_section_id")
-            ).map((v, k) => {
-              return groupArray(
-                data[0].filter((d) => d.input_type_id !== null),
-                "survey_section_id"
-              )[v];
-            });
+  reportTotalAnswersService.userLevelAnswer(userId, surveyHeaderId, startDate, endDate, viewType, countryId).then((data) => {
+    data(userId, surveyHeaderId, startDate, endDate, countryId)
+      .then((data) => {
+        if (surveyHeaderId == 1) {
+          let surveySections = Object.keys(groupArray(data[0], "survey_section_id")).map((v, k) => {
+            return groupArray(data[0].filter((d) => d.input_type_id !== null), "survey_section_id")[v];
+          });
 
-            let ans = [
-              {
-                survey_header_id: surveySections[0][0].survey_header_id,
-                survey_name: surveySections[0][0].survey_name,
-                survey_sections: surveySections.map((section) => {
-                  return {
-                    survey_section_id: section[0].survey_section_id,
-                    section_name: section[0].section_name,
-                    questions: Object.keys(groupArray(section, "question_id"))
-                      .map((v, k) => {
-                        return groupArray(section, "question_id")[v];
-                      })
-                      .map((v1, k1) => {
-                        return {
-                          question_id: v1[0].question_id,
-                          question_name: v1[0].question_name,
-                          input_type_id: v1[0].input_type_id,
-                          totalAnsCount:
-                            v1[0].atcount != null ? v1[0].atcount : 0,
-                          option_choices: v1.map((c) => {
+          let ans = [
+            {
+              survey_header_id: surveySections[0][0].survey_header_id, survey_name: surveySections[0][0].survey_name, survey_sections: surveySections.map((section) => {
+                return {
+                  survey_section_id: section[0].survey_section_id, section_name: section[0].section_name, questions: Object.keys(groupArray(section, "question_id")).map((v, k) => {
+                    return groupArray(section, "question_id")[v];
+                  })
+                    .map((v1, k1) => {
+                      return {
+                        question_id: v1[0].question_id, question_name: v1[0].question_name, input_type_id: v1[0].input_type_id, totalAnsCount:
+                          v1[0].atcount != null ? v1[0].atcount : 0, option_choices: v1.map((c) => {
                             return {
-                              option_choice_name: c.option_choice_name,
-                              totalAns: c.acount != null ? c.acount : 0,
-                              other:
-                                c.other != null && c.other.includes("{")
-                                  ? JSON.parse(c.other)
-                                  : c.other,
+                              option_choice_name: c.option_choice_name, totalAns: c.acount != null ? c.acount : 0, other: c.other != null && c.other.includes("{") ? JSON.parse(c.other) : c.other,
+                            };
+                          }),
+                      };
+                    }),
+                };
+              }),
+              building_count: data[1],
+            },
+          ];
+          res.json(response({ success: true, payload: ans }));
+        } else {
+          const surveySections = Object.keys(groupArray(data[0], "survey_section_id")).map((v, k) => {
+            return groupArray(data[0], "survey_section_id")[v];
+          });
+          let ans = [
+            {
+              survey_header_id: surveySections[0][0].survey_header_id, survey_name: surveySections[0][0].survey_name, survey_sections: surveySections.map((section) => {
+                // count += Object.keys(groupArray(section, "primary_question")).length;
+                return {
+                  survey_section_id: section[0].survey_section_id, section_name: section[0].section_name, questions: Object.keys(groupArray(section, "primary_question")).map((v, k) => {
+                    return groupArray(section, "primary_question")[v];
+                  })
+                    .map((v1, k1) => {
+                      if (v1[0].sub_question_id == null) {
+                        return {
+                          question_id: v1[0].primary_question, question_name: v1[0].question_name, input_type_id: v1[0].input_types_id, option_group_id: v1[0].option_groups_id, key: v1[0].question_key, option_choices: v1.map((c) => {
+                            //console.log(c ,"c is ")
+                            // const data = v1.filter(v => v.choices_id === 387)
+                            // console.log(c)
+                            return {
+                              option_choice_id: c.choices_id, option_choice_name: c.choices,
                             };
                           }),
                         };
-                      }),
-                  };
-                }),
-                building_count: data[1],
-              },
-            ];
-            res.json(response({ success: true, payload: ans }));
-          } else {
-            const surveySections = Object.keys(
-              groupArray(data[0], "survey_section_id")
-            ).map((v, k) => {
-              return groupArray(data[0], "survey_section_id")[v];
-            });
-            let ans = [
-              {
-                survey_header_id: surveySections[0][0].survey_header_id,
-                survey_name: surveySections[0][0].survey_name,
-                survey_sections: surveySections.map((section) => {
-                  // count += Object.keys(groupArray(section, "primary_question")).length;
-                  return {
-                    survey_section_id: section[0].survey_section_id,
-                    section_name: section[0].section_name,
-                    questions: Object.keys(
-                      groupArray(section, "primary_question")
-                    )
-                      .map((v, k) => {
-                        return groupArray(section, "primary_question")[v];
-                      })
-                      .map((v1, k1) => {
-                        if (v1[0].sub_question_id == null) {
-                          return {
-                            question_id: v1[0].primary_question,
-                            question_name: v1[0].question_name,
-                            input_type_id: v1[0].input_types_id,
-                            option_group_id: v1[0].option_groups_id,
-                            key: v1[0].question_key,
-                            option_choices: v1.map((c) => {
-                              //console.log(c ,"c is ")
-                              // const data = v1.filter(v => v.choices_id === 387)
-                              // console.log(c)
-                              return {
-                                option_choice_id: c.choices_id,
-                                option_choice_name: c.choices,
-                              };
-                            }),
-                          };
-                        } else if (v1[0].choices_id == null) {
-                          const dataResult1 = [];
+                      } else if (v1[0].choices_id == null) {
+                        const dataResult1 = [];
 
-                          v1.map((c) => {
-                            const index = dataResult1.find(
-                              (v) => v.option_choice_id == c.oc
-                            );
-                            if (index == null || index == undefined) {
-                              dataResult1.push({
-                                option_choice_id: c.oc,
-                                categories: c.cat,
-                              });
-                            }
-                          });
-                          return {
-                            question_id: v1[0].primary_question,
-                            question_name: v1[0].question_name,
-                            input_type_id: v1[0].input_types_id,
-                            option_group_id: v1[0].option_groups_id,
-                            key: v1[0].question_key,
-                            categories:
-                              dataResult1.filter(
-                                (v) => v.option_choice_name != null
-                              ) == ""
-                                ? null
-                                : dataResult1.filter(
-                                    (v) => v.option_choice_name != null
-                                  ),
-                            sub_questions: Object.keys(
-                              groupArray(v1, "sub_question_id")
-                            )
-                              .map((v2, k2) => {
-                                return groupArray(v1, "sub_question_id")[v2];
-                              })
-                              .map((v3, k3) => {
-                                const dataResult = [];
-                                v3.map((c) => {
-                                  const index = dataResult.find(
-                                    (v) => v.option_choice_id == c.oc
-                                  );
-                                  if (index == null || index == undefined) {
-                                    dataResult.push({
-                                      option_choice_id: c.oc,
-                                      option_choice_name: c.option_choice_name,
-                                    });
-                                  }
-                                });
-                                return {
-                                  sub_question_id: v3[0].sub_question_id,
-                                  sub_question_name: v3[0].sub_question_name,
-                                  input_type_id: v3[0].input_type_id,
-                                  option_group_id: v3[0].option_group_id,
-                                  option_choices: dataResult.filter(
-                                    (v) => v.option_choice_name != null
-                                  ),
-                                };
-                              }),
-                          };
-                        } else {
-                          const dataResult = [];
-                          const dataResult1 = [];
-
-                          v1.map((c) => {
-                            const index = dataResult.find(
-                              (v) => v.option_choice_id == c.choices_id
-                            );
-                            if (index == null || index == undefined) {
-                              dataResult.push({
-                                option_choice_id: c.choices_id,
-                                option_choice_name: c.choices,
-                              });
-                            }
-                          }),
-                            v1.map((c) => {
-                              const index = dataResult1.find(
-                                (v) => v.option_choice_id == c.choices_id
-                              );
+                        v1.map((c) => {
+                          const index = dataResult1.find((v) => v.option_choice_id == c.oc);
+                          if (index == null || index == undefined) {
+                            dataResult1.push({
+                              option_choice_id: c.oc, categories: c.cat,
+                            });
+                          }
+                        });
+                        return {
+                          question_id: v1[0].primary_question, question_name: v1[0].question_name, input_type_id: v1[0].input_types_id, option_group_id: v1[0].option_groups_id, key: v1[0].question_key, categories: dataResult1.filter(
+                            (v) => v.option_choice_name != null) == "" ? null : dataResult1.filter((v) => v.option_choice_name != null),
+                          sub_questions: Object.keys(groupArray(v1, "sub_question_id")).map((v2, k2) => {
+                            return groupArray(v1, "sub_question_id")[v2];
+                          }).map((v3, k3) => {
+                            const dataResult = [];
+                            v3.map((c) => {
+                              const index = dataResult.find((v) => v.option_choice_id == c.oc);
                               if (index == null || index == undefined) {
-                                dataResult1.push({
-                                  option_choice_id: c.choices_id,
-                                  categories: c.categories,
+                                dataResult.push({
+                                  option_choice_id: c.oc, option_choice_name: c.option_choice_name,
                                 });
                               }
                             });
-                          return {
-                            question_id: v1[0].primary_question,
-                            question_name: v1[0].question_name,
-                            input_type_id: v1[0].input_types_id,
-                            option_group_id: v1[0].option_groups_id,
-                            key: v1[0].question_key,
-                            categories: dataResult1.filter(
-                              (c) => c.categories != null
-                            ),
-                            option_choices: dataResult.filter(
-                              (c) => c.option_choice_name != null
-                            ),
-                            sub_questions: Object.keys(
-                              groupArray(v1, "sub_question_id")
-                            )
-                              .map((v2, k2) => {
-                                return groupArray(v1, "sub_question_id")[v2];
-                              })
-                              .map((v3, k3) => {
-                                const dataResult = [];
-                                v1.map((c) => {
-                                  const index = dataResult.find(
-                                    (v) => v.option_choice_id == c.oc
-                                  );
-                                  if (index == null || index == undefined) {
-                                    dataResult.push({
-                                      option_choice_id: c.oc,
-                                      option_choice_name: c.option_choice_name,
-                                    });
-                                  }
-                                });
-                                return {
-                                  sub_question_id: v3[0].sub_question_id,
-                                  sub_question_name: v3[0].sub_question_name,
-                                  input_type_id: v3[0].input_type_id,
-                                  option_group_id: v3[0].option_group_id,
-                                  option_choices: dataResult.filter(
-                                    (c) => c.option_choice_name != null
-                                  ),
-                                };
-                              }),
-                          };
-                        }
-                      }),
-                  };
-                }),
-                // question_count: count,
-                answers: data[1],
-                surveyTitle: data[2][0].surveyTitle,
-              },
-            ];
+                            return {
+                              sub_question_id: v3[0].sub_question_id, sub_question_name: v3[0].sub_question_name, input_type_id: v3[0].input_type_id, option_group_id: v3[0].option_group_id, option_choices: dataResult.filter((v) => v.option_choice_name != null),
+                            };
+                          }),
+                        };
+                      } else {
+                        const dataResult = [];
+                        const dataResult1 = [];
 
-            res.json(response({ success: true, payload: ans }));
-          }
-        })
+                        v1.map((c) => {
+                          const index = dataResult.find((v) => v.option_choice_id == c.choices_id);
+                          if (index == null || index == undefined) {
+                            dataResult.push({
+                              option_choice_id: c.choices_id, option_choice_name: c.choices,
+                            });
+                          }
+                        }),
+                          v1.map((c) => {
+                            const index = dataResult1.find((v) => v.option_choice_id == c.choices_id);
+                            if (index == null || index == undefined) {
+                              dataResult1.push({
+                                option_choice_id: c.choices_id, categories: c.categories,
+                              });
+                            }
+                          });
+                        return {
+                          question_id: v1[0].primary_question, question_name: v1[0].question_name, input_type_id: v1[0].input_types_id, option_group_id: v1[0].option_groups_id, key: v1[0].question_key, categories: dataResult1.filter((c) => c.categories != null), option_choices: dataResult.filter((c) => c.option_choice_name != null),
+                          sub_questions: Object.keys(groupArray(v1, "sub_question_id"))
+                            .map((v2, k2) => {
+                              return groupArray(v1, "sub_question_id")[v2];
+                            })
+                            .map((v3, k3) => {
+                              const dataResult = [];
+                              v1.map((c) => {
+                                const index = dataResult.find((v) => v.option_choice_id == c.oc);
+                                if (index == null || index == undefined) {
+                                  dataResult.push({
+                                    option_choice_id: c.oc, option_choice_name: c.option_choice_name,
+                                  });
+                                }
+                              });
+                              return {
+                                sub_question_id: v3[0].sub_question_id, sub_question_name: v3[0].sub_question_name, input_type_id: v3[0].input_type_id, option_group_id: v3[0].option_group_id, option_choices: dataResult.filter((c) => c.option_choice_name != null),
+                              };
+                            }),
+                        };
+                      }
+                    }),
+                };
+              }),
+              // question_count: count,
+              answers: data[1],
+              surveyTitle: data[2][0].surveyTitle,
+            },
+          ];
 
-        .catch((err) =>
-          res.json(response({ success: false, message: err.toString() }))
-        );
-    });
+          res.json(response({ success: true, payload: ans }));
+        }
+      })
+
+      .catch((err) =>
+        res.json(response({ success: false, message: err.toString() }))
+      );
+  });
 };
 
 const userLevelMenuAnswer = (req, res) => {
