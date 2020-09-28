@@ -79,7 +79,7 @@ const deleteAnswer = (userId, survey_headers_id, building_id, countryId, surveyS
     return surveydb.deleteAnswer(userId, survey_headers_id, building_id, countryId, surveySectionId);
 }
 
-const getMenu = (userId, surveyHeaderId, startDate, endDate, viewType) => {
+const getMenu = (userId, surveyHeaderId, viewType) => {
     return surveydb.userLevelAnswer(userId, surveyHeaderId, viewType).then(res => {
         if (res[0][0].user_level_id == 1) {
 
@@ -108,7 +108,7 @@ const sectionList = (surveyHeaderId, countryId) => {
     return surveydb.sectionList(surveyHeaderId, countryId)
 }
 
-const surveyMenuApi = (userId, surveyHeaderId, startDate, endDate, viewType) => {
+const surveyMenuApi = (userId, surveyHeaderId, viewType) => {
     return surveydb.userLevelAnswer(userId, surveyHeaderId, viewType).then(res => {
         if (res[0][0].user_level_id == 1) {
 

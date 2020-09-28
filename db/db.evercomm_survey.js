@@ -216,8 +216,7 @@ const reportDistributorAnswers = (userId, surveyHeaderId) => {
   return query(`Call reportDistributorAnswers(${surveyHeaderId},${userId})`);
 };
 
-const reportUserAnswer = (userId, surveyHeaderId, startDate, endDate, countryId) => {
-  // console.log("db", userId, surveyHeaderId, startDate, endDate, countryId)
+const reportUserAnswer = (userId, surveyHeaderId, countryId) => {
   let query = util.promisify(mypool.query).bind(mypool);
   return surveyHeaderId == 1
     ? query(`Call reportUserAnswer(${surveyHeaderId},${userId})`)
@@ -315,17 +314,17 @@ const surveyMenuApiLevel = (userId) => {
   return query(`CALL surveyMenuLevel(?)`, [userId]);
 };
 
-const dateTimeMenuApi = (userId, startDate, endDate) => {
+const dateTimeMenuApi = (userId) => {
   let query = util.promisify(mypool.query).bind(mypool);
   return query(`Call reportMenuUser(${userId})`);
 };
 
-const dateTimeMenuAdminApi = (userId, startDate, endDate) => {
+const dateTimeMenuAdminApi = (userId) => {
   let query = util.promisify(mypool.query).bind(mypool);
   return query(`Call reportMenuAdmin()`);
 };
 
-const dateTimeMenuDistributorApi = (userId, startDate, endDate) => {
+const dateTimeMenuDistributorApi = (userId) => {
   let query = util.promisify(mypool.query).bind(mypool);
   return query(`Call reportMenuDistributor(${userId})`);
 };
@@ -427,7 +426,7 @@ const chiller = () => {
 };
 
 const createQuestion = ({ questionName, isOther, required, optionGroupId, unitsId, surveySectionId, inputTypeId, surveyHeaderId, buildingType }) => {
-  console.log("buildingType", questionName, isOther, required, optionGroupId, unitsId, surveySectionId, inputTypeId, surveyHeaderId, buildingType) 
+  console.log("buildingType", questionName, isOther, required, optionGroupId, unitsId, surveySectionId, inputTypeId, surveyHeaderId, buildingType)
   let query = util.promisify(mypool.query).bind(mypool);
   return buildingType == null ?
     query(`INSERT INTO tbl_questions(question_name, is_other,required, option_groups_id, units_id,survey_sections_id,input_types_id,survey_headers_id) VALUES 

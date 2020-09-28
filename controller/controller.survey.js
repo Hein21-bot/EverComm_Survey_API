@@ -371,10 +371,8 @@ const deleteAnswer = (req, res) => {
 
 const dateTimeMenuApi = (req, res) => {
   const userId = req.params.user_id;
-  const startDate = req.body.startDate;
-  const endDate = req.body.endDate;
   surveyService
-    .dateTimeMenuApi(userId, startDate, endDate)
+    .dateTimeMenuApi(userId)
     .then((data) => {
       let surveySections = Object.keys(groupArray(data, "survey_header_id"))
         .map((v, k) => {

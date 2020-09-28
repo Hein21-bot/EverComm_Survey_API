@@ -3,34 +3,34 @@ const response = require('../model/response')
 var groupArray = require("group-array");
 
 
-const userLevelAnswer = (userId, surveyHeaderId, startDate, endDate, viewType, countryId) => {
-    return surveydb.userLevelAnswer(userId, surveyHeaderId, startDate, endDate, viewType, countryId).then(res => {
+const userLevelAnswer = (userId, surveyHeaderId, viewType, countryId) => {
+    return surveydb.userLevelAnswer(userId, surveyHeaderId, viewType, countryId).then(res => {
         if (res[0][0].user_level_id == 1) {
             if (viewType == "all") {
-                const reportTotalAnswers = (userId, surveyHeaderId, startDate, endDate, countryId) => {
-                    return surveydb.reportTotalAnswers(userId, surveyHeaderId, startDate, endDate, countryId)
+                const reportTotalAnswers = (userId, surveyHeaderId, countryId) => {
+                    return surveydb.reportTotalAnswers(userId, surveyHeaderId, countryId)
                 }
                 return reportTotalAnswers
             } else {
-                const reportUserAnswer = (userId, surveyHeaderId, startDate, endDate, countryId) => {
-                    return surveydb.reportUserAnswer(userId, surveyHeaderId, startDate, endDate, countryId);
+                const reportUserAnswer = (userId, surveyHeaderId, countryId) => {
+                    return surveydb.reportUserAnswer(userId, surveyHeaderId, countryId);
                 }
                 return reportUserAnswer
             }
         } else if (res[0][0].user_level_id == 2) {
-            const reportUserAnswer = (userId, surveyHeaderId, startDate, endDate, countryId) => {
-                return surveydb.reportUserAnswer(userId, surveyHeaderId, startDate, endDate, countryId);
+            const reportUserAnswer = (userId, surveyHeaderId, countryId) => {
+                return surveydb.reportUserAnswer(userId, surveyHeaderId, countryId);
             }
             return reportUserAnswer
         } else {
             if (viewType == "all") {
-                const reportDistributorAnswers = (userId, surveyHeaderId, startDate, endDate, countryId) => {
-                    return surveydb.reportDistributorAnswers(userId, surveyHeaderId, startDate, endDate, countryId);
+                const reportDistributorAnswers = (userId, surveyHeaderId, countryId) => {
+                    return surveydb.reportDistributorAnswers(userId, surveyHeaderId, countryId);
                 }
                 return reportDistributorAnswers
             } else {
-                const reportUserAnswer = (userId, surveyHeaderId, startDate, endDate, countryId) => {
-                    return surveydb.reportUserAnswer(userId, surveyHeaderId, startDate, endDate, countryId);
+                const reportUserAnswer = (userId, surveyHeaderId, countryId) => {
+                    return surveydb.reportUserAnswer(userId, surveyHeaderId, countryId);
                 }
                 return reportUserAnswer
             }
@@ -38,34 +38,34 @@ const userLevelAnswer = (userId, surveyHeaderId, startDate, endDate, viewType, c
     }).catch(err => (response({ success: false, message: err.toString() })));
 }
 
-const userLevelMenuAnswer = (userId, surveyHeaderId, startDate, endDate, viewType) => {
+const userLevelMenuAnswer = (userId, surveyHeaderId, viewType) => {
     return surveydb.userLevelAnswer(userId, surveyHeaderId, viewType).then(res => {
         if (res[0][0].user_level_id == 1) {
             if (viewType == "all") {
-                const dateTimeMenuAdminApi = (userId, startDate, endDate) => {
-                    return surveydb.dateTimeMenuAdminApi(userId, startDate, endDate);
+                const dateTimeMenuAdminApi = (userId) => {
+                    return surveydb.dateTimeMenuAdminApi(userId);
                 }
                 return dateTimeMenuAdminApi
             } else {
-                const dateTimeMenuApi = (userId, startDate, endDate) => {
-                    return surveydb.dateTimeMenuApi(userId, startDate, endDate);
+                const dateTimeMenuApi = (userId) => {
+                    return surveydb.dateTimeMenuApi(userId);
                 }
                 return dateTimeMenuApi
             }
         } else if (res[0][0].user_level_id == 2) {
-            const dateTimeMenuApi = (userId, startDate, endDate) => {
-                return surveydb.dateTimeMenuApi(userId, startDate, endDate);
+            const dateTimeMenuApi = (userId) => {
+                return surveydb.dateTimeMenuApi(userId);
             }
             return dateTimeMenuApi
         } else {
             if (viewType == "all") {
-                const dateTimeMenuDistributorApi = (userId, startDate, endDate) => {
-                    return surveydb.dateTimeMenuDistributorApi(userId, startDate, endDate);
+                const dateTimeMenuDistributorApi = (userId) => {
+                    return surveydb.dateTimeMenuDistributorApi(userId);
                 }
                 return dateTimeMenuDistributorApi
             } else {
-                const dateTimeMenuApi = (userId, startDate, endDate) => {
-                    return surveydb.dateTimeMenuApi(userId, startDate, endDate)
+                const dateTimeMenuApi = (userId) => {
+                    return surveydb.dateTimeMenuApi(userId)
                 }
                 return dateTimeMenuApi
             }
@@ -109,23 +109,23 @@ const typeAndArea = () => {
 //     return surveydb.graphReportApi()
 // }
 
-const graphReportUserLevel = (userId, startDate, endDate, viewType) => {
+const graphReportUserLevel = (userId, viewType) => {
     return surveydb.userLevelAnswer(userId, viewType).then(res => {
         if (res[0][0].user_level_id == 1 || res[0][0].user_level_id == 3) {
             if (viewType == "all") {
-                const graphReportApi = (userId, startDate, endDate) => {
-                    return surveydb.graphReportApi(userId, startDate, endDate)
+                const graphReportApi = (userId) => {
+                    return surveydb.graphReportApi(userId)
                 }
                 return graphReportApi
             } else {
-                const graphReportApiRole = (userId, startDate, endDate) => {
-                    return surveydb.graphReportApiRole(userId, startDate, endDate)
+                const graphReportApiRole = (userId) => {
+                    return surveydb.graphReportApiRole(userId)
                 }
                 return graphReportApiRole
             }
         } else {
-            const graphReportApiRole = (userId, startDate, endDate) => {
-                return surveydb.graphReportApiRole(userId, startDate, endDate)
+            const graphReportApiRole = (userId) => {
+                return surveydb.graphReportApiRole(userId)
             }
             return graphReportApiRole
         }

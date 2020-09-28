@@ -8,12 +8,10 @@ const userLevelAnswer = (req, res) => {
   const userId = req.body.userId;
   const surveyHeaderId = req.params.surveyHeaderId;
   const viewType = req.body.viewType;
-  const startDate = req.body.startDate;
-  const endDate = req.body.endDate;
   const countryId = req.body.countryId;
 
-  reportTotalAnswersService.userLevelAnswer(userId, surveyHeaderId, startDate, endDate, viewType, countryId).then((data) => {
-    data(userId, surveyHeaderId, startDate, endDate, countryId)
+  reportTotalAnswersService.userLevelAnswer(userId, surveyHeaderId, viewType, countryId).then((data) => {
+    data(userId, surveyHeaderId, countryId)
       .then((data) => {
         if (surveyHeaderId == 1) {
           let surveySections = Object.keys(groupArray(data[0], "survey_section_id")).map((v, k) => {
@@ -162,14 +160,12 @@ const userLevelAnswer = (req, res) => {
 const userLevelMenuAnswer = (req, res) => {
   let surveyHeaderId = req.params.surveyHeaderId;
   const userId = req.params.userId;
-  const startDate = req.body.startDate;
-  const endDate = req.body.endDate;
   const viewType = req.body.viewType;
 
   reportTotalAnswersService
-    .userLevelMenuAnswer(userId, surveyHeaderId, startDate, endDate, viewType)
+    .userLevelMenuAnswer(userId, surveyHeaderId, viewType)
     .then((data) => {
-      data(userId, startDate, endDate)
+      data(userId,)
         .then((data) => {
           let surveySections = Object.keys(
             groupArray(data[0], "survey_header_id")
@@ -355,13 +351,11 @@ const userLevelMenuAnswer = (req, res) => {
 
 const graphReportApiUserLevel = (req, res) => {
   const userId = req.body.userId;
-  const startDate = req.body.startDate;
-  const endDate = req.body.endDate;
   const viewType = req.body.viewType;
   reportTotalAnswersService
-    .graphReportUserLevel(userId, startDate, endDate, viewType)
+    .graphReportUserLevel(userId, viewType)
     .then((data) => {
-      data(userId, startDate, endDate, viewType)
+      data(userId, viewType)
         .then((data) => {
           // console.log(data)
 
