@@ -97,18 +97,6 @@ const typeAndArea = () => {
 
 }
 
-// const typeAndBMS = () => {
-//     return surveydb.typeAndBMS()
-// }
-
-// const age = () => {
-//     return surveydb.age()
-// }
-
-// const graphReportApi = () => {
-//     return surveydb.graphReportApi()
-// }
-
 const graphReportUserLevel = (userId, viewType) => {
     return surveydb.userLevelAnswer(userId, viewType).then(res => {
         if (res[0][0].user_level_id == 1 || res[0][0].user_level_id == 3) {

@@ -117,11 +117,8 @@ const surveySection = (req, res) => {
     const sectionData = req.body.sectionData
     const surveyHeaderId = req.body.surveyHeaderId
 
-    console.log("survey section", surveyHeaderId)
 
     return adminCreateService.surveySection({ sectionData, surveyHeaderId }).then(data1 => {
-        // return adminCreateService.getAdminId().then(data => {
-        // return adminCreateService.userSurveyPermession({ data, surveyHeaderId }).then(data => {
         res.json(
             response({
                 success: true,
@@ -129,34 +126,11 @@ const surveySection = (req, res) => {
                 payload: data1
             })
         )
-        // })
-        // })
     }).catch(err => {
         res.json(response({ success: false, message: err.code, error: err }));
     });
 }
 
-
-
-
-// const surveySection = (req, res, sId) => {
-//     const survey_header_id = req.body.survey_header_id || sId
-//     const section_name = req.body.section_name
-
-//     return adminCreateService.surveySection({ section_name, page_no, active, survey_header_id })
-//         .then(result => {
-//             res.json(response({
-//                 success: true,
-//                 payload: result
-//             }))
-//         })
-//         .catch(error => {
-//             res.json(response({
-//                 success: false,
-//                 error: error
-//             }))
-//         })
-// }
 
 
 

@@ -48,7 +48,6 @@ const userLevelAnswer = (req, res) => {
           let ans = [
             {
               survey_header_id: surveySections[0][0].survey_header_id, survey_name: surveySections[0][0].survey_name, survey_sections: surveySections.map((section) => {
-                // count += Object.keys(groupArray(section, "primary_question")).length;
                 return {
                   survey_section_id: section[0].survey_section_id, section_name: section[0].section_name, questions: Object.keys(groupArray(section, "primary_question")).map((v, k) => {
                     return groupArray(section, "primary_question")[v];
@@ -57,9 +56,7 @@ const userLevelAnswer = (req, res) => {
                       if (v1[0].sub_question_id == null) {
                         return {
                           question_id: v1[0].primary_question, question_name: v1[0].question_name, input_type_id: v1[0].input_types_id, option_group_id: v1[0].option_groups_id, key: v1[0].question_key, option_choices: v1.map((c) => {
-                            //console.log(c ,"c is ")
-                            // const data = v1.filter(v => v.choices_id === 387)
-                            // console.log(c)
+                            
                             return {
                               option_choice_id: c.choices_id, option_choice_name: c.choices,
                             };
@@ -221,133 +218,6 @@ const userLevelMenuAnswer = (req, res) => {
     });
 };
 
-// const typeAndArea = (req, res) => {
-//   reportTotalAnswersService.typeAndArea()
-//     .then(data => {
-//       res.json(response({ success: true, payload: data }));
-//     })
-//     .catch((err) =>
-//       res.json(response({ success: false, message: err.toString() }))
-//     );
-// }
-
-// const typeAndBMS = (req, res) => {
-//   reportTotalAnswersService.typeAndBMS()
-//     .then(data => {
-//       let surveySections = Object.keys(groupArray(data, "building_type")).map((v, k) => {
-//         return groupArray(data, "building_type")[v];
-//       }).map((v1, k1) => {
-//         return {
-//           building_type: v1[0].building_type, categories: Object.keys(groupArray(v1, "option_choice_name")).map((v2, k2) => {
-//             return groupArray(v1, "option_choice_name")[v2]
-//           }).map((v3, k3) => {
-//             return {
-//               option_choice_name: v3[0].option_choice_name
-//             }
-//           }).map((categories => {
-//             return categories.option_choice_name
-//           })),
-//           data: Object.keys(groupArray(v1, "option_choice_name")).map((v4, k4) => {
-//             return groupArray(v1, "option_choice_name")[v4];
-//           }).map((v5, k5) => {
-//             return {
-//               option_count: v5[0].option_count,
-//             };
-//           }).map((categories => {
-//             return categories.option_count
-//           })),
-//           y: Object.keys(groupArray(v1, "option_choice_name")).map((v4, k4) => {
-//             return groupArray(v1, "option_choice_name")[v4];
-//           }).map((v5, k5) => {
-//             return {
-//               option_count: v5[0].option_count,
-//             };
-//           }).map((categories => {
-//             return categories.option_count
-//           })).reduce(function (accumulator, currentValue, currentIndex, array) {
-//             return accumulator + currentValue
-//           })
-//         }
-//       })
-
-//       res.json(response({ success: true, payload: surveySections }));
-//     })
-//     .catch((err) =>
-//       res.json(response({ success: false, message: err.toString() }))
-//     );
-// }
-
-// const age = (req, res) => {
-//   reportTotalAnswersService.age().then(data => {
-//     res.json(response({ success: true, payload: data }));
-//   })
-//     .catch((err) => res.json(response({ success: false, message: err })));
-// };
-
-// const graphReportApi = (req, res) => {
-//   reportTotalAnswersService.graphReportApi().then(data => {
-//     let surveySections1 = Object.keys(groupArray(data[0], "option_choice_name")).map((v, k) => {
-//       return groupArray(data[0], "option_choice_name")[v];
-//     }).map((v1, k1) => {
-//       return {
-//         option_choice_name: v1[0].option_choice_name,
-//         categories: Object.keys(groupArray(v1, "building_type")).map((v2, k2) => {
-//           return groupArray(v1, "building_type")[v2]
-//         }).map((v3, k3) => {
-//           return {
-//             building_type: v3[0].building_type.replace(/\s/g, ''),
-//             optionCount: v3[0].optionCount
-//           }
-//         }).map((categories => {
-//           let rObj = {}
-//           rObj[categories.building_type.trim()] = categories.optionCount
-//           return rObj
-//         })).reduce(((r, c) => Object.assign(r, c)), {})
-//       }
-//     })
-
-//     let surveySections2 = Object.keys(groupArray(data[1], "building_type")).map((v, k) => {
-//       return groupArray(data[1], "building_type")[v];
-//     }).map((v1, k1) => {
-//       return {
-//         name: v1[0].building_type, categories: Object.keys(groupArray(v1, "option_choice_name")).map((v2, k2) => {
-//           return groupArray(v1, "option_choice_name")[v2]
-//         }).map((v3, k3) => {
-//           return {
-//             option_choice_name: v3[0].option_choice_name
-//           }
-//         }).map((categories => {
-//           return categories.option_choice_name
-//         })),
-//         data: Object.keys(groupArray(v1, "option_choice_name")).map((v4, k4) => {
-//           return groupArray(v1, "option_choice_name")[v4];
-//         }).map((v5, k5) => {
-//           return {
-//             option_count: v5[0].option_count,
-//           };
-//         }).map((categories => {
-//           return categories.option_count
-//         })),
-//         y: Object.keys(groupArray(v1, "option_choice_name")).map((v4, k4) => {
-//           return groupArray(v1, "option_choice_name")[v4];
-//         }).map((v5, k5) => {
-//           return {
-//             option_count: v5[0].option_count,
-//           };
-//         }).map((categories => {
-//           return categories.option_count
-//         })).reduce(function (accumulator, currentValue, currentIndex, array) {
-//           return accumulator + currentValue
-//         })
-//       }
-//     })
-
-//     let ans = [data[2], surveySections1, surveySections2]
-
-//     res.json(response({ success: true, payload: ans }));
-//   })
-//     .catch((err) => res.json(response({ success: false, message: err })));
-// };
 
 const graphReportApiUserLevel = (req, res) => {
   const userId = req.body.userId;
@@ -357,7 +227,6 @@ const graphReportApiUserLevel = (req, res) => {
     .then((data) => {
       data(userId, viewType)
         .then((data) => {
-          // console.log(data)
 
           let surveySections = Object.keys(groupArray(data[2], "building_type"))
             .map((v, k) => {
@@ -540,29 +409,12 @@ const graphReportApiUserLevel = (req, res) => {
                   .reduce((r, c) => Object.assign(r, c), {}),
               };
             });
-          // console.log(surveySections4)
 
           const result = surveySections4.map((v) => {
             const values = Object.values(v.categories);
             const sumValue = values.reduce((r, c) => r + c, 0);
             return { ...v, count: sumValue };
           });
-          // console.log("result",result)
-
-          //       const resultedData = data[4].reduce((r,c)=>{
-          //        const R = [...r]
-          //         const index  = R.findIndex(v=>v.year == c.other)
-          //         if(index == -1){
-          //           R.push({year:c.other,count:c.optionCount})
-          //         }
-          //         else{
-          //           const count1 =R[index].count
-          //           R[index].count = c.optionCount+count1
-          //         }
-          //         return R
-          //       },[])
-
-          // console.log(resultedData,"rrr")
           let ans = [
             surveySections,
             result1,

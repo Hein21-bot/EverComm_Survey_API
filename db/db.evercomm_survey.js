@@ -1,7 +1,5 @@
 const mysql = require("mysql");
 const util = require("util");
-const { query } = require("express");
-const { count } = require("console");
 
 require("dotenv").config();
 
@@ -17,7 +15,6 @@ const mypool = mysql.createConnection({
 
 const login = (email) => {
   let query = util.promisify(mypool.query).bind(mypool);
-  // console.log(email);
 
   return query(`CALL userLogin(?);`, [email]);
 };
@@ -32,8 +29,6 @@ const addUser = (userName, password, email, active, created_date, user_level, co
 
 const updateUser = (userId, userName, email, active, user_level, companyName, phone_number) => {
   let query = util.promisify(mypool.query).bind(mypool);
-  // UPDATE tbl_login_users SET user_name = '${userName}', password = '${password}', email = '${email}' WHERE
-  // login_user_id = ${userId}
   return query(`UPDATE tbl_login_users SET user_name = '${userName}',  email = '${email}' , 
   active = ${active} , user_level_id = ${user_level} , company_name = '${companyName}' , phone_number = '${phone_number}'
   WHERE login_user_id = ${userId};`);
@@ -101,11 +96,6 @@ const getQuestion = (user_id, survey_header_id, buildingId, buildingTypeId, surv
           select BMSInstalled from tbl_buildings where building_id=${buildingId};`);
 };
 
-// condition for survey_header_id
-// h.survey_header_id = ${survey_header_id} and
-
-// `Call getQuestions( ${survey_header_id}, ${user_id},${buildingId});`
-
 // answers
 
 const addAnswer = (other, optionChoiceId, userId, questionId, survey_headers_id, building_id, keyValue, totalQuestionCount, answeredDate, buildingType, countryId, subQuestionId, surveySectionId) => {
@@ -135,13 +125,6 @@ const addAnswer = (other, optionChoiceId, userId, questionId, survey_headers_id,
     );
 };
 
-// other, option_choices_id, users_id, questions_id,survey_headers_id,building_id,answered_date,keyValue,country_id,sub_question_id,survey_section_id
-
-// const deleteAnswer = (userId, survey_headers_id, building_id, device_type) => {
-//   query = util.promisify(mypool.query).bind(mypool)
-//   return query('DELETE FROM tbl_answers WHERE users_id = "' + userId + '"  AND survey_headers_id= "' + survey_headers_id +
-// '" AND building_id="' + building_id + '" AND device_type = "' + device_type + '"')
-// }
 
 const deleteAnswer = (userId, survey_headers_id, building_id, countryId, surveySectionId) => {
   let query = util.promisify(mypool.query).bind(mypool);
@@ -161,32 +144,10 @@ const deleteAnswer = (userId, survey_headers_id, building_id, countryId, surveyS
       )} and country_id = ${parseInt(countryId)}`;
   return query(sql);
 };
+
 // questions
 
-// const addQuestion = (
-//   questionName,
-//   required,
-//   isOther,
-//   optionGroupId,
-//   untiId,
-//   surveySectionId,
-//   inputTypeId
-// ) => {
-//   let query = util.promisify(mypool.query).bind(mypool);
-//   return query(
-//     `INSERT INTO tbl_questions(question_name, required, is_other, option_groups_id, units_id, survey_sections_id, input_types_id)
-//   VALUES(?,?,?,?,?,?,?)`,
-//     [
-//       questionName,
-//       required,
-//       isOther,
-//       optionGroupId,
-//       untiId,
-//       surveySectionId,
-//       inputTypeId,
-//     ]
-//   );
-// };
+
 
 const deleteQuestion = (question_id) => {
   let query = util.promisify(mypool.query).bind(mypool);
@@ -206,7 +167,6 @@ const updateQuestion = (question_id, questionName, required, isOther, optionGrou
 // AnswerCount
 
 const reportTotalAnswers = (userId, surveyHeaderId, countryId) => {
-  // console.log("bla bla", userId, surveyHeaderId, countryId)
   let query = util.promisify(mypool.query).bind(mypool);
   return query(`Call reportTotalAnswer(${surveyHeaderId})`);
 };
@@ -343,24 +303,8 @@ const typeAndArea = (startDate, endDate) => {
   group by oc.option_choice_name,tb.building_type,oc.option_choice_id order by option_choice_id`);
 };
 
-// const typeAndBMS = () => {
-//   let query = util.promisify(mypool.query).bind(mypool);
-//    return query(`select oc.option_choice_id,tb.building_type,oc.option_choice_name,count(a.option_choices_id) option_count from evercomm_survey.tbl_answers as a
-//    left join evercomm_survey.tbl_option_choices as oc on a.option_choices_id = oc.option_choice_id
-//    left join evercomm_survey.tbl_buildings as tb on a.building_id = tb.building_id where a.keyValue =6
-//    group by oc.option_choice_name,tb.building_type,oc.option_choice_id order by option_choice_id`)
-//  }
-
-//  const age = () => {
-//   let query = util.promisify(mypool.query).bind(mypool);
-//   return query(`SELECT oc.option_choice_name  as optionChoiceName,count(a.option_choices_id) as optionCount FROM evercomm_survey.tbl_answers  as a
-//   left join tbl_option_choices oc on a.option_choices_id = oc.option_choice_id where a.keyValue = 4
-//   group by oc.option_choice_name`)
-// }
-
-const graphReportApi = (userId, startDate, endDate) => {
+const graphReportApi = (userId) => {
   let query = util.promisify(mypool.query).bind(mypool);
-  // console.log(startDate, endDate, "Ddddddddddddddd")
   return query(`select oc.option_choice_id,oc.option_choice_name,tb.building_type,count(a.option_choices_id) as optionCount from evercomm_survey.tbl_answers as a  
   left join evercomm_survey.tbl_option_choices as oc on a.option_choices_id = oc.option_choice_id
   left join evercomm_survey.tbl_buildings as tb on a.building_id = tb.building_id where a.keyValue = 3
@@ -387,7 +331,7 @@ const graphReportApi = (userId, startDate, endDate) => {
   group by option_choice_name,other,t1.option_choices_id order by other;`);
 };
 
-const graphReportApiRole = (userId, startDate, endDate) => {
+const graphReportApiRole = (userId) => {
   let query = util.promisify(mypool.query).bind(mypool);
   return query(`select oc.option_choice_id,oc.option_choice_name,tb.building_type,count(a.option_choices_id) as optionCount,a.users_id from evercomm_survey.tbl_answers as a  
   left join evercomm_survey.tbl_option_choices as oc on a.option_choices_id = oc.option_choice_id
@@ -426,7 +370,7 @@ const chiller = () => {
 };
 
 const createQuestion = ({ questionName, isOther, required, optionGroupId, unitsId, surveySectionId, inputTypeId, surveyHeaderId, buildingType }) => {
-  console.log("buildingType", questionName, isOther, required, optionGroupId, unitsId, surveySectionId, inputTypeId, surveyHeaderId, buildingType)
+ 
   let query = util.promisify(mypool.query).bind(mypool);
   return buildingType == null ?
     query(`INSERT INTO tbl_questions(question_name, is_other,required, option_groups_id, units_id,survey_sections_id,input_types_id,survey_headers_id) VALUES 
@@ -545,7 +489,6 @@ const getCountry = (surveyHeaderId, countryId) => {
   SELECT count(survey_headers_id) as surveyList FROM evercomm_survey.tbl_survey_sections where survey_headers_id = ${surveyHeaderId} and survey_section_id != 9;
   `);
 };
-// SELECT count(distinct survey_section_id) FROM evercomm_survey.tbl_answers where survey_headers_id = ${surveyHeaderId} and country_id = ${countryId};
 
 const getCountrySurvey = (surveyHeaderId) => {
   let query = util.promisify(mypool.query).bind(mypool);
@@ -586,8 +529,6 @@ module.exports = {
   dateTimeMenuApi,
   dateTimeMenuAdminApi,
   typeAndArea,
-  // typeAndBMS,
-  // age,
   graphReportApi,
   graphReportApiRole,
   chiller,
