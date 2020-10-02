@@ -237,7 +237,7 @@ const userLevelMenuAnswer = (req, res) => {
   reportTotalAnswersService
     .userLevelMenuAnswer(userId, surveyHeaderId, viewType)
     .then((data) => {
-      data(userId,)
+      data(userId,viewType)
         .then((data) => {
           let surveySections = Object.keys(
             groupArray(data[0], "survey_header_id")
@@ -260,6 +260,7 @@ const userLevelMenuAnswer = (req, res) => {
                     return {
                       building_id: v3[0].buildings_id,
                       building_name: v3[0].building_name,
+                      building_type_id: v3[0].building_type_id
                     };
                   }),
                 amount_of_country: Object.keys(groupArray(v1, "country_id"))
