@@ -9,38 +9,113 @@ const userLevelAnswer = (req, res) => {
   const surveyHeaderId = req.params.surveyHeaderId;
   const viewType = req.body.viewType;
   const countryId = req.body.countryId;
+  const buildingId = req.body.buildingId;
+  const buildingTypeId = req.body.buildingTypeId
 
-  reportTotalAnswersService.userLevelAnswer(userId, surveyHeaderId, viewType, countryId).then((data) => {
-    data(userId, surveyHeaderId, countryId)
+  reportTotalAnswersService.userLevelAnswer(userId, surveyHeaderId, viewType, countryId, buildingId, buildingTypeId).then((data) => {
+    data(userId, surveyHeaderId, countryId, buildingId, buildingTypeId)
       .then((data) => {
         if (surveyHeaderId == 1) {
-          let surveySections = Object.keys(groupArray(data[0], "survey_section_id")).map((v, k) => {
-            return groupArray(data[0].filter((d) => d.input_type_id !== null), "survey_section_id")[v];
-          });
+          if (viewType == 'all') {
+            let surveySections = Object.keys(groupArray(data[0], "survey_section_id")).map((v, k) => {
+              return groupArray(data[0].filter((d) => d.input_type_id !== null), "survey_section_id")[v];
+            });
 
-          let ans = [
-            {
-              survey_header_id: surveySections[0][0].survey_header_id, survey_name: surveySections[0][0].survey_name, survey_sections: surveySections.map((section) => {
-                return {
-                  survey_section_id: section[0].survey_section_id, section_name: section[0].section_name, questions: Object.keys(groupArray(section, "question_id")).map((v, k) => {
-                    return groupArray(section, "question_id")[v];
-                  })
-                    .map((v1, k1) => {
-                      return {
-                        question_id: v1[0].question_id, question_name: v1[0].question_name, input_type_id: v1[0].input_type_id, totalAnsCount:
-                          v1[0].atcount != null ? v1[0].atcount : 0, option_choices: v1.map((c) => {
+            let ans = [
+              {
+                survey_header_id: surveySections[0][0].survey_header_id, survey_name: surveySections[0][0].survey_name, survey_sections: surveySections.map((section) => {
+                  return {
+                    survey_section_id: section[0].survey_section_id, section_name: section[0].section_name, questions: Object.keys(groupArray(section, "question_id")).map((v, k) => {
+                      return groupArray(section, "question_id")[v];
+                    })
+                      .map((v1, k1) => {
+                        return {
+                          question_id: v1[0].question_id, question_name: v1[0].question_name, input_type_id: v1[0].input_type_id, totalAnsCount:
+                            v1[0].atcount != null ? v1[0].atcount : 0, option_choices: v1.map((c) => {
+                              return {
+                                option_choice_name: c.option_choice_name, totalAns: c.acount != null ? c.acount : 0, other: c.other != null && c.other.includes("{") ? JSON.parse(c.other) : c.other,
+                              };
+                            }),
+                        };
+                      }),
+                  };
+                }),
+                building_count: data[1],
+              },
+            ];
+            res.json(response({ success: true, payload: ans }));
+          }
+          else {
+            if (data[3][0].BMSInstalled == 1) {
+              const surveySections = Object.keys(groupArray(data[0], "survey_section_id")).map((v, k) => {
+                return groupArray(data[0], "survey_section_id")[v];
+              })
+              let ans = [
+                {
+                  survey_header_id: surveySections[0][0].survey_header_id, survey_name: surveySections[0][0].survey_name, survey_sections: surveySections.map((section) => {
+                    // count += Object.keys(groupArray(section, "question_id")).length;
+                    return {
+                      survey_section_id: section[0].survey_section_id, section_name: section[0].section_name, questions: Object.keys(groupArray(section, "question_id")).map((v, k) => {
+                        return groupArray(section, "question_id")[v];
+                      }).map((v1, k1) => {
+                        return {
+                          question_id: v1[0].question_id, question_name: v1[0].question_name, input_type_id: v1[0].input_types_id, option_group_id: v1[0].option_groups_id, key: v1[0].question_key,
+                          option_choices: v1.map((c) => {
                             return {
-                              option_choice_name: c.option_choice_name, totalAns: c.acount != null ? c.acount : 0, other: c.other != null && c.other.includes("{") ? JSON.parse(c.other) : c.other,
+                              option_choice_id: c.option_choice_id != null ? c.option_choice_id : null, option_choice_name: c.option_choice_name,
                             };
                           }),
-                      };
-                    }),
-                };
-              }),
-              building_count: data[1],
-            },
-          ];
-          res.json(response({ success: true, payload: ans }));
+                        };
+                      }),
+                      section_question_count: Object.keys(groupArray(section, "question_id")).map((v, k) => {
+                        return groupArray(section, "question_id")[v];
+                      }).length,
+                    };
+                  }),
+                  // question_count: count,
+                  answers: data[1],
+                  amountOfDevice: data[2],
+
+                },
+              ];
+              res.json(response({ success: true, payload: ans }));
+
+            } else {
+              const surveySections = Object.keys(groupArray(data[0].filter(v => v.survey_section_id != 6), "survey_section_id")).map((v, k) => {
+                return groupArray(data[0], "survey_section_id")[v];
+              })
+              let ans = [
+                {
+                  survey_header_id: surveySections[0][0].survey_header_id, survey_name: surveySections[0][0].survey_name, survey_sections: surveySections.map((section) => {
+                    // count += Object.keys(groupArray(section, "question_id")).length;
+                    return {
+                      survey_section_id: section[0].survey_section_id, section_name: section[0].section_name, questions: Object.keys(groupArray(section, "question_id")).map((v, k) => {
+                        return groupArray(section, "question_id")[v];
+                      }).map((v1, k1) => {
+                        return {
+                          question_id: v1[0].question_id, question_name: v1[0].question_name, input_type_id: v1[0].input_types_id, option_group_id: v1[0].option_groups_id, key: v1[0].question_key,
+                          option_choices: v1.map((c) => {
+                            return {
+                              option_choice_id: c.option_choice_id, option_choice_name: c.option_choice_name,
+                            };
+                          }),
+                        };
+                      }),
+                      section_question_count: Object.keys(groupArray(section, "question_id")).map((v, k) => {
+                        return groupArray(section, "question_id")[v];
+                      }).length,
+                    };
+                  }),
+                  // question_count: count,
+                  answers: data[1],
+                  amountOfDevice: data[2],
+                },
+              ];
+              res.json(response({ success: true, payload: ans }));
+            }
+
+          }
+
         } else {
           const surveySections = Object.keys(groupArray(data[0], "survey_section_id")).map((v, k) => {
             return groupArray(data[0], "survey_section_id")[v];
@@ -56,7 +131,7 @@ const userLevelAnswer = (req, res) => {
                       if (v1[0].sub_question_id == null) {
                         return {
                           question_id: v1[0].primary_question, question_name: v1[0].question_name, input_type_id: v1[0].input_types_id, option_group_id: v1[0].option_groups_id, key: v1[0].question_key, option_choices: v1.map((c) => {
-                            
+
                             return {
                               option_choice_id: c.choices_id, option_choice_name: c.choices,
                             };

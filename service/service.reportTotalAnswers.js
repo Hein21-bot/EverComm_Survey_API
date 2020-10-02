@@ -3,8 +3,8 @@ const response = require('../model/response')
 var groupArray = require("group-array");
 
 
-const userLevelAnswer = (userId, surveyHeaderId, viewType, countryId) => {
-    return surveydb.userLevelAnswer(userId, surveyHeaderId, viewType, countryId).then(res => {
+const userLevelAnswer = (userId, surveyHeaderId, viewType, countryId, buildingId, buildingTypeId) => {
+    return surveydb.userLevelAnswer(userId, surveyHeaderId, viewType, countryId, buildingId, buildingTypeId).then(res => {
         if (res[0][0].user_level_id == 1) {
             if (viewType == "all") {
                 const reportTotalAnswers = (userId, surveyHeaderId, countryId) => {
@@ -12,14 +12,14 @@ const userLevelAnswer = (userId, surveyHeaderId, viewType, countryId) => {
                 }
                 return reportTotalAnswers
             } else {
-                const reportUserAnswer = (userId, surveyHeaderId, countryId) => {
-                    return surveydb.reportUserAnswer(userId, surveyHeaderId, countryId);
+                const reportUserAnswer = (userId, surveyHeaderId, countryId, buildingId, buildingTypeId) => {
+                    return surveydb.reportUserAnswer(userId, surveyHeaderId, countryId, buildingId, buildingTypeId);
                 }
                 return reportUserAnswer
             }
         } else if (res[0][0].user_level_id == 2) {
-            const reportUserAnswer = (userId, surveyHeaderId, countryId) => {
-                return surveydb.reportUserAnswer(userId, surveyHeaderId, countryId);
+            const reportUserAnswer = (userId, surveyHeaderId, countryId, buildingId, buildingTypeI) => {
+                return surveydb.reportUserAnswer(userId, surveyHeaderId, countryId, buildingId, buildingTypeI);
             }
             return reportUserAnswer
         } else {
@@ -29,8 +29,8 @@ const userLevelAnswer = (userId, surveyHeaderId, viewType, countryId) => {
                 }
                 return reportDistributorAnswers
             } else {
-                const reportUserAnswer = (userId, surveyHeaderId, countryId) => {
-                    return surveydb.reportUserAnswer(userId, surveyHeaderId, countryId);
+                const reportUserAnswer = (userId, surveyHeaderId, countryId, buildingId, buildingTypeI) => {
+                    return surveydb.reportUserAnswer(userId, surveyHeaderId, countryId, buildingId, buildingTypeI);
                 }
                 return reportUserAnswer
             }
