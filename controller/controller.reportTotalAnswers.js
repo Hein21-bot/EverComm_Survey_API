@@ -252,7 +252,7 @@ const userLevelMenuAnswer = (req, res) => {
                 survey_created_date: moment(v1[0].created_date).format(
                   "DD/MM/YYYY"
                 ),
-                amount_of_survey: Object.keys(groupArray(v1, "buildings_id"))
+                amount_of_building: Object.keys(groupArray(v1, "buildings_id"))
                   .map((v2, k2) => {
                     return groupArray(v1, "buildings_id")[v2];
                   })
