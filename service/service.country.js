@@ -17,8 +17,8 @@ const addCountry = (country, organization, surveyHeaderId, userId) => {
     })
 }
 
-const getCountry = (surveyHeaderId, countryId) => {
-    return surveydb.getCountry(surveyHeaderId, countryId)
+const getCountry = (surveyHeaderId, userId) => {
+    return surveydb.getCountry(surveyHeaderId, userId)
 }
 
 const getCountrySurvey = (surveyHeaderId) => {

@@ -30,10 +30,9 @@ const addCountry = (req, res) => {
 }
 
 const getCountry = (req, res) => {
-    const surveyHeaderId = req.params.surveyHeaderId
-    const countryId = req.params.countryId
-
-    return countryService.getCountry(surveyHeaderId, countryId).then(dataResult => {
+    const surveyHeaderId = req.body.surveyHeaderId
+    const userId = req.body.userId
+    return countryService.getCountry(surveyHeaderId, userId).then(dataResult => {
         return res.json(
             response({
                 success: true,
